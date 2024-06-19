@@ -5,6 +5,12 @@ ARG USER_ID=45000
 ARG GROUP_ID=45000
 ARG GROUP_ID_DOCKER=999
 
+ENV DEBIAN_FRONTEND=noninteractive
+
+USER root
+
+COPY --link charts /charts
+
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # hadolint ignore=DL3003
