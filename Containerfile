@@ -18,6 +18,8 @@ COPY --link files/ara.env /ansible/ara.env
 COPY --link files/scripts/* /
 COPY --link files/src /src
 
+ADD https://github.com/mitogen-hq/mitogen/archive/refs/tags/v0.3.7.tar.gz /mitogen.tar.gz
+
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # hadolint ignore=DL3003
@@ -69,6 +71,12 @@ pip install --no-cache-dir -r /requirements.txt
 mkdir -p \
   /interface \
   /share
+
+# install mitogen ansible plugin
+mkdir -p /usr/share/mitogen
+tar xzf /mitogen.tar.gz --strip-components=1 -C /usr/share/mitogen
+rm -rf /usr/share/mitogen/{tests,docs,.ci,.lgtm.yml,.travis.yml}
+rm /mitogen.tar.gz
 
 # install helm
 curl https://baltocdn.com/helm/signing.asc | gpg --dearmor | tee /usr/share/keyrings/helm.gpg > /dev/null
