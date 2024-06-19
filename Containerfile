@@ -15,7 +15,7 @@ COPY --link roles /ansible/roles
 
 COPY --link files/ansible.cfg /etc/ansible/ansible.cfg
 COPY --link files/ara.env /ansible/ara.env
-
+COPY --link files/scripts/* /
 COPY --link files/src /src
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -125,3 +125,5 @@ FROM python:${PYTHON_VERSION}-slim-bookworm
 
 COPY --link --from=builder / /
 USER dragon
+WORKDIR /ansible
+ENTRYPOINT ["/entrypoint.sh"]
