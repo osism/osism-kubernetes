@@ -10,6 +10,6 @@ dependencies:
   version: 3.12.1
 - name: kong
   repository: https://charts.konghq.com
-  version: 2.38.0
-digest: sha256:ef535931f6d08b3b4b242cba567d0c02a072cf7cf68431f58a0d8d283b3b72b5
-generated: "2024-06-04T11:32:45.155515532+02:00"
+  version: 2.39.3
+digest: sha256:97ea8513ff61a07a43750b6885cb36fa96707b7cecf69610635a40ca51ca5c41
+generated: "2024-06-19T12:00:45.184686862Z"
