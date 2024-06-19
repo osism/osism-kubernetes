@@ -1,14 +1,24 @@
 ---
+- job:
+    name: osism-kubernetes-build
+    pre-run: playbooks/pre.yml
+    run: playbooks/build.yml
+    vars:
+      docker_namespace: osism
+      docker_registry: osism.harbor.regio.digital
+
 - project:
     merge-mode: squash-merge
     default-branch: main
     check:
       jobs:
         - hadolint
+        - osism-kubernetes-build
         - yamllint
     gate:
       jobs:
         - hadolint
+        - osism-kubernetes-build
         - yamllint
     periodic-daily:
       jobs:
