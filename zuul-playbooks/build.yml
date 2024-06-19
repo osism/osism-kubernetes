@@ -31,7 +31,7 @@
           # from one of the other repositories. There are probably more
           # elegant ways to solve this, but it is good enough for now.
           if [[ ! -e Containerfile ]]; then
-              git clone https://github.com/osism/container-image-osism-kubernetes.git container-image
+              git clone https://github.com/osism/osism-kubernetes.git container-image
               pushd container-image
           fi
 
@@ -48,7 +48,7 @@
               --label "org.opencontainers.image.documentation=https://osism.tech/docs/" \
               --label "org.opencontainers.image.licenses=ASL 2.0" \
               --label "org.opencontainers.image.revision=$revision" \
-              --label "org.opencontainers.image.source=https://github.com/osism/container-image-osism-kubernetes" \
+              --label "org.opencontainers.image.source=https://github.com/osism/osism-kubernetes" \
               --label "org.opencontainers.image.title=osism-kubernetes" \
               --label "org.opencontainers.image.url=https://quay.io/organization/osism" \
               --label "org.opencontainers.image.vendor=OSISM GmbH" \

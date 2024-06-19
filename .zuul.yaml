@@ -1,4 +1,34 @@
 ---
+- secret:
+    name: SECRET_OSISM_KUBERNETES
+    data:
+      DOCKER_USERNAME: !encrypted/pkcs1-oaep
+        - ciowjFmxGwqgiuz7GHpZQ+EpYydjRT++SgBEe7H4npCYt8tIMOO8YAcFd4VfFg5RFbHmb
+          oVuF3r/lxRyeAK0qdNSx6QirBEy3HEYiqcjpSIqNLCs+UmgznG6Jdj92sS3FQXZh2PHej
+          6GhkHDUOa5yQsDvejLOXcSurb7tZLeIOyIi+/hVdqLAR9D53N349hL9vg7QHXrte8cGsI
+          +32AYn1vrQd9iiby5ZZcpgQhJYTsEcbapEYtakj1jN3ZmJSyoSrYwDdVaYwCQYI4WnH1w
+          2jGlly94YIopJSVf6brP2xV0ieccqz7ljHWbrId+4iw0lvXMSOmz+ngb7/sgfu/VMY88u
+          5vaMOtQp5CAY29k3A0QYZMbx+TEDCA7sXpL4l6STOTavZgSV7Y3yGFikS0muIwfHi65vg
+          lyLtraSCwnipolg2d2JVZQtnXgBmVlg+2TwGPyikE34ToI+xMUQS6MACGxB0pBbHlfQzH
+          ecOVMEAaC2DTiEOtN2XETU4xOXfSV1dcsrQYzfv4ebKn74JrBiscYr70HBjiVJP2GVOgf
+          HHvPC6CJm5UhyLLL8XTC3IpylU6G4tdssHlWYuI2368UHOlyn/9f22kNaz7Ych3TJzOq0
+          vqWC4cPlTL7AF0EwbPfNimP9MvYqT5hndzQWC8mTpr6+BjKNDyGvlHucDdHUec=
+      DOCKER_PASSWORD: !encrypted/pkcs1-oaep
+        - SULL4jqwg9FH+TQAbZtmRxmM0K3++gHw0M3AxPoyikPDBWmtUrSu0OEKo8itQJazm8B4m
+          mAbHwdwCWP/FawzrFSxytYb//b5VNas+TzO+ZP7cEOUJHkJou3x8HHIfRReihbclVMDo6
+          cHs1X5w4muEAZR87QqpMfqGsXCwQ91WiHpv6SI1/3q0EYWwub87kIIsxSvw7n8f7rW0Gl
+          ej2TVqHciiPwIoc+M2nI89Lw3WN7GitNEUSiTMKLZCX227tZwuWpl4b6jVn+BUtUvgyDY
+          5hAYzVYr27cgx5Zi9mlbZ2ij8ISJzySJtPInDUufag+OwU3+C4u66Iyrk5nhnxuDT5pfc
+          +ZulKtPR/03FLtscAN/YImjT2rB94tJ2Jglaz4igQ4FQe25vNsjD/L4XpQg6od5ysBmJQ
+          /9a2TMqFyNtgY0Uspk26jepN0SSdRs4qDmQqIq4OcITPx3IvG1BTGts7Qa3lpbd6sLo7K
+          dWahqRBekFUJCpkDQK/3H3/dl3pXnWuoiDs+hV2yb1i6acgJI9zBvaCVizXMldaL7YM7h
+          x7s++06ROszQNMq4tonizSQ7vldfzgpzJv8clCLk+PAd7PJW4+60XhsAvnZxGEFVZhFOa
+          IzmbaW52V32iym5bv6LGBRCPNN6eALmrDdGFqnQB7FCZ9KqEds1rFsYxIJTbDc=
+
+- semaphore:
+    name: semaphore-osism-kubernetes-push
+    max: 1
+
 - job:
     name: osism-kubernetes-build
     pre-run: zuul-playbooks/pre.yml
@@ -6,6 +36,26 @@
     vars:
       docker_namespace: osism
       docker_registry: osism.harbor.regio.digital
+
+- job:
+    name: abstract-osism-kubernetes-push
+    abstract: true
+    semaphores:
+      - name: semaphore-osism-kubernetes-push
+    pre-run: zuul-playbooks/pre.yml
+    run: zuul-playbooks/build.yml
+    vars:
+      docker_namespace: osism
+      docker_registry: osism.harbor.regio.digital
+      push_image: true
+
+- job:
+    name: osism-kubernetes-push
+    parent: abstract-osism-kubernetes-push
+    secrets:
+      - name: secret
+        secret: SECRET_OSISM_KUBERNETES
+        pass-to-parent: true
 
 - project:
     merge-mode: squash-merge
@@ -27,3 +77,13 @@
         - ansible-lint
         - hadolint
         - yamllint
+    periodic-midnight:
+      jobs:
+        - osism-kubernetes-push
+    post:
+      jobs:
+        - osism-kubernetes-push:
+            branches: main
+    tag:
+      jobs:
+        - osism-kubernetes-push
