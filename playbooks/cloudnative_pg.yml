@@ -1,0 +1,7 @@
+---
+- name: Apply role cloudnative_pg
+  hosts: localhost
+  connection: local
+
+  roles:
+    - cloudnative_pg

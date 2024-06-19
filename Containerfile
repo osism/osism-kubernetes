@@ -10,6 +10,8 @@ ENV DEBIAN_FRONTEND=noninteractive
 USER root
 
 COPY --link charts /charts
+COPY --link playbooks/* /ansible/
+COPY --link roles /ansible/roles
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
@@ -22,7 +24,6 @@ useradd -l -g dragon -G docker -u "$USER_ID" -m -d /ansible dragon
 
 # create required directories
 mkdir -p \
-  /ansible \
   /interface \
   /share
 

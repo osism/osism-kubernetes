@@ -1,8 +1,8 @@
 ---
 - job:
     name: osism-kubernetes-build
-    pre-run: playbooks/pre.yml
-    run: playbooks/build.yml
+    pre-run: zuul-playbooks/pre.yml
+    run: zuul-playbooks/build.yml
     vars:
       docker_namespace: osism
       docker_registry: osism.harbor.regio.digital
@@ -12,15 +12,18 @@
     default-branch: main
     check:
       jobs:
+        - ansible-lint
         - hadolint
         - osism-kubernetes-build
         - yamllint
     gate:
       jobs:
+        - ansible-lint
         - hadolint
         - osism-kubernetes-build
         - yamllint
     periodic-daily:
       jobs:
+        - ansible-lint
         - hadolint
         - yamllint
