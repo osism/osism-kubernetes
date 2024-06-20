@@ -75,9 +75,14 @@ cp /generics/inventory/* /ansible/inventory.generics
 
 # run preparations
 python3 /src/render-python-requirements.py
+python3 /src/render-versions.py
 
 # install required python packages
 pip install --no-cache-dir -r /requirements.txt
+
+# set ansible version in the motd
+ansible_version=$(python3 -c 'import ansible; print(ansible.release.__version__)')
+sed -i -e "s/ANSIBLE_VERSION/$ansible_version/" /etc/motd
 
 # create required directories
 mkdir -p \
