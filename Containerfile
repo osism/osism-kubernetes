@@ -1,6 +1,7 @@
 ARG PYTHON_VERSION=3.12
 FROM python:${PYTHON_VERSION}-slim-bookworm as builder
 
+ARG VERSION
 ARG USER_ID=45000
 ARG GROUP_ID=45000
 ARG GROUP_ID_DOCKER=999
@@ -60,6 +61,17 @@ useradd -l -g dragon -G docker -u "$USER_ID" -m -d /ansible dragon
 
 # prepare release repository
 git clone https://github.com/osism/release /release
+
+# prepare project repository
+git clone https://github.com/osism/defaults /defaults
+( cd /defaults || exit; git fetch --all --force; git checkout "$(yq -M -r .defaults_version "/release/$VERSION/base.yml")" )
+
+git clone https://github.com/osism/cfg-generics /generics
+( cd /generics || exit; git fetch --all --force; git checkout "$(yq -M -r .generics_version "/release/$VERSION/base.yml")" )
+
+# add inventory files
+mkdir -p /ansible/inventory.generics /ansible/inventory
+cp /generics/inventory/* /ansible/inventory.generics
 
 # run preparations
 python3 /src/render-python-requirements.py
