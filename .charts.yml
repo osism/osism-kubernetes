@@ -1,34 +1,42 @@
 ---
 charts:
   - name: pxc-operator
-    version: 1.14.1
+    # https://artifacthub.io/packages/helm/percona/pxc-operator
+    version: 1.14.2
     repository:
       url: https://percona.github.io/percona-helm-charts
   - name: cloudnative-pg
+    # https://artifacthub.io/packages/helm/cloudnative-pg/cloudnative-pg
     version: 0.21.5
     repository:
       url: https://cloudnative-pg.github.io/charts
   - name: rook-ceph
-    version: 1.14.6
+    # https://artifacthub.io/packages/helm/rook/rook-ceph
+    version: 1.14.8
     repository:
       url: https://charts.rook.io/release
   - name: rook-ceph-cluster
+    # https://artifacthub.io/packages/helm/rook/rook-ceph-cluster
     version: 1.14.5
     repository:
       url: https://charts.rook.io/release
   - name: mariadb-operator
+    # https://artifacthub.io/packages/helm/mariadb-operator/mariadb-operator
     version: 0.29.0
     repository:
       url: https://helm.mariadb.com/mariadb-operator
   - name: rabbitmq-cluster-operator
-    version: 4.3.6
+    # https://artifacthub.io/packages/helm/bitnami/rabbitmq-cluster-operator
+    version: 4.3.11
     repository:
       url: https://charts.bitnami.com/bitnami
   - name: kube-prometheus-stack
-    version: 60.2.0
+    # https://artifacthub.io/packages/helm/prometheus-community/kube-prometheus-stack
+    version: 61.2.0
     repository:
       url: https://prometheus-community.github.io/helm-charts
   - name: kubernetes-dashboard
+    # https://artifacthub.io/packages/helm/k8s-dashboard/kubernetes-dashboard
     version: 7.5.0
     repository:
       url: https://kubernetes.github.io/dashboard
