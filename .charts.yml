@@ -40,3 +40,8 @@ charts:
     version: 7.5.0
     repository:
       url: https://kubernetes.github.io/dashboard
+  - name: headlamp
+    # https://artifacthub.io/packages/helm/headlamp/headlamp
+    version: 0.23.0
+    repository:
+      url: https://headlamp-k8s.github.io/headlamp/
