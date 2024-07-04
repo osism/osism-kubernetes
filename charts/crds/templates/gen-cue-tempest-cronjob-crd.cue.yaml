@@ -1,0 +1,235 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    helm.sh/resource-policy: keep
+  name: tempestcronjobs.yaook.cloud
+spec:
+  group: yaook.cloud
+  names:
+    kind: TempestCronJob
+    plural: tempestcronjobs
+    shortNames:
+    - tempestcj
+    singular: tempestcronjob
+  scope: Namespaced
+  versions:
+  - additionalPrinterColumns:
+    - description: Current status of the Resource
+      jsonPath: .status.phase
+      name: Phase
+      type: string
+    - description: The reason for the current status
+      jsonPath: .status.conditions[?(@.type=="Converged")].reason
+      name: Reason
+      type: string
+    - description: Informative messages
+      jsonPath: .status.conditions[?(@.type=="Converged")].message
+      name: Message
+      type: string
+    name: v1
+    schema:
+      openAPIV3Schema:
+        properties:
+          spec:
+            properties:
+              account_cleanup:
+                default: false
+                type: boolean
+              exclude:
+                items:
+                  type: string
+                type: array
+              imagePullSecrets:
+                description: References to image pull secrets which should be included
+                  in all Pods spawned directly or indirectly by this resource.
+                items:
+                  description: ''
+                  properties:
+                    name:
+                      type: string
+                  required:
+                  - name
+                  type: object
+                type: array
+              keystoneRef:
+                description: Keystone deployment to link this service to
+                properties:
+                  kind:
+                    default: KeystoneDeployment
+                    description: Specify the kind of Keystone deployment to reference
+                    enum:
+                    - KeystoneDeployment
+                    - ExternalKeystoneDeployment
+                    type: string
+                  name:
+                    type: string
+                required:
+                - name
+                type: object
+              preprovisioned_users:
+                properties:
+                  key:
+                    type: string
+                  secret:
+                    description: ''
+                    properties:
+                      name:
+                        type: string
+                    required:
+                    - name
+                    type: object
+                required:
+                - secret
+                - key
+                type: object
+              pushgateway:
+                type: string
+              region:
+                default: RegionOne
+                type: string
+              resources:
+                properties:
+                  tempest-job:
+                    description: Define resource requests/limits for the  container
+                    properties:
+                      limits:
+                        description: Define resource limits for the container
+                        properties:
+                          cpu:
+                            description: CPU time limit for the container
+                            pattern: ^[1-9][0-9]*m?$
+                            type: string
+                          memory:
+                            description: Memory limit for the container
+                            pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
+                            type: string
+                        type: object
+                      requests:
+                        description: Define resource requests for the container
+                        properties:
+                          cpu:
+                            description: CPU time request for the container
+                            pattern: ^[1-9][0-9]*m?$
+                            type: string
+                          memory:
+                            description: Memory request for the container
+                            pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
+                            type: string
+                        type: object
+                    type: object
+                type: object
+              schedule:
+                default: 0 0 * * *
+                description: The schedule is given in standard cron notation.
+                pattern: ((\d+|([\d*]+(\/|-)\d+)|\*) ?){5}
+                type: string
+              serial:
+                default: false
+                type: boolean
+              target:
+                oneOf:
+                - required:
+                  - service
+                - required:
+                  - regex
+                properties:
+                  regex:
+                    type: string
+                  service:
+                    enum:
+                    - cinder
+                    - glance
+                    - keystone
+                    - nova
+                    - neutron
+                    - barbican
+                    - all
+                    type: string
+                type: object
+              targetRelease:
+                description: The release to deploy. Changing this will trigger an
+                  upgrade.
+                enum:
+                - 27.0.0
+                - 32.0.0
+                - 36.0.0
+                type: string
+              tempestConfig:
+                additionalProperties:
+                  type: object
+                  x-kubernetes-preserve-unknown-fields: true
+                description: The keys of this object are the configuration file sections,
+                  the values are objects whose keys correspond to config keys within
+                  that section.
+                type: object
+            required:
+            - keystoneRef
+            - target
+            type: object
+          status:
+            properties:
+              conditions:
+                items:
+                  properties:
+                    lastTransitionTime:
+                      pattern: '[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z'
+                      type: string
+                    lastUpdateTime:
+                      pattern: '[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z'
+                      type: string
+                    message:
+                      type: string
+                    reason:
+                      type: string
+                    status:
+                      type: string
+                    type:
+                      enum:
+                      - Converged
+                      - GarbageCollected
+                      type: string
+                  required:
+                  - lastTransitionTime
+                  - lastUpdateTime
+                  - message
+                  - reason
+                  - status
+                  - type
+                  type: object
+                type: array
+                x-kubernetes-list-map-keys:
+                - type
+                x-kubernetes-list-type: map
+              installedRelease:
+                description: The last successfully deployed release.
+                type: string
+              nextRelease:
+                description: The next release to roll out. This differs from installedRelease
+                  during upgrades and from targetRelease during multi-step upgrades.
+                type: string
+              observedGeneration:
+                type: integer
+              phase:
+                enum:
+                - Created
+                - Updating
+                - WaitingForDependency
+                - Updated
+                - BackingOff
+                - InvalidConfiguration
+                type: string
+              updatedGeneration:
+                type: integer
+            required:
+            - conditions
+            - observedGeneration
+            - phase
+            type: object
+        required:
+        - spec
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}

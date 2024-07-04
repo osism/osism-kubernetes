@@ -45,3 +45,20 @@ charts:
     version: 0.23.0
     repository:
       url: https://headlamp-k8s.github.io/headlamp/
+# YAOOK charts
+  - name: crds
+    version: 0.20240704.1
+    repository:
+      url: https://charts.yaook.cloud/operator/stable
+  - name: infra-operator
+    version: 0.20240704.1
+    repository:
+      url: https://charts.yaook.cloud/operator/stable
+  - name: keystone-operator
+    version: 0.20240704.1
+    repository:
+      url: https://charts.yaook.cloud/operator/stable
+  - name: keystone-resources-operator
+    version: 0.20240704.1
+    repository:
+      url: https://charts.yaook.cloud/operator/stable
