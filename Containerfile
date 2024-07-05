@@ -112,8 +112,14 @@ mkdir -p /ansible/.kube
 ln -s /share/kubeconfig /ansible/.kube/config
 chown -R dragon: /ansible/.kube
 
+# add symlink to /etc/openstack
+ln -s /opt/configuration/environments/openstack /etc/openstack
+
 # copy ara configuration
 python3 -m ara.setup.env >> /ansible/ara.env
+
+# prepare list of playbooks
+python3 /src/render-playbooks.py
 
 # set correct permssions
 chown -R dragon: /ansible /share /interface
@@ -149,6 +155,8 @@ ARG PYTHON_VERSION=3.12
 FROM python:${PYTHON_VERSION}-slim-bookworm
 
 COPY --link --from=builder / /
+
+VOLUME ["/share", "/interface"]
 USER dragon
 WORKDIR /ansible
 ENTRYPOINT ["/entrypoint.sh"]
