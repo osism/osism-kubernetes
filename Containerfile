@@ -86,6 +86,11 @@ sed -i -e "s/ANSIBLE_VERSION/$ansible_version/" /etc/motd
 
 # create required directories
 mkdir -p \
+  /ansible \
+  /ansible/action_plugins \
+  /ansible/cache \
+  /ansible/logs \
+  /ansible/secrets \
   /interface \
   /share
 
