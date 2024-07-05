@@ -1,14 +1,14 @@
 ---
-- name: Apply cloudnative_pg
+- name: Apply headlamp
   hosts:
     - "{{ hosts_manager|default(groups['manager'][0])|default('localhost') }}"
   connection: local
 
   tasks:
-    - name: Deploy cloudnative-pg helm chart
+    - name: Deploy headlamp helm chart
       kubernetes.core.helm:
-        name: cloudnative-pg
-        chart_ref: /charts/cloudnative-pg
-        release_namespace: cnpg-system
+        name: headlamp
+        chart_ref: /charts/headlamp
+        release_namespace: kubernetes-dashboard
         create_namespace: true
         wait: true

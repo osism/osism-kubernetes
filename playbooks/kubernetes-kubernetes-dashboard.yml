@@ -1,0 +1,14 @@
+---
+- name: Apply kubernetes-dashboard
+  hosts:
+    - "{{ hosts_manager|default(groups['manager'][0])|default('localhost') }}"
+  connection: local
+
+  tasks:
+    - name: Deploy kubernetes-dashboard helm chart
+      kubernetes.core.helm:
+        name: kubernetes-dashboard
+        chart_ref: /chars/kubernetes-dashboard
+        release_namespace: kubernetes-dashboard
+        create_namespace: true
+        wait: true
