@@ -74,6 +74,8 @@ mkdir -p /ansible/inventory.generics /ansible/inventory
 cp /generics/inventory/* /ansible/inventory.generics
 
 # run preparations
+mkdir -p /ansible/group_vars/all/
+
 python3 /src/render-python-requirements.py
 python3 /src/render-versions.py
 
