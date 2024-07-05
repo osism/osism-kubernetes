@@ -109,8 +109,13 @@ apt-get update
 apt-get install --no-install-recommends -y \
   helm
 
+# install clusterctl
+CAPI_VERSION=1.7.3
+curl -Lo /usr/local/bin/clusterctl https://github.com/kubernetes-sigs/cluster-api/releases/download/v${CAPI_VERSION}/clusterctl-linux-amd64
+chmod +x /usr/local/bin/clusterctl
+
 # install kubectl
-KUBECTL_VERSION=1.29.1
+KUBECTL_VERSION=1.30.2
 curl -Lo /usr/local/bin/kubectl https://dl.k8s.io/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl
 chmod +x /usr/local/bin/kubectl
 
