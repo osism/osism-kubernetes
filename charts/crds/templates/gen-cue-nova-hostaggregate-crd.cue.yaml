@@ -1,0 +1,158 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    helm.sh/resource-policy: keep
+  name: novahostaggregates.compute.yaook.cloud
+spec:
+  group: compute.yaook.cloud
+  names:
+    kind: NovaHostAggregate
+    plural: novahostaggregates
+    shortNames: []
+    singular: novahostaggregate
+  scope: Namespaced
+  versions:
+  - additionalPrinterColumns:
+    - description: Current status of the Resource
+      jsonPath: .status.phase
+      name: Phase
+      type: string
+    - description: The reason for the current status
+      jsonPath: .status.conditions[?(@.type=="Converged")].reason
+      name: Reason
+      type: string
+    - description: Informative messages
+      jsonPath: .status.conditions[?(@.type=="Converged")].message
+      name: Message
+      type: string
+    name: v1
+    schema:
+      openAPIV3Schema:
+        properties:
+          spec:
+            properties:
+              caCertificates:
+                description: CA Certificates that should be added to all services
+                  can be placed here. CAs that issue certificates to the service are
+                  automatically added and do not need to be specified.
+                items:
+                  type: string
+                type: array
+                x-kubernetes-list-type: set
+              imagePullSecrets:
+                description: References to image pull secrets which should be included
+                  in all Pods spawned directly or indirectly by this resource.
+                items:
+                  description: ''
+                  properties:
+                    name:
+                      type: string
+                  required:
+                  - name
+                  type: object
+                type: array
+              keystoneRef:
+                description: Keystone deployment to link this service to
+                properties:
+                  kind:
+                    default: KeystoneDeployment
+                    description: Specify the kind of Keystone deployment to reference
+                    enum:
+                    - KeystoneDeployment
+                    - ExternalKeystoneDeployment
+                    type: string
+                  name:
+                    type: string
+                required:
+                - name
+                type: object
+              novaRef:
+                description: ''
+                properties:
+                  name:
+                    type: string
+                required:
+                - name
+                type: object
+              properties:
+                type: object
+                x-kubernetes-preserve-unknown-fields: true
+              targetRelease:
+                description: The release to deploy. Changing this will trigger an
+                  upgrade.
+                enum: []
+                type: string
+              zone:
+                pattern: ^[^:]*$
+                type: string
+            required:
+            - novaRef
+            - keystoneRef
+            type: object
+          status:
+            properties:
+              conditions:
+                items:
+                  properties:
+                    lastTransitionTime:
+                      pattern: '[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z'
+                      type: string
+                    lastUpdateTime:
+                      pattern: '[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z'
+                      type: string
+                    message:
+                      type: string
+                    reason:
+                      type: string
+                    status:
+                      type: string
+                    type:
+                      enum:
+                      - Converged
+                      - GarbageCollected
+                      type: string
+                  required:
+                  - lastTransitionTime
+                  - lastUpdateTime
+                  - message
+                  - reason
+                  - status
+                  - type
+                  type: object
+                type: array
+                x-kubernetes-list-map-keys:
+                - type
+                x-kubernetes-list-type: map
+              installedRelease:
+                description: The last successfully deployed release.
+                type: string
+              nextRelease:
+                description: The next release to roll out. This differs from installedRelease
+                  during upgrades and from targetRelease during multi-step upgrades.
+                type: string
+              observedGeneration:
+                type: integer
+              phase:
+                enum:
+                - Created
+                - Updating
+                - WaitingForDependency
+                - Updated
+                - BackingOff
+                - InvalidConfiguration
+                type: string
+              updatedGeneration:
+                type: integer
+            required:
+            - conditions
+            - observedGeneration
+            - phase
+            type: object
+        required:
+        - spec
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}

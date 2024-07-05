@@ -1,0 +1,54 @@
+nameOverride: ""
+fullnameOverride: ""
+
+operator:
+    image:
+        repository: registry.yaook.cloud/yaook/operator
+        pullPolicy: IfNotPresent
+    runnerCount: 3
+    additionalServiceMonitorLabels: {}
+
+    resources: {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+    schedulingKeys:
+    - operator.yaook.cloud/keystone
+    - operator.yaook.cloud/any
+
+    nodeSelector: {}
+
+    tolerations: []
+
+    affinity: {}
+
+    verbosity: "3"
+
+    imagePullSecrets: []
+
+    pythonOptimize: true
+
+    extraEnv: []
+
+    # Optional specify the name of a K8s secret of type
+    # kubernetes.io/dockerconfigjson. Can be used to make image registry
+    # credential available to the operator.
+    dockerConfigSecret: ""
+
+    # Optional specify a name of a ConfigMap which is mounted within the
+    # operator container under /etc/pki/tls/certs. If set the environment
+    # variable REQUESTS_CA_BUNDLE is set to point to /etc/pki/tls/certs/
+    # ca-bundle.crt. The operator then uses that file as the CA bundle. This
+    # can be useful for example if a private image registry is used which is
+    # secured by a certificate not signed by a official CA.
+    caConfigMap: ""
+
+    multipleNamespaces: false

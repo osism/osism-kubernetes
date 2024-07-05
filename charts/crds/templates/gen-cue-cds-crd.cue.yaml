@@ -1,0 +1,181 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    helm.sh/resource-policy: keep
+  name: configureddaemonsets.apps.yaook.cloud
+spec:
+  group: apps.yaook.cloud
+  names:
+    kind: ConfiguredDaemonSet
+    plural: configureddaemonsets
+    shortNames:
+    - cds
+    singular: configureddaemonset
+  scope: Namespaced
+  versions:
+  - additionalPrinterColumns:
+    - description: Number of scheduled up-to-date pods
+      jsonPath: .status.updatedNumberScheduled
+      name: Up-to-date
+      type: integer
+    - description: Number of ready pods
+      jsonPath: .status.numberReady
+      name: Ready
+      type: integer
+    - description: Number of scheduled pods
+      jsonPath: .status.currentNumberScheduled
+      name: Scheduled
+      type: integer
+    - description: Current status of the Resource
+      jsonPath: .status.phase
+      name: Phase
+      type: string
+    - description: The reason for the current status
+      jsonPath: .status.conditions[?(@.type=="Converged")].reason
+      name: Reason
+      type: string
+    - description: Informative messages
+      jsonPath: .status.conditions[?(@.type=="Converged")].message
+      name: Message
+      type: string
+    name: v1
+    schema:
+      openAPIV3Schema:
+        properties:
+          spec:
+            properties:
+              targetNodes:
+                items:
+                  type: string
+                type: array
+              template:
+                properties:
+                  metadata:
+                    description: ''
+                    type: object
+                    x-kubernetes-preserve-unknown-fields: true
+                  spec:
+                    description: ''
+                    type: object
+                    x-kubernetes-preserve-unknown-fields: true
+                required:
+                - spec
+                type: object
+              updateStrategy:
+                properties:
+                  rollingUpdate:
+                    properties:
+                      maxUnavailable:
+                        default: 1
+                        minimum: 1
+                        type: integer
+                    type: object
+                  type:
+                    default: rollingUpdate
+                    enum:
+                    - rollingUpdate
+                    type: string
+                type: object
+              volumeTemplates:
+                items:
+                  properties:
+                    default:
+                      properties:
+                        template:
+                          description: ''
+                          type: object
+                          x-kubernetes-preserve-unknown-fields: true
+                      required:
+                      - template
+                      type: object
+                    nodeMap:
+                      additionalProperties:
+                        properties:
+                          template:
+                            description: ''
+                            type: object
+                            x-kubernetes-preserve-unknown-fields: true
+                        required:
+                        - template
+                        type: object
+                      type: object
+                    volumeName:
+                      type: string
+                  required:
+                  - nodeMap
+                  - volumeName
+                  type: object
+                type: array
+            required:
+            - volumeTemplates
+            - targetNodes
+            - template
+            type: object
+          status:
+            properties:
+              conditions:
+                items:
+                  properties:
+                    lastTransitionTime:
+                      pattern: '[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z'
+                      type: string
+                    lastUpdateTime:
+                      pattern: '[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z'
+                      type: string
+                    message:
+                      type: string
+                    reason:
+                      type: string
+                    status:
+                      type: string
+                    type:
+                      enum:
+                      - Converged
+                      - GarbageCollected
+                      type: string
+                  required:
+                  - lastTransitionTime
+                  - lastUpdateTime
+                  - message
+                  - reason
+                  - status
+                  - type
+                  type: object
+                type: array
+                x-kubernetes-list-map-keys:
+                - type
+                x-kubernetes-list-type: map
+              currentNumberScheduled:
+                type: integer
+              numberAvailable:
+                type: integer
+              numberReady:
+                type: integer
+              observedGeneration:
+                type: integer
+              phase:
+                enum:
+                - Created
+                - Updating
+                - WaitingForDependency
+                - Updated
+                - BackingOff
+                - InvalidConfiguration
+                type: string
+              updatedGeneration:
+                type: integer
+              updatedNumberScheduled:
+                type: integer
+            required:
+            - conditions
+            - observedGeneration
+            - phase
+            type: object
+        required:
+        - spec
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}

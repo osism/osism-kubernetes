@@ -1,0 +1,100 @@
+{{- define "yaook.operator-lib.Deployment" -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "yaook.operator-lib.fullname" . }}
+  labels:
+    {{- include "yaook.operator-lib.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      {{- include "yaook.operator-lib.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "yaook.operator-lib.labels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "yaook.operator-lib.fullname" . }}
+      containers:
+      - name: operator
+        image: {{ include "yaook.operator-lib.image" . }}
+        imagePullPolicy: {{ .Values.operator.image.pullPolicy }}
+        securityContext:
+          runAsUser: 2020
+          runAsGroup: 2020
+        ports:
+        - containerPort: 8000
+          name: metrics
+          protocol: TCP
+        args:
+        - {{ include "yaook.operator.name" . | quote }}
+        - run
+        env:
+        - name: YAOOK_OP_VERBOSITY
+          value: {{ .Values.operator.verbosity | toString | toYaml }}
+        - name: YAOOK_OP_RUNNER_COUNT
+          value: {{ .Values.operator.runnerCount | toString | toYaml }}
+        - name: YAOOK_OP_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: YAOOK_OP_MULTIPLE_NAMESPACES
+          value: {{ .Values.operator.multipleNamespaces | toString | toYaml }}
+        - name: PYTHONOPTIMIZE
+        {{- if .Values.operator.pythonOptimize }}
+          value: "1"
+        {{- else }}
+          value: "0"
+        {{- end }}
+        {{- if .Values.operator.dockerConfigSecret }}
+        - name: YAOOK_OP_DOCKER_CONFIG
+          value: /var/run/secrets/docker/.dockerconfigjson
+        {{- end }}
+        {{- if .Values.operator.caConfigMap }}
+        - name: REQUESTS_CA_BUNDLE
+          value: /etc/pki/tls/certs/ca-bundle.crt
+        {{- end }}
+        {{- include "yaook.operator-lib.env" . | nindent 8 }}
+        volumeMounts:
+        {{- if .Values.operator.dockerConfigSecret }}
+        - mountPath: /var/run/secrets/docker
+          name: docker-config
+          readOnly: true
+        {{- end }}
+        {{- if .Values.operator.caConfigMap }}
+        - mountPath: /etc/pki/tls/certs
+          name: ca-certs
+        {{- end }}
+      volumes:
+      {{- if .Values.operator.dockerConfigSecret }}
+      - name: docker-config
+        secret:
+          secretName: {{ .Values.operator.dockerConfigSecret | quote }}
+      {{- end }}
+      {{- if .Values.operator.caConfigMap }}
+      - name: ca-certs
+        configMap:
+          defaultMode: 420
+          name: {{ .Values.operator.caConfigMap | quote }}
+      {{- end }}
+      {{- with .Values.operator.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.operator.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.operator.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.operator.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- include "yaook.operator-lib.scheduling" . | nindent 6 }}
+{{- end -}}

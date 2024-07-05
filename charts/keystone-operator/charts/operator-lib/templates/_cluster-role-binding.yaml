@@ -1,0 +1,16 @@
+{{- define "yaook.operator-lib.ClusterRoleBinding" -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ include "yaook.operator-lib.fullname" . }}
+  labels:
+    {{- include "yaook.operator-lib.labels" . | nindent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ include "yaook.operator-lib.fullname" . }}
+subjects:
+- kind: ServiceAccount
+  name: {{ include "yaook.operator-lib.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+{{- end -}}
