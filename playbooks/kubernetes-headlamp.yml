@@ -9,6 +9,6 @@
       kubernetes.core.helm:
         name: headlamp
         chart_ref: /charts/headlamp
-        release_namespace: kubernetes-dashboard
+        release_namespace: kube-system
         create_namespace: true
         wait: true
