@@ -59,7 +59,7 @@ if [[ -e $ENVIRONMENTS_DIRECTORY/$ENVIRONMENT/playbook-$service.yml ]]; then
       -e @configuration.yml \
       "$@" \
       playbook-$service.yml
-if [[ -e $ANSIBLE_DIRECTORY/$ENVIRONMENT-$service.yml ]]; then
+elif [[ -e $ANSIBLE_DIRECTORY/$ENVIRONMENT-$service.yml ]]; then
     ansible-playbook \
       --vault-password-file $VAULT \
       -e @$ENVIRONMENTS_DIRECTORY/configuration.yml \
