@@ -16,6 +16,7 @@ COPY --link roles /ansible/roles
 
 COPY --link files/ansible.cfg /etc/ansible/ansible.cfg
 COPY --link files/ara.env /ansible/ara.env
+COPY --link files/requirements.yml /ansible/requirements.yml
 COPY --link files/scripts/* /
 COPY --link files/src /src
 
@@ -95,6 +96,9 @@ mkdir -p \
   /ansible/secrets \
   /interface \
   /share
+
+# install required ansible collections & roles
+ansible-galaxy collection install -v -f -r /ansible/requirements.yml -p /usr/share/ansible/collections
 
 # install mitogen ansible plugin
 mkdir -p /usr/share/mitogen
