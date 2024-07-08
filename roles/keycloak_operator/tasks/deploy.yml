@@ -1,6 +1,7 @@
 ---
 - name: Apply keycloak-operator kubernetes manifest
   kubernetes.core.k8s:
-    definition: "{{ keycloak_operator_directory }}/keycloak-operator.yml"
+    namespace: "{{ keycloak_operator_namespace }}"
+    definition: "{{ lookup('file', keycloak_operator_directory + '/keycloak-operator.yml') | from_yaml_all }}"
     kubeconfig: /share/kubeconfig
     state: present

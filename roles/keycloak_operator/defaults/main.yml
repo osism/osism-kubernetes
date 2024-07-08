@@ -9,6 +9,6 @@ operator_group: "{{ operator_user }}"  # noqa var-naming[no-role-prefix]
 # keycloak-operator
 
 keycloak_operator_directory: /tmp/keycloak_operator
-keycloak_operator_template_directory:
+keycloak_operator_template_directory: .
 
 keycloak_operator_namespace: keycloak
