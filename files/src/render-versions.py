@@ -19,6 +19,14 @@ with open("/release/%s/base.yml" % VERSION, "rb") as fp:
 loader = jinja2.FileSystemLoader(searchpath="/src/templates/")
 environment = jinja2.Environment(loader=loader)
 
+# render versions.yml
+
+template = environment.get_template("versions.yml.j2")
+result = template.render({})
+
+with open("/ansible/group_vars/all/versions.yml", "w+") as fp:
+    fp.write(result)
+
 # render motd
 
 template = environment.get_template("motd.j2")
