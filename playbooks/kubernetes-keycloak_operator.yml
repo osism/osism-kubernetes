@@ -1,0 +1,10 @@
+---
+- name: Apply keycloak_operator role
+  hosts:
+    - "{{ hosts_manager|default(groups['manager'][0])|default('localhost') }}"
+  connection: local
+
+  tasks:
+    - name: Include keycloak_operator role
+      ansible.builtin.include_role:
+        name: keycloak_operator

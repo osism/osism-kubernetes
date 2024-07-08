@@ -1,0 +1,6 @@
+---
+- name: Apply keycloak-operator kubernetes manifest
+  kubernetes.core.k8s:
+    definition: "{{ keycloak_operator_directory }}/keycloak-operator.yml"
+    kubeconfig: /share/kubeconfig
+    state: present

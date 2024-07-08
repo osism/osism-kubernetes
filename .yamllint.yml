@@ -3,6 +3,8 @@ extends: default
 
 ignore: |
   charts/
+  roles/keycloak_operator/files/keycloakrealmimports.k8s.keycloak.org-v1.yml
+  roles/keycloak_operator/files/keycloaks.k8s.keycloak.org-v1.yml
 
 rules:
   comments: enable
