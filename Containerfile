@@ -115,6 +115,9 @@ apt-get update
 apt-get install --no-install-recommends -y \
   helm
 
+# install helm plugins
+helm plugin install https://github.com/databus23/helm-diff
+
 # install operator-sdk
 # shellcheck disable=SC2046
 ARCH=$(case $(uname -m) in x86_64) echo -n amd64 ;; aarch64) echo -n arm64 ;; *) echo -n $(uname -m) ;; esac)
