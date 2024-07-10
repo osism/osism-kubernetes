@@ -8,7 +8,7 @@
     - name: Deploy kubernetes-dashboard helm chart
       kubernetes.core.helm:
         name: kubernetes-dashboard
-        chart_ref: /chars/kubernetes-dashboard
+        chart_ref: /charts/kubernetes-dashboard
         release_namespace: kubernetes-dashboard
         create_namespace: true
         wait: true
