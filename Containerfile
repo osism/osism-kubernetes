@@ -194,6 +194,8 @@ FROM python:${PYTHON_VERSION}-slim-bookworm
 
 COPY --link --from=builder / /
 
+ENV PYTHONWARNINGS="ignore::UserWarning"
+
 VOLUME ["/share", "/interface"]
 USER dragon
 WORKDIR /ansible
