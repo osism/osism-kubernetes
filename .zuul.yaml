@@ -64,20 +64,26 @@
       jobs:
         - ansible-collection-ensure-readme
         - ansible-lint
+        - flake8
         - hadolint
         - osism-kubernetes-build
+        - python-black
         - yamllint
     gate:
       jobs:
         - ansible-collection-ensure-readme
         - ansible-lint
+        - flake8
         - hadolint
         - osism-kubernetes-build
+        - python-black
         - yamllint
     periodic-daily:
       jobs:
         - ansible-lint
+        - flake8
         - hadolint
+        - python-black
         - yamllint
     periodic-midnight:
       jobs:
