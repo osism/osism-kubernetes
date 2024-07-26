@@ -1,5 +1,10 @@
 ---
 charts:
+  - name: keycloak
+    # https://artifacthub.io/packages/helm/bitnami/keycloak
+    version: 21.8.0
+    repository:
+      url: https://charts.bitnami.com/bitnami
   - name: pxc-operator
     # https://artifacthub.io/packages/helm/percona/pxc-operator
     version: 1.14.2
