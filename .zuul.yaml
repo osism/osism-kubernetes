@@ -62,12 +62,14 @@
     default-branch: main
     check:
       jobs:
+        - ansible-collection-ensure-readme
         - ansible-lint
         - hadolint
         - osism-kubernetes-build
         - yamllint
     gate:
       jobs:
+        - ansible-collection-ensure-readme
         - ansible-lint
         - hadolint
         - osism-kubernetes-build
