@@ -1,5 +1,10 @@
 ---
 charts:
+  - name: prometheus-pushgateway
+    # https://artifacthub.io/packages/helm/prometheus-community/prometheus-pushgateway
+    version: 2.14.0
+    repository:
+      url: https://prometheus-community.github.io/helm-charts
   - name: keycloak
     # https://artifacthub.io/packages/helm/bitnami/keycloak
     version: 21.8.0
