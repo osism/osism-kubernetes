@@ -29,6 +29,12 @@ RUN <<EOF
 set -e
 set -x
 
+CILIUM_CLI_VERSION=v0.16.13
+OPERATOR_SDK_VERSION=v1.35.0
+
+# shellcheck disable=SC2046
+ARCH=$(case $(uname -m) in x86_64) echo -n amd64 ;; aarch64) echo -n arm64 ;; *) echo -n $(uname -m) ;; esac)
+
 # show motd
 echo "[ ! -z \"\$TERM\" -a -r /etc/motd ] && cat /etc/motd" >> /etc/bash.bashrc
 
@@ -118,11 +124,15 @@ apt-get install --no-install-recommends -y \
 # install helm plugins
 helm plugin install https://github.com/databus23/helm-diff
 
+# install cilium CLI
+curl -L --fail --remote-name-all "https://github.com/cilium/cilium-cli/releases/download/${CILIUM_CLI_VERSION}/cilium-linux-${ARCH}.tar.gz{,.sha256sum}"
+sha256sum --check "cilium-linux-${ARCH}.tar.gz.sha256sum"
+tar xzvfC "cilium-linux-${ARCH}.tar.gz" /usr/local/bin
+rm cilium-linux-"${ARCH}".tar.gz{,.sha256sum}
+
 # install operator-sdk
-# shellcheck disable=SC2046
-ARCH=$(case $(uname -m) in x86_64) echo -n amd64 ;; aarch64) echo -n arm64 ;; *) echo -n $(uname -m) ;; esac)
 OS=$(uname | awk '{print tolower($0)}')
-OPERATOR_SDK_DL_URL=https://github.com/operator-framework/operator-sdk/releases/download/v1.35.0
+OPERATOR_SDK_DL_URL=https://github.com/operator-framework/operator-sdk/releases/download/${OPERATOR_SDK_VERSION}
 
 curl -LO "${OPERATOR_SDK_DL_URL}/operator-sdk_${OS}_${ARCH}"
 gpg --keyserver keyserver.ubuntu.com --recv-keys 052996E2A20B5C7E
