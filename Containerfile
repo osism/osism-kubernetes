@@ -205,6 +205,7 @@ FROM python:${PYTHON_VERSION}-slim-bookworm
 COPY --link --from=builder / /
 
 ENV PYTHONWARNINGS="ignore::UserWarning"
+ENV KUBECONFIG="/share/kubeconfig"
 
 VOLUME ["/share", "/interface"]
 USER dragon
