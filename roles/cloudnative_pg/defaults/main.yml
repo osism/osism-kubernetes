@@ -1,0 +1,5 @@
+---
+cloudnative_pg_chart_ref: /charts/cloudnative-pg
+cloudnative_pg_release_name: cloudnative-pg
+cloudnative_pg_release_namespace: osism
+cloudnative_pg_values: {}

@@ -1,8 +1,9 @@
 ---
-- name: Deploy latest cloudnative-pg operator chart in namespace cnpg-system
+- name: Deploy helm chart
   kubernetes.core.helm:
-    release_name: cloudnative-pg
-    chart_ref: cnpg/cloudnative-pg
-    release_namespace: cnpg-system
+    release_name: "{{ cloudnative_pg_release_name }}"
+    chart_ref: "{{ cloudnative_pg_chart_ref }}"
+    release_namespace: "{{ cloudnative_pg_release_namespace }}"
     create_namespace: true
     wait: true
+    values: "{{ _cloudnative_pg_helm_values | combine(cloudnative_pg_helm_values, recursive=True) }}"
