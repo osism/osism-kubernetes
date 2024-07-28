@@ -1,5 +1,10 @@
 ---
 charts:
+  - name: memcached
+    # https://artifacthub.io/packages/helm/bitnami/memcached
+    version: 7.4.11
+    repository:
+      url: https://charts.bitnami.com/bitnami
   - name: node-feature-discovery
     # https://artifacthub.io/packages/helm/node-feature-discovery/node-feature-discovery
     version: 0.15.4
