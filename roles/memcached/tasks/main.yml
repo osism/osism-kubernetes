@@ -1,0 +1,9 @@
+---
+- name: Deploy helm chart
+  kubernetes.core.helm:
+    release_name: "{{ memcached_release_name }}"
+    chart_ref: "{{ memcached_chart_ref }}"
+    release_namespace: "{{ memcached_release_namespace }}"
+    create_namespace: true
+    wait: true
+    values: "{{ _memcached_helm_values | combine(memcached_helm_values, recursive=True) }}"
