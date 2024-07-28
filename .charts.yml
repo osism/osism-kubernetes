@@ -1,5 +1,10 @@
 ---
 charts:
+  - name: node-feature-discovery
+    # https://artifacthub.io/packages/helm/node-feature-discovery/node-feature-discovery
+    version: 0.15.4
+    repository:
+      url: https://kubernetes-sigs.github.io/node-feature-discovery/charts
   - name: prometheus-pushgateway
     # https://artifacthub.io/packages/helm/prometheus-community/prometheus-pushgateway
     version: 2.14.0
