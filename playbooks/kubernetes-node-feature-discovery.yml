@@ -1,0 +1,11 @@
+---
+- name: Apply role node-feature-discovery
+  hosts:
+    - "{{ hosts_manager|default(groups['manager'][0])|default('localhost') }}"
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: Include node-feature-discovery role
+      ansible.builtin.include_role:
+        name: node_feature_discovery
