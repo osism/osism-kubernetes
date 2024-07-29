@@ -1,5 +1,5 @@
 ---
-memcached_chart_ref: /charts/memcached
-memcached_release_name: memcached
-memcached_release_namespace: osism
-memcached_values: {}
+memcached_helm_chart_ref: /charts/memcached
+memcached_helm_release_name: memcached
+memcached_helm_release_namespace: memcached
+memcached_helm_values: {}
