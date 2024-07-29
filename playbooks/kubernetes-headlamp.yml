@@ -1,14 +1,11 @@
 ---
-- name: Apply headlamp
+- name: Apply role headlamp
   hosts:
     - "{{ hosts_manager|default(groups['manager'][0])|default('localhost') }}"
   connection: local
+  gather_facts: false
 
   tasks:
-    - name: Deploy headlamp helm chart
-      kubernetes.core.helm:
+    - name: Include headlamp role
+      ansible.builtin.include_role:
         name: headlamp
-        chart_ref: /charts/headlamp
-        release_namespace: kube-system
-        create_namespace: true
-        wait: true
