@@ -1,5 +1,10 @@
 ---
 charts:
+  - name: argo-cd
+    # https://artifacthub.io/packages/helm/argo/argo-cd
+    version: 7.4.1
+    repository:
+      url: https://argoproj.github.io/argo-helm
   - name: memcached
     # https://artifacthub.io/packages/helm/bitnami/memcached
     version: 7.4.11
