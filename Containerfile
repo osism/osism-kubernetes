@@ -29,7 +29,9 @@ RUN <<EOF
 set -e
 set -x
 
-CILIUM_CLI_VERSION=v0.16.13
+CAPI_VERSION=1.7.4
+CILIUM_CLI_VERSION=v0.16.15
+KUBECTL_VERSION=1.30.2
 OPERATOR_SDK_VERSION=v1.35.0
 
 # shellcheck disable=SC2046
@@ -146,12 +148,10 @@ rm checksums.txt.asc
 rm checksums.txt
 
 # install clusterctl
-CAPI_VERSION=1.7.3
 curl -Lo /usr/local/bin/clusterctl https://github.com/kubernetes-sigs/cluster-api/releases/download/v${CAPI_VERSION}/clusterctl-linux-amd64
 chmod +x /usr/local/bin/clusterctl
 
 # install kubectl
-KUBECTL_VERSION=1.30.2
 curl -Lo /usr/local/bin/kubectl https://dl.k8s.io/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl
 chmod +x /usr/local/bin/kubectl
 
