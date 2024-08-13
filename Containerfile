@@ -160,6 +160,16 @@ mkdir -p /ansible/.kube
 ln -s /share/kubeconfig /ansible/.kube/config
 chown -R dragon: /ansible/.kube
 
+# prepare .cache directory
+mkdir -p /ansible/.cache
+mv /root/.cache/helm /ansible/.cache
+chown -R dragon: /ansible/.cache
+
+# prepare  .local directory
+mkdir -p /ansible/.local/share
+mv /root/.local/share/helm /ansible/.local/share
+chown -R dragon: /ansible/.local
+
 # add symlink to /etc/openstack
 ln -s /opt/configuration/environments/openstack /etc/openstack
 
