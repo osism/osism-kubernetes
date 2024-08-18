@@ -2,6 +2,17 @@
 - secret:
     name: SECRET_OSISM_KUBERNETES
     data:
+      DTRACK_API_KEY: !encrypted/pkcs1-oaep
+        - E4KqeSYLZWvnk/RvcXlPK9+9vMpPlcR1T7a8JdoRpEWaHIjSfkR/z6iweljyy1fVFH5wS
+          vxzeSPSuFz3w8e47aV6QrxsOekkeghFCXvZv20A5E9Eluzk/vvvLm/5089YK5t7RkHInr
+          PUqvcv1yoPjhCO4A8L5+th2aNhjNN4EtVrXL/UGQnCn64v1BUHeLKiCymCO6mI4C1HWV8
+          nU0SgqDnwqinVHr6d+ZHhxR2wvDrMcQM7Dti7RZCKesfwgQxnLC0LenP7KI5E4z0W7R+E
+          ipHTcrn5p03mgtwUs4wBt8muCUm7xRbIC7vpJvEJf8KpFXVBZxqUWha46OqQ/q+OH4z3p
+          vcpSoXaexDXJnMGIYCniN4QarV4zSixvuPmvxV1HowzNzVNuffcFya+2PGCc43WgHmTH6
+          SEbuRgX35x2p3g2lTSZgonR2Cj6uyNmvlXg9qVkUwweyJ+/dvyHi8jHoNpi7SG+Xe8MD7
+          FBF0rL45l4DTI4+FXoCA10uyT9dDFujuqjxxCzgFoCzEM5CEQZ7xHdsQ0mDgi7QUs/Bzb
+          q8BxFwdKRe8lwm72sRUAIkrcBIRMdLPohPAmFqDuh/ASlSBMO+a8JoVpglI6STIAAM6tc
+          eJPW0sl33UqeL4mzBe1jTvqD+NsMxHeEtQ/E/ymIyWzwHxK0MjN0fgP3tTfJAc=
       DOCKER_USERNAME: !encrypted/pkcs1-oaep
         - NFbD4TjpIXkwWB7THs9NxmFSD5Rawtlx0DhLlUga1mXc1NzVN++UruucUKyXarWrJEgw7
           i48SSRa6b+795NrC1ZGWH/Pd/oZfCsxMn1YACISRUm/+QEl6+C8r6gB+NLUytl/N+64vo
@@ -48,6 +59,7 @@
       docker_namespace: osism
       docker_registry: osism.harbor.regio.digital
       push_image: true
+      push_sbom: true
 
 - job:
     name: osism-kubernetes-push
