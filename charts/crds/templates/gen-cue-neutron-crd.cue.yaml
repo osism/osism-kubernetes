@@ -40,6 +40,10 @@ spec:
                   ingress:
                     description: Ingress configuration
                     properties:
+                      createIngress:
+                        description: Create the k8s ingress object. The default value
+                          is true
+                        type: boolean
                       externalCertificateSecretRef:
                         description: Reference to a Kubernetes TLS Secret containing
                           the TLS certificate and keys to use for this endpoint. If
@@ -76,6 +80,10 @@ spec:
                       ingress:
                         description: Ingress configuration
                         properties:
+                          createIngress:
+                            description: Create the k8s ingress object. The default
+                              value is true
+                            type: boolean
                           externalCertificateSecretRef:
                             description: Reference to a Kubernetes TLS Secret containing
                               the TLS certificate and keys to use for this endpoint.

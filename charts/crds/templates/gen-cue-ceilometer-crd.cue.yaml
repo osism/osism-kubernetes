@@ -554,6 +554,7 @@ spec:
                 enum:
                 - train
                 - yoga
+                - zed
                 type: string
             required:
             - keystoneRef
