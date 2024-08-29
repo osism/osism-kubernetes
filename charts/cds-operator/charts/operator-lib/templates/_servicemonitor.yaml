@@ -1,0 +1,23 @@
+{{- define "yaook.operator-lib.ServiceMonitor" -}}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "yaook.operator-lib.fullname" . }}
+  labels:
+    {{- include "yaook.operator-lib.labels" . | nindent 4 }}
+    {{- range $key, $val := .Values.operator.additionalServiceMonitorLabels }}
+    {{ $key }}: {{ $val }}
+    {{- end }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "yaook.operator-lib.selectorLabels" . | nindent 6 }}
+  endpoints:
+    - port: metrics
+      interval: 15s
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
+{{- end }}
