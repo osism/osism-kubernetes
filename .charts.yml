@@ -2,22 +2,22 @@
 charts:
   - name: cert-manager
     # https://artifacthub.io/packages/helm/cert-manager/cert-manager
-    version: 1.15.2
+    version: 1.15.3
     repository:
       url: https://charts.jetstack.io
   - name: argo-cd
     # https://artifacthub.io/packages/helm/argo/argo-cd
-    version: 7.4.1
+    version: 7.5.0
     repository:
       url: https://argoproj.github.io/argo-helm
   - name: memcached
     # https://artifacthub.io/packages/helm/bitnami/memcached
-    version: 7.4.11
+    version: 7.4.12
     repository:
       url: https://charts.bitnami.com/bitnami
   - name: node-feature-discovery
     # https://artifacthub.io/packages/helm/node-feature-discovery/node-feature-discovery
-    version: 0.15.4
+    version: 0.16.4
     repository:
       url: https://kubernetes-sigs.github.io/node-feature-discovery/charts
   - name: prometheus-pushgateway
@@ -27,42 +27,42 @@ charts:
       url: https://prometheus-community.github.io/helm-charts
   - name: keycloak
     # https://artifacthub.io/packages/helm/bitnami/keycloak
-    version: 21.8.0
+    version: 22.2.1
     repository:
       url: https://charts.bitnami.com/bitnami
   - name: pxc-operator
     # https://artifacthub.io/packages/helm/percona/pxc-operator
-    version: 1.14.2
+    version: 1.15.0
     repository:
       url: https://percona.github.io/percona-helm-charts
   - name: cloudnative-pg
     # https://artifacthub.io/packages/helm/cloudnative-pg/cloudnative-pg
-    version: 0.21.5
+    version: 0.22.0
     repository:
       url: https://cloudnative-pg.github.io/charts
   - name: rook-ceph
     # https://artifacthub.io/packages/helm/rook/rook-ceph
-    version: 1.14.8
+    version: 1.15.0
     repository:
       url: https://charts.rook.io/release
   - name: rook-ceph-cluster
     # https://artifacthub.io/packages/helm/rook/rook-ceph-cluster
-    version: 1.14.5
+    version: 1.15.0
     repository:
       url: https://charts.rook.io/release
   - name: mariadb-operator
     # https://artifacthub.io/packages/helm/mariadb-operator/mariadb-operator
-    version: 0.29.0
+    version: 0.30.0
     repository:
       url: https://helm.mariadb.com/mariadb-operator
   - name: rabbitmq-cluster-operator
     # https://artifacthub.io/packages/helm/bitnami/rabbitmq-cluster-operator
-    version: 4.3.11
+    version: 4.3.20
     repository:
       url: https://charts.bitnami.com/bitnami
   - name: kube-prometheus-stack
     # https://artifacthub.io/packages/helm/prometheus-community/kube-prometheus-stack
-    version: 61.2.0
+    version: 62.3.1
     repository:
       url: https://prometheus-community.github.io/helm-charts
   - name: kubernetes-dashboard
@@ -72,7 +72,7 @@ charts:
       url: https://kubernetes.github.io/dashboard
   - name: headlamp
     # https://artifacthub.io/packages/helm/headlamp/headlamp
-    version: 0.23.0
+    version: 0.24.0
     repository:
       url: https://headlamp-k8s.github.io/headlamp/
 # YAOOK charts
