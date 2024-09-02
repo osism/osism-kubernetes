@@ -1,0 +1,10 @@
+---
+yaook_operators_helm_release_namespace: yaook-operators
+
+yaook_operators_keystone_helm_release_name: yaook-keystone-operator
+yaook_operators_keystone_helm_chart_ref: /charts/keystone-operator
+yaook_operators_keystone_helm_values: {}
+
+yaook_operators_keystone_resources_helm_release_name: yaook-keystone-resources-operator
+yaook_operators_keystone_resources_helm_chart_ref: /charts/keystone-resources-operator
+yaook_operators_keystone_resources_helm_values: {}
