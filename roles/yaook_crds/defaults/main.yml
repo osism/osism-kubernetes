@@ -1,0 +1,5 @@
+---
+yaook_crds_helm_chart_ref: /charts/crds
+yaook_crds_helm_release_name: yaook-crds
+yaook_crds_helm_release_namespace: yaook-crds
+yaook_crds_helm_values: {}
