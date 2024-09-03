@@ -5,6 +5,11 @@ charts:
     version: 1.15.3
     repository:
       url: https://charts.jetstack.io
+  - name: cert-manager-crds
+    # https://artifacthub.io/packages/helm/wiremind/cert-manager-crds
+    version: 1.15.0
+    repository:
+      url: https://wiremind.github.io/wiremind-helm-charts
   - name: argo-cd
     # https://artifacthub.io/packages/helm/argo/argo-cd
     version: 7.5.0
