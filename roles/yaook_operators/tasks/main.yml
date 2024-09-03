@@ -1,4 +1,14 @@
 ---
+- name: Deploy cds-operator
+  kubernetes.core.helm:
+    release_name: "{{ yaook_operators_cds_helm_release_name }}"
+    chart_ref: "{{ yaook_operators_cds_helm_chart_ref }}"
+    release_namespace: "{{ yaook_operators_helm_release_namespace }}"
+    create_namespace: true
+    kubeconfig: /share/kubeconfig
+    wait: true
+    values: "{{ _yaook_operators_cds_helm_values | combine(yaook_operators_cds_helm_values, recursive=True) }}"
+
 - name: Deploy cinder-operator
   kubernetes.core.helm:
     release_name: "{{ yaook_operators_cinder_helm_release_name }}"
@@ -28,6 +38,16 @@
     kubeconfig: /share/kubeconfig
     wait: true
     values: "{{ _yaook_operators_horizon_helm_values | combine(yaook_operators_horizon_helm_values, recursive=True) }}"
+
+- name: Deploy infra-operator
+  kubernetes.core.helm:
+    release_name: "{{ yaook_operators_infra_helm_release_name }}"
+    chart_ref: "{{ yaook_operators_infra_helm_chart_ref }}"
+    release_namespace: "{{ yaook_operators_helm_release_namespace }}"
+    create_namespace: true
+    kubeconfig: /share/kubeconfig
+    wait: true
+    values: "{{ _yaook_operators_infra_helm_values | combine(yaook_operators_infra_helm_values, recursive=True) }}"
 
 - name: Deploy keystone-operator
   kubernetes.core.helm:
