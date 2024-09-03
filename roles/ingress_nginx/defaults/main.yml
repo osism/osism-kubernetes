@@ -1,0 +1,5 @@
+---
+ingress_nginx_helm_chart_ref: /charts/ingress-nginx
+ingress_nginx_helm_release_name: ingress-nginx
+ingress_nginx_helm_release_namespace: default
+ingress_nginx_helm_values: {}
