@@ -1,0 +1,10 @@
+---
+- name: Apply ingress_nginx role
+  hosts:
+    - "{{ hosts_manager|default(groups['manager'][0])|default('localhost') }}"
+  connection: local
+
+  tasks:
+    - name: Include ingress_nginx role
+      ansible.builtin.include_role:
+        name: ingress_nginx
