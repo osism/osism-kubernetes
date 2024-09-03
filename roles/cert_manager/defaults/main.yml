@@ -1,0 +1,5 @@
+---
+cert_manager_helm_chart_ref: /charts/cert_manager
+cert_manager_helm_release_name: cert-manager
+cert_manager_helm_release_namespace: certificates
+cert_manager_helm_values: {}

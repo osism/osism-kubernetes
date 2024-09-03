@@ -1,5 +1,5 @@
 ---
-- name: Deploy helm chart
+- name: Deploy memcached
   kubernetes.core.helm:
     release_name: "{{ memcached_helm_release_name }}"
     chart_ref: "{{ memcached_helm_chart_ref }}"

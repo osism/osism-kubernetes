@@ -1,0 +1,10 @@
+---
+- name: Apply cert_manager role
+  hosts:
+    - "{{ hosts_manager|default(groups['manager'][0])|default('localhost') }}"
+  connection: local
+
+  tasks:
+    - name: Include cert_manager role
+      ansible.builtin.include_role:
+        name: cert_manager

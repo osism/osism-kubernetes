@@ -1,5 +1,5 @@
 ---
-- name: Deploy keystone-operator helm chart
+- name: Deploy keystone-operator
   kubernetes.core.helm:
     release_name: "{{ yaook_operators_keystone_helm_release_name }}"
     chart_ref: "{{ yaook_operators_keystone_helm_chart_ref }}"
@@ -9,7 +9,7 @@
     wait: true
     values: "{{ _yaook_operators_keystone_helm_values | combine(yaook_operators_keystone_helm_values, recursive=True) }}"
 
-- name: Deploy keystone-resources-operator helm chart
+- name: Deploy keystone-resources-operator
   kubernetes.core.helm:
     release_name: "{{ yaook_operators_keystone_resources_helm_release_name }}"
     chart_ref: "{{ yaook_operators_keystone_resources_helm_chart_ref }}"
