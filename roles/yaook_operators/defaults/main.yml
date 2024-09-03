@@ -1,6 +1,18 @@
 ---
 yaook_operators_helm_release_namespace: yaook-operators
 
+yaook_operators_cinder_helm_release_name: yaook-cinder-operator
+yaook_operators_cinder_helm_chart_ref: /charts/cinder-operator
+yaook_operators_cinder_helm_values: {}
+
+yaook_operators_glance_helm_release_name: yaook-glance-operator
+yaook_operators_glance_helm_chart_ref: /charts/glance-operator
+yaook_operators_glance_helm_values: {}
+
+yaook_operators_horizon_helm_release_name: yaook-horizon-operator
+yaook_operators_horizon_helm_chart_ref: /charts/horizon-operator
+yaook_operators_horizon_helm_values: {}
+
 yaook_operators_keystone_helm_release_name: yaook-keystone-operator
 yaook_operators_keystone_helm_chart_ref: /charts/keystone-operator
 yaook_operators_keystone_helm_values: {}
