@@ -1,4 +1,34 @@
 ---
+- name: Deploy cinder-operator
+  kubernetes.core.helm:
+    release_name: "{{ yaook_operators_cinder_helm_release_name }}"
+    chart_ref: "{{ yaook_operators_cinder_helm_chart_ref }}"
+    release_namespace: "{{ yaook_operators_helm_release_namespace }}"
+    create_namespace: true
+    kubeconfig: /share/kubeconfig
+    wait: true
+    values: "{{ _yaook_operators_cinder_helm_values | combine(yaook_operators_cinder_helm_values, recursive=True) }}"
+
+- name: Deploy glance-operator
+  kubernetes.core.helm:
+    release_name: "{{ yaook_operators_glance_helm_release_name }}"
+    chart_ref: "{{ yaook_operators_glance_helm_chart_ref }}"
+    release_namespace: "{{ yaook_operators_helm_release_namespace }}"
+    create_namespace: true
+    kubeconfig: /share/kubeconfig
+    wait: true
+    values: "{{ _yaook_operators_glance_helm_values | combine(yaook_operators_glance_helm_values, recursive=True) }}"
+
+- name: Deploy horizon-operator
+  kubernetes.core.helm:
+    release_name: "{{ yaook_operators_horizon_helm_release_name }}"
+    chart_ref: "{{ yaook_operators_horizon_helm_chart_ref }}"
+    release_namespace: "{{ yaook_operators_helm_release_namespace }}"
+    create_namespace: true
+    kubeconfig: /share/kubeconfig
+    wait: true
+    values: "{{ _yaook_operators_horizon_helm_values | combine(yaook_operators_horizon_helm_values, recursive=True) }}"
+
 - name: Deploy keystone-operator
   kubernetes.core.helm:
     release_name: "{{ yaook_operators_keystone_helm_release_name }}"

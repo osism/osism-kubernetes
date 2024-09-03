@@ -1,3 +1,6 @@
 ---
+_yaook_operators_cinder_helm_values: {}
+_yaook_operators_glance_helm_values: {}
+_yaook_operators_horizon_helm_values: {}
 _yaook_operators_keystone_helm_values: {}
 _yaook_operators_keystone_resources_helm_values: {}
