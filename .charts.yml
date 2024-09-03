@@ -65,6 +65,11 @@ charts:
     version: 62.3.1
     repository:
       url: https://prometheus-community.github.io/helm-charts
+  - name: prometheus-operator-crds
+    # https://artifacthub.io/packages/helm/prometheus-community/prometheus-operator-crds
+    version: 14.0.0
+    repository:
+      url: https://prometheus-community.github.io/helm-charts
   - name: kubernetes-dashboard
     # https://artifacthub.io/packages/helm/k8s-dashboard/kubernetes-dashboard
     version: 7.5.0

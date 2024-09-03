@@ -1,11 +1,11 @@
 ---
-- name: Apply role yaook_crds
+- name: Apply role crds
   hosts:
     - "{{ hosts_manager|default(groups['manager'][0])|default('localhost') }}"
   connection: local
   gather_facts: false
 
   tasks:
-    - name: Include yaook_crds role
+    - name: Include crds role
       ansible.builtin.include_role:
-        name: yaook_crds
+        name: crds
