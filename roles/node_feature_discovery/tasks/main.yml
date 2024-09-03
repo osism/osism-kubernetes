@@ -1,5 +1,5 @@
 ---
-- name: Deploy helm chart
+- name: Deploy node-feature-discovery
   kubernetes.core.helm:
     release_name: "{{ node_feature_discovery_helm_release_name }}"
     chart_ref: "{{ node_feature_discovery_helm_chart_ref }}"

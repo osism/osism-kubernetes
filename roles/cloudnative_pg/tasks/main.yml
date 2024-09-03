@@ -1,5 +1,5 @@
 ---
-- name: Deploy helm chart
+- name: Deploy cloudnative-pg
   kubernetes.core.helm:
     release_name: "{{ cloudnative_pg_release_name }}"
     chart_ref: "{{ cloudnative_pg_chart_ref }}"
