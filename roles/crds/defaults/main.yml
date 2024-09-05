@@ -1,14 +1,17 @@
 ---
+crds_cert_manager: false
 crds_cert_manager_helm_chart_ref: /charts/cert-manager-crds
 crds_cert_manager_helm_release_name: cert-manager-crds
 crds_cert_manager_helm_release_namespace: crds
 crds_cert_manager_helm_values: {}
 
+crds_prometheus_operator: true
 crds_prometheus_operator_helm_chart_ref: /charts/prometheus-operator-crds
 crds_prometheus_operator_helm_release_name: prometheus-operator-crds
 crds_prometheus_operator_helm_release_namespace: crds
 crds_prometheus_operator_helm_values: {}
 
+crds_yaook_operators: true
 crds_yaook_operators_helm_chart_ref: /charts/crds
 crds_yaook_operators_helm_release_name: yaook-operators-crds
 crds_yaook_operators_helm_release_namespace: crds

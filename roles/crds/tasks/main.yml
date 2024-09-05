@@ -8,6 +8,7 @@
     kubeconfig: /share/kubeconfig
     wait: true
     values: "{{ _crds_cert_manager_helm_values | combine(crds_cert_manager_helm_values, recursive=True) }}"
+  when: crds_cert_manager | bool
 
 - name: Deploy prometheus operator crds
   kubernetes.core.helm:
@@ -18,6 +19,7 @@
     kubeconfig: /share/kubeconfig
     wait: true
     values: "{{ _crds_prometheus_operator_helm_values | combine(crds_prometheus_operator_helm_values, recursive=True) }}"
+  when: crds_prometheus_operator | bool
 
 - name: Deploy yaook operators crds
   kubernetes.core.helm:
@@ -28,3 +30,4 @@
     kubeconfig: /share/kubeconfig
     wait: true
     values: "{{ _crds_yaook_operators_helm_values | combine(crds_yaook_operators_helm_values, recursive=True) }}"
+  when: crds_yaook_operators | bool
