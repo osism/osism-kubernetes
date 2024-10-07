@@ -127,6 +127,26 @@ rules:
   - get
   - list
 - apiGroups:
+  - batch
+  resources:
+  - jobs
+  verbs:
+  - create
+  - delete
+  - deletecollection
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - batch
+  resources:
+  - jobs/status
+  verbs:
+  - get
+  - list
+- apiGroups:
   - cert-manager.io
   resources:
   - certificates
@@ -229,9 +249,13 @@ rules:
   resources:
   - mysqlservices
   verbs:
+  - create
+  - delete
+  - deletecollection
   - get
   - list
   - patch
+  - update
   - watch
 - apiGroups:
   - infra.yaook.cloud
@@ -247,9 +271,13 @@ rules:
   resources:
   - mysqlusers
   verbs:
+  - create
+  - delete
+  - deletecollection
   - get
   - list
   - patch
+  - update
   - watch
 - apiGroups:
   - infra.yaook.cloud
@@ -257,6 +285,7 @@ rules:
   - mysqlusers/status
   verbs:
   - get
+  - list
   - patch
   - update
 - apiGroups:
@@ -272,6 +301,23 @@ rules:
   - infra.yaook.cloud
   resources:
   - ovsdbservices/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - infra.yaook.cloud
+  resources:
+  - powerdnsservices
+  verbs:
+  - get
+  - list
+  - patch
+  - watch
+- apiGroups:
+  - infra.yaook.cloud
+  resources:
+  - powerdnsservices/status
   verbs:
   - get
   - patch

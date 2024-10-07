@@ -84,9 +84,6 @@ spec:
                   type: object
                   x-kubernetes-preserve-unknown-fields: true
                 type: array
-              evictPollMigrationSpeedLocalDisk:
-                default: 30
-                type: integer
               eviction:
                 description: Compute node eviction configuration
                 properties:
@@ -411,8 +408,6 @@ spec:
                 description: The release to deploy. Changing this will trigger an
                   upgrade.
                 enum:
-                - train
-                - yoga
                 - zed
                 type: string
               vnc:

@@ -46,6 +46,10 @@ spec:
                 required:
                 - name
                 type: object
+              enabledPlugins:
+                default: rabbitmq_management,rabbitmq_prometheus
+                description: Plugins that should be enabled by AMQPServer
+                type: string
               frontendIssuerRef:
                 description: ''
                 properties:

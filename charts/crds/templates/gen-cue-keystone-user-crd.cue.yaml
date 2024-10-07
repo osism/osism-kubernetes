@@ -47,6 +47,11 @@ spec:
                 required:
                 - name
                 type: object
+              role:
+                description: Uses this role to bind the User to the service project.
+                  If not provided the admin role will be used. If the role does not
+                  exists, it will be created.
+                type: string
             required:
             - keystoneRef
             type: object

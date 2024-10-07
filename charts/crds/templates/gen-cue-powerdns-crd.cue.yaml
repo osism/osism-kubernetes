@@ -3,16 +3,16 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     helm.sh/resource-policy: keep
-  name: gnocchideployments.yaook.cloud
+  name: powerdnsservices.infra.yaook.cloud
 spec:
-  group: yaook.cloud
+  group: infra.yaook.cloud
   names:
-    kind: GnocchiDeployment
-    plural: gnocchideployments
+    kind: PowerDNSService
+    plural: powerdnsservices
     shortNames:
-    - gnocchid
-    - gnocchids
-    singular: gnocchideployment
+    - pdnss
+    - pdns
+    singular: powerdnsservice
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -34,348 +34,19 @@ spec:
         properties:
           spec:
             properties:
-              api:
+              apiKeySecret:
+                description: A single secret injection configuration. This will set
+                  the secret value as the API key inside the PowerDNS configuration.
                 properties:
-                  ingress:
-                    description: Ingress configuration
-                    properties:
-                      createIngress:
-                        description: Create the k8s ingress object. The default value
-                          is true
-                        type: boolean
-                      externalCertificateSecretRef:
-                        description: Reference to a Kubernetes TLS Secret containing
-                          the TLS certificate and keys to use for this endpoint. If
-                          unset, a certificate will be generated using the Issuer
-                          configured via issuerRef at the top level.
-                        properties:
-                          name:
-                            type: string
-                        required:
-                        - name
-                        type: object
-                      fqdn:
-                        description: The outer fully-qualified domain name of the
-                          Ingress
-                        type: string
-                      ingressClassName:
-                        default: nginx
-                        description: Class of the Ingress to use
-                        type: string
-                      port:
-                        description: Port number under which the Ingress is available.
-                          This is required to be set to generate the full URL e.g.
-                          for KeystoneEndpoints
-                        type: integer
-                    required:
-                    - fqdn
-                    - port
-                    type: object
-                  internal:
-                    description: Optional override for the internal API endpoint.
-                      Normally, the internal API endpoint uses the Kubernetes service.
-                      By configuring an Ingress here, that Ingress is used instead.
-                    properties:
-                      ingress:
-                        description: Ingress configuration
-                        properties:
-                          createIngress:
-                            description: Create the k8s ingress object. The default
-                              value is true
-                            type: boolean
-                          externalCertificateSecretRef:
-                            description: Reference to a Kubernetes TLS Secret containing
-                              the TLS certificate and keys to use for this endpoint.
-                              If unset, a certificate will be generated using the
-                              Issuer configured via issuerRef at the top level.
-                            properties:
-                              name:
-                                type: string
-                            required:
-                            - name
-                            type: object
-                          fqdn:
-                            description: The outer fully-qualified domain name of
-                              the Ingress
-                            type: string
-                          ingressClassName:
-                            default: nginx
-                            description: Class of the Ingress to use
-                            type: string
-                          port:
-                            description: Port number under which the Ingress is available.
-                              This is required to be set to generate the full URL
-                              e.g. for KeystoneEndpoints
-                            type: integer
-                        required:
-                        - fqdn
-                        - port
-                        type: object
-                    required:
-                    - ingress
-                    type: object
-                  publishEndpoint:
-                    default: true
-                    description: Publish it to Keystone endpoints as well
-                    type: boolean
-                  replicas:
-                    default: 3
-                    description: Number of replicas for the service
-                    type: integer
-                  resources:
-                    properties:
-                      gnocchi-api:
-                        description: Define resource requests/limits for the  container
-                        properties:
-                          limits:
-                            description: Define resource limits for the container
-                            properties:
-                              cpu:
-                                description: CPU time limit for the container
-                                pattern: ^[1-9][0-9]*m?$
-                                type: string
-                              memory:
-                                description: Memory limit for the container
-                                pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
-                                type: string
-                            type: object
-                          requests:
-                            description: Define resource requests for the container
-                            properties:
-                              cpu:
-                                description: CPU time request for the container
-                                pattern: ^[1-9][0-9]*m?$
-                                type: string
-                              memory:
-                                description: Memory request for the container
-                                pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
-                                type: string
-                            type: object
-                        type: object
-                      service-reload:
-                        description: Define resource requests/limits for the  container
-                        properties:
-                          limits:
-                            description: Define resource limits for the container
-                            properties:
-                              cpu:
-                                description: CPU time limit for the container
-                                pattern: ^[1-9][0-9]*m?$
-                                type: string
-                              memory:
-                                description: Memory limit for the container
-                                pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
-                                type: string
-                            type: object
-                          requests:
-                            description: Define resource requests for the container
-                            properties:
-                              cpu:
-                                description: CPU time request for the container
-                                pattern: ^[1-9][0-9]*m?$
-                                type: string
-                              memory:
-                                description: Memory request for the container
-                                pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
-                                type: string
-                            type: object
-                        type: object
-                      service-reload-external:
-                        description: Define resource requests/limits for the  container
-                        properties:
-                          limits:
-                            description: Define resource limits for the container
-                            properties:
-                              cpu:
-                                description: CPU time limit for the container
-                                pattern: ^[1-9][0-9]*m?$
-                                type: string
-                              memory:
-                                description: Memory limit for the container
-                                pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
-                                type: string
-                            type: object
-                          requests:
-                            description: Define resource requests for the container
-                            properties:
-                              cpu:
-                                description: CPU time request for the container
-                                pattern: ^[1-9][0-9]*m?$
-                                type: string
-                              memory:
-                                description: Memory request for the container
-                                pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
-                                type: string
-                            type: object
-                        type: object
-                      service-reload-internal:
-                        description: Define resource requests/limits for the  container
-                        properties:
-                          limits:
-                            description: Define resource limits for the container
-                            properties:
-                              cpu:
-                                description: CPU time limit for the container
-                                pattern: ^[1-9][0-9]*m?$
-                                type: string
-                              memory:
-                                description: Memory limit for the container
-                                pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
-                                type: string
-                            type: object
-                          requests:
-                            description: Define resource requests for the container
-                            properties:
-                              cpu:
-                                description: CPU time request for the container
-                                pattern: ^[1-9][0-9]*m?$
-                                type: string
-                              memory:
-                                description: Memory request for the container
-                                pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
-                                type: string
-                            type: object
-                        type: object
-                      ssl-terminator:
-                        description: Define resource requests/limits for the  container
-                        properties:
-                          limits:
-                            description: Define resource limits for the container
-                            properties:
-                              cpu:
-                                description: CPU time limit for the container
-                                pattern: ^[1-9][0-9]*m?$
-                                type: string
-                              memory:
-                                description: Memory limit for the container
-                                pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
-                                type: string
-                            type: object
-                          requests:
-                            description: Define resource requests for the container
-                            properties:
-                              cpu:
-                                description: CPU time request for the container
-                                pattern: ^[1-9][0-9]*m?$
-                                type: string
-                              memory:
-                                description: Memory request for the container
-                                pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
-                                type: string
-                            type: object
-                        type: object
-                      ssl-terminator-external:
-                        description: Define resource requests/limits for the  container
-                        properties:
-                          limits:
-                            description: Define resource limits for the container
-                            properties:
-                              cpu:
-                                description: CPU time limit for the container
-                                pattern: ^[1-9][0-9]*m?$
-                                type: string
-                              memory:
-                                description: Memory limit for the container
-                                pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
-                                type: string
-                            type: object
-                          requests:
-                            description: Define resource requests for the container
-                            properties:
-                              cpu:
-                                description: CPU time request for the container
-                                pattern: ^[1-9][0-9]*m?$
-                                type: string
-                              memory:
-                                description: Memory request for the container
-                                pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
-                                type: string
-                            type: object
-                        type: object
-                      ssl-terminator-internal:
-                        description: Define resource requests/limits for the  container
-                        properties:
-                          limits:
-                            description: Define resource limits for the container
-                            properties:
-                              cpu:
-                                description: CPU time limit for the container
-                                pattern: ^[1-9][0-9]*m?$
-                                type: string
-                              memory:
-                                description: Memory limit for the container
-                                pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
-                                type: string
-                            type: object
-                          requests:
-                            description: Define resource requests for the container
-                            properties:
-                              cpu:
-                                description: CPU time request for the container
-                                pattern: ^[1-9][0-9]*m?$
-                                type: string
-                              memory:
-                                description: Memory request for the container
-                                pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
-                                type: string
-                            type: object
-                        type: object
-                    type: object
-                  scheduleRuleWhenUnsatisfiable:
-                    default: ScheduleAnyway
-                    description: whenUnsatisfiable indicates how to deal with a Pod
-                      if it doesn't satisfy the spread constraint
-                    enum:
-                    - ScheduleAnyway
-                    - DoNotSchedule
+                  key:
+                    description: Key of the Kubernetes Secret to read
+                    type: string
+                  secretName:
+                    description: Name of the Kubernetes Secret to read
                     type: string
                 required:
-                - ingress
-                type: object
-              backends:
-                oneOf:
-                - required:
-                  - ceph
-                - required:
-                  - s3
-                properties:
-                  ceph:
-                    properties:
-                      cephConfig:
-                        additionalProperties:
-                          type: object
-                          x-kubernetes-preserve-unknown-fields: true
-                        description: The keys of this object are the configuration
-                          file sections, the values are objects whose keys correspond
-                          to config keys within that section.
-                        type: object
-                      keyringReference:
-                        type: string
-                      keyringUsername:
-                        type: string
-                    required:
-                    - keyringReference
-                    - keyringUsername
-                    type: object
-                  s3:
-                    properties:
-                      bucketPrefix:
-                        type: string
-                      credentialRef:
-                        description: ''
-                        properties:
-                          name:
-                            type: string
-                        required:
-                        - name
-                        type: object
-                      endpoint:
-                        type: string
-                    required:
-                    - endpoint
-                    - credentialRef
-                    - bucketPrefix
-                    type: object
+                - secretName
+                - key
                 type: object
               caCertificates:
                 description: CA Certificates that should be added to all services
@@ -725,10 +396,10 @@ spec:
                     pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
                     type: string
                   timeoutClient:
-                    default: 3600
-                    description: There seems to be no corresponding option in the
-                      gnocchi configuration, so we raise the timeout here in order
-                      to avoid too much overhead from killed connections.
+                    default: 300
+                    description: Defines the maximum time a client can be inactive
+                      when connected to the server. Hint should be ~10% more than
+                      connection_recycle_time.
                     type: integer
                   tolerateNodeDown:
                     default: false
@@ -739,26 +410,6 @@ spec:
                 - proxy
                 - backup
                 type: object
-              gnocchiConfig:
-                additionalProperties:
-                  type: object
-                  x-kubernetes-preserve-unknown-fields: true
-                description: The keys of this object are the configuration file sections,
-                  the values are objects whose keys correspond to config keys within
-                  that section.
-                type: object
-              imagePullSecrets:
-                description: References to image pull secrets which should be included
-                  in all Pods spawned directly or indirectly by this resource.
-                items:
-                  description: ''
-                  properties:
-                    name:
-                      type: string
-                  required:
-                  - name
-                  type: object
-                type: array
               issuerRef:
                 description: Reference an issuer for the certificates used internally
                   by YAOOK (and, by default, also for external services unless overridden).
@@ -768,9 +419,76 @@ spec:
                     description: Name of the cert-manager Issuer object
                     type: string
                 type: object
-              jobResources:
+              loadBalancerIP:
+                description: IP address of the load balancer for the PowerDNS webserver
+                type: string
+              powerdnsConfig:
+                description: Key value pairs to overwrite pdns.conf settings
+                type: object
+                x-kubernetes-preserve-unknown-fields: true
+              replicas:
+                default: 3
+                description: Number of replicas for the service
+                type: integer
+              resources:
                 properties:
-                  gnocchi-upgrade-job:
+                  powerdns:
+                    description: Define resource requests/limits for the  container
+                    properties:
+                      limits:
+                        description: Define resource limits for the container
+                        properties:
+                          cpu:
+                            description: CPU time limit for the container
+                            pattern: ^[1-9][0-9]*m?$
+                            type: string
+                          memory:
+                            description: Memory limit for the container
+                            pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
+                            type: string
+                        type: object
+                      requests:
+                        description: Define resource requests for the container
+                        properties:
+                          cpu:
+                            description: CPU time request for the container
+                            pattern: ^[1-9][0-9]*m?$
+                            type: string
+                          memory:
+                            description: Memory request for the container
+                            pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
+                            type: string
+                        type: object
+                    type: object
+                  service-reload:
+                    description: Define resource requests/limits for the  container
+                    properties:
+                      limits:
+                        description: Define resource limits for the container
+                        properties:
+                          cpu:
+                            description: CPU time limit for the container
+                            pattern: ^[1-9][0-9]*m?$
+                            type: string
+                          memory:
+                            description: Memory limit for the container
+                            pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
+                            type: string
+                        type: object
+                      requests:
+                        description: Define resource requests for the container
+                        properties:
+                          cpu:
+                            description: CPU time request for the container
+                            pattern: ^[1-9][0-9]*m?$
+                            type: string
+                          memory:
+                            description: Memory request for the container
+                            pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
+                            type: string
+                        type: object
+                    type: object
+                  ssl-terminator:
                     description: Define resource requests/limits for the  container
                     properties:
                       limits:
@@ -799,138 +517,14 @@ spec:
                         type: object
                     type: object
                 type: object
-              keystoneRef:
-                description: Keystone deployment to link this service to
-                properties:
-                  kind:
-                    default: KeystoneDeployment
-                    description: Specify the kind of Keystone deployment to reference
-                    enum:
-                    - KeystoneDeployment
-                    - ExternalKeystoneDeployment
-                    type: string
-                  name:
-                    type: string
-                required:
-                - name
-                type: object
-              memcached:
-                description: Memcached deployment configuration
-                properties:
-                  connections:
-                    default: 1024
-                    description: Maximum number of parallel connections
-                    type: integer
-                  memory:
-                    default: 512
-                    description: Maximum memory used for the cache
-                    type: integer
-                  replicas:
-                    default: 3
-                    description: Number of replicas for the service
-                    type: integer
-                  resources:
-                    properties:
-                      memcached:
-                        description: Define resource requests/limits for the memcached
-                          container
-                        properties:
-                          limits:
-                            description: Define resource limits for the container
-                            properties:
-                              cpu:
-                                description: CPU time limit for the container
-                                pattern: ^[1-9][0-9]*m?$
-                                type: string
-                              memory:
-                                description: Memory limit for the container
-                                pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
-                                type: string
-                            type: object
-                          requests:
-                            description: Define resource requests for the container
-                            properties:
-                              cpu:
-                                description: CPU time request for the container
-                                pattern: ^[1-9][0-9]*m?$
-                                type: string
-                              memory:
-                                description: Memory request for the container
-                                pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
-                                type: string
-                            type: object
-                        type: object
-                    type: object
-                  scheduleRuleWhenUnsatisfiable:
-                    default: ScheduleAnyway
-                    description: whenUnsatisfiable indicates how to deal with a Pod
-                      if it doesn't satisfy the spread constraint
-                    enum:
-                    - ScheduleAnyway
-                    - DoNotSchedule
-                    type: string
-                type: object
-              metricd:
-                properties:
-                  replicas:
-                    default: 3
-                    description: Number of replicas for the service
-                    type: integer
-                  resources:
-                    properties:
-                      gnocchi-metricd:
-                        description: Define resource requests/limits for the  container
-                        properties:
-                          limits:
-                            description: Define resource limits for the container
-                            properties:
-                              cpu:
-                                description: CPU time limit for the container
-                                pattern: ^[1-9][0-9]*m?$
-                                type: string
-                              memory:
-                                description: Memory limit for the container
-                                pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
-                                type: string
-                            type: object
-                          requests:
-                            description: Define resource requests for the container
-                            properties:
-                              cpu:
-                                description: CPU time request for the container
-                                pattern: ^[1-9][0-9]*m?$
-                                type: string
-                              memory:
-                                description: Memory request for the container
-                                pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
-                                type: string
-                            type: object
-                        type: object
-                    type: object
-                  scheduleRuleWhenUnsatisfiable:
-                    default: ScheduleAnyway
-                    description: whenUnsatisfiable indicates how to deal with a Pod
-                      if it doesn't satisfy the spread constraint
-                    enum:
-                    - ScheduleAnyway
-                    - DoNotSchedule
-                    type: string
-                type: object
-              policy:
-                description: OpenStack policy to merge with the default policy
-                type: object
-                x-kubernetes-preserve-unknown-fields: true
-              region:
-                description: Configure the Region to use for this OpenStack service.
-                properties:
-                  name:
-                    default: RegionOne
-                    description: Name of the OpenStack region to connect with and
-                      to set up the own endpoints in.
-                    type: string
-                  parent:
-                    type: string
-                type: object
+              scheduleRuleWhenUnsatisfiable:
+                default: ScheduleAnyway
+                description: whenUnsatisfiable indicates how to deal with a Pod if
+                  it doesn't satisfy the spread constraint
+                enum:
+                - ScheduleAnyway
+                - DoNotSchedule
+                type: string
               serviceMonitor:
                 description: Configure the ServiceMonitor objects created by the operator.
                 properties:
@@ -940,27 +534,21 @@ spec:
                     description: Additional labels to set on the ServiceMonitor metadata.
                     type: object
                 type: object
+              subnetCidr:
+                description: IP range of the k8s pod network. Used to only allow requests
+                  from within the k8s network.
+                type: string
               targetRelease:
                 description: The release to deploy. Changing this will trigger an
                   upgrade.
                 enum:
-                - train
-                - yoga
-                - zed
-                - '2023.1'
-                - '2023.2'
-                - '2024.1'
+                - '4.9'
                 type: string
             required:
-            - keystoneRef
-            - api
-            - metricd
-            - gnocchiConfig
-            - backends
             - database
-            - memcached
-            - region
             - targetRelease
+            - subnetCidr
+            - apiKeySecret
             - issuerRef
             type: object
           status:
@@ -1015,6 +603,8 @@ spec:
                 - BackingOff
                 - InvalidConfiguration
                 type: string
+              replicas:
+                type: integer
               updatedGeneration:
                 type: integer
             required:
