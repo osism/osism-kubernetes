@@ -324,7 +324,6 @@ spec:
                 description: The release to deploy. Changing this will trigger an
                   upgrade.
                 enum:
-                - yoga
                 - zed
                 - '2023.1'
                 type: string

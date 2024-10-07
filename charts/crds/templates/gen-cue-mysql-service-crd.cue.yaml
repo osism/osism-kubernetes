@@ -34,6 +34,10 @@ spec:
         properties:
           spec:
             properties:
+              additionalFrontendCertDnsNames:
+                items:
+                  type: string
+                type: array
               backendCAIssuerRef:
                 description: ''
                 properties:

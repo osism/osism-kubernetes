@@ -946,6 +946,12 @@ spec:
                     description: Number of replicas for the service
                     type: integer
                   resources:
+                    description: It is recommended to set these resource limits to
+                      bypass problems with cgroup limits for RabbitMQ. The infra operator
+                      will use these values to configure RabbitMQ resource limits
+                      separately by setting the fields total_memory_available_override_value
+                      and default_worker_pool_size inside /etc/rabbitmq/rabbitmq.conf
+                      .
                     properties:
                       rabbitmq:
                         description: Define resource requests/limits for the RabbitMQ
@@ -1031,8 +1037,6 @@ spec:
                 description: The release to deploy. Changing this will trigger an
                   upgrade.
                 enum:
-                - train
-                - yoga
                 - zed
                 type: string
             required:
