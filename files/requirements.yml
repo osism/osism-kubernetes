@@ -5,7 +5,7 @@ collections:
     version: '5.1.2'
   - name: ansible.posix
     source: https://galaxy.ansible.com
-    version: '1.6.1'
+    version: '1.6.2'
   - name: community.general
     source: https://galaxy.ansible.com
     version: '9.5.0'
