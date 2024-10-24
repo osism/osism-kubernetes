@@ -1,5 +1,15 @@
 ---
 charts:
+  - name: teleport-cluster
+    # https://artifacthub.io/packages/helm/teleport-agent-kube/teleport-cluster
+    version: 16.4.6
+    repository:
+      url: https://charts.releases.teleport.dev
+  - name: teleport-kube-agent
+    # https://artifacthub.io/packages/helm/teleport-agent-kube/teleport-kube-agent
+    version: 16.4.6
+    repository:
+      url: https://charts.releases.teleport.dev
   - name: ingress-nginx
     # https://artifacthub.io/packages/helm/ingress-nginx/ingress-nginx
     version: 4.11.2
