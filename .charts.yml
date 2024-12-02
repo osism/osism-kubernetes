@@ -75,6 +75,11 @@ charts:
     version: 0.36.0
     repository:
       url: https://helm.mariadb.com/mariadb-operator
+  - name: mariadb-operator-crds
+    # https://artifacthub.io/packages/helm/mariadb-operator/mariadb-operator-crds
+    version: 0.36.0
+    repository:
+      url: https://helm.mariadb.com/mariadb-operator
   - name: rabbitmq-cluster-operator
     # https://artifacthub.io/packages/helm/bitnami/rabbitmq-cluster-operator
     version: 4.3.20
