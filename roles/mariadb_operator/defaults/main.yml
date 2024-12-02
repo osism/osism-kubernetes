@@ -1,19 +1,10 @@
 ---
-##########################
-# operator
-
-operator_user: dragon  # noqa var-naming[no-role-prefix]
-operator_group: "{{ operator_user }}"  # noqa var-naming[no-role-prefix]
-
-##########################
-# mariadb_operator
-
 container_registry_mariadb_operator: ghcr.io  # noqa var-naming[no-role-prefix]
 mariadb_operator_image: "{{ container_registry_mariadb_operator }}/mariadb-operator/mariadb-operator"
 # renovate: datasource=docker depName=ghcr.io/mariadb-operator/mariadb-operator
 mariadb_operator_image_tag: "v0.0.28"
 
-mariadb_operator_namespace: mariadb-operator
-
-mariadb_operator_work_directory: /tmp/mariadb_operator/configuration
-mariadb_operator_template_directory: .
+mariadb_operator_helm_chart_ref: /charts/mariadb-operator
+mariadb_operator_helm_release_name: mariadb-operator
+mariadb_operator_helm_release_namespace: mariadb-operator
+mariadb_operator_helm_values: {}
