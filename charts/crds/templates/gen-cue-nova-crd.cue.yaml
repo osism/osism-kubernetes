@@ -781,6 +781,14 @@ spec:
                         required:
                         - schedule
                         type: object
+                      clientDriver:
+                        default: pymysql
+                        description: SQLAlchemy driver used by the client to connect
+                          to the database.
+                        enum:
+                        - pymysql
+                        - mysqldb
+                        type: string
                       mysqlConfig:
                         description: Additional MySQL configuration. This is more
                           detailed than typical configuration snippets because of
@@ -1143,6 +1151,14 @@ spec:
                         required:
                         - schedule
                         type: object
+                      clientDriver:
+                        default: pymysql
+                        description: SQLAlchemy driver used by the client to connect
+                          to the database.
+                        enum:
+                        - pymysql
+                        - mysqldb
+                        type: string
                       mysqlConfig:
                         description: Additional MySQL configuration. This is more
                           detailed than typical configuration snippets because of
@@ -1505,6 +1521,14 @@ spec:
                         required:
                         - schedule
                         type: object
+                      clientDriver:
+                        default: pymysql
+                        description: SQLAlchemy driver used by the client to connect
+                          to the database.
+                        enum:
+                        - pymysql
+                        - mysqldb
+                        type: string
                       mysqlConfig:
                         description: Additional MySQL configuration. This is more
                           detailed than typical configuration snippets because of
@@ -1867,6 +1891,14 @@ spec:
                         required:
                         - schedule
                         type: object
+                      clientDriver:
+                        default: pymysql
+                        description: SQLAlchemy driver used by the client to connect
+                          to the database.
+                        enum:
+                        - pymysql
+                        - mysqldb
+                        type: string
                       mysqlConfig:
                         description: Additional MySQL configuration. This is more
                           detailed than typical configuration snippets because of
