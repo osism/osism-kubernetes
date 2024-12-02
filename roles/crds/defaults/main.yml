@@ -1,5 +1,5 @@
 ---
-crds_cert_manager: false
+crds_cert_manager: true
 crds_cert_manager_helm_chart_ref: /charts/cert-manager-crds
 crds_cert_manager_helm_release_name: cert-manager-crds
 crds_cert_manager_helm_release_namespace: crds
