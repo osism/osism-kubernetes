@@ -4,6 +4,9 @@ _mariadb_operator_helm_values:
   nameOverride: ""
   fullnameOverride: ""
 
+  crds:
+    enabled: false
+
   image:
     repository: "{{ mariadb_operator_image }}"
     pullPolicy: IfNotPresent

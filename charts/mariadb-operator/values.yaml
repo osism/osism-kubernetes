@@ -1,11 +1,21 @@
 nameOverride: ""
 fullnameOverride: ""
 
+# --- CRDs
+crds:
+  # -- Whether the helm chart should create and update the CRDs. It is false by default, which implies that the CRDs must be
+  # managed independently with the mariadb-operator-crds helm chart.
+  # **WARNING** This should only be set to true during the initial deployment. If this chart manages the CRDs
+  # and is later uninstalled, all MariaDB instances will be DELETED.
+  enabled: false
+
 image:
   repository: docker-registry3.mariadb.com/mariadb-operator/mariadb-operator
   pullPolicy: IfNotPresent
   # -- Image tag to use. By default the chart appVersion is used
   tag: ""
+  # Setting a digest will override any tag
+  # digest: sha256:084a927ee9f3918a5c85d283f73822ae205757df352218de0b935853a0765060
 imagePullSecrets: []
 
 # -- Controller log level
@@ -14,8 +24,12 @@ logLevel: INFO
 # -- Cluster DNS name
 clusterName: cluster.local
 
+# -- Whether the operator should watch CRDs only in its own namespace or not.
+currentNamespaceOnly: false
+
 ha:
-  # -- Enable high availability
+  # -- Enable high availability of the controller.
+  # If you enable it we recommend to set `affinity` and `pdb`
   enabled: false
   # -- Number of replicas
   replicas: 3
@@ -94,13 +108,38 @@ tolerations: []
 
 # -- Affinity to add to controller Pod
 affinity: {}
+  #  Sample on how to create an antiAffinity rule that place
+  #  the pods on different nodes, to be used together with `ha.enabled: true`
+  # podAntiAffinity:
+  #   requiredDuringSchedulingIgnoredDuringExecution:
+  #   - labelSelector:
+  #       matchExpressions:
+  #       - key: app.kubernetes.io/name
+  #         operator: In
+  #         values:
+  #         - mariadb-operator
+  #       - key: app.kubernetes.io/instance
+  #         operator: In
+  #         values:
+  #         - mariadb-operator
+  #     topologyKey: kubernetes.io/hostname
+
+pdb:
+  # -- Enable PodDisruptionBudget for the controller.
+  enabled: false
+  # -- Maximum number of unavailable Pods. You may also give a percentage, like `50%`
+  maxUnavailable: 1
 
 webhook:
+  # -- Specifies whether the webhook should be created.
+  enabled: true
   image:
     repository: docker-registry3.mariadb.com/mariadb-operator/mariadb-operator
     pullPolicy: IfNotPresent
     # -- Image tag to use. By default the chart appVersion is used
     tag: ""
+    # Setting a digest will override any tag
+    # digest: sha256:084a927ee9f3918a5c85d283f73822ae205757df352218de0b935853a0765060
   imagePullSecrets: []
   ha:
     # -- Enable high availability
@@ -190,6 +229,8 @@ certController:
     pullPolicy: IfNotPresent
     # -- Image tag to use. By default the chart appVersion is used
     tag: ""
+    # Setting a digest will override any tag
+    # digest: sha256:084a927ee9f3918a5c85d283f73822ae205757df352218de0b935853a0765060
   imagePullSecrets: []
   ha:
     # -- Enable high availability
