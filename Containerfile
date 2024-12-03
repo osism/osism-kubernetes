@@ -29,11 +29,11 @@ RUN <<EOF
 set -e
 set -x
 
-CAPI_VERSION=1.7.5
-CILIUM_CLI_VERSION=v0.16.16
-KUBECTL_VERSION=1.30.4
-OPERATOR_SDK_VERSION=v1.36.1
-YAKE_VERSION=v1.103.0-1
+CAPI_VERSION=1.8.5
+CILIUM_CLI_VERSION=v0.16.20
+KUBECTL_VERSION=1.30.7
+OPERATOR_SDK_VERSION=v1.38.0
+YAKE_VERSION=v1.108.0-0
 
 # shellcheck disable=SC2046
 ARCH=$(case $(uname -m) in x86_64) echo -n amd64 ;; aarch64) echo -n arm64 ;; *) echo -n $(uname -m) ;; esac)
@@ -63,7 +63,7 @@ apt-get install --no-install-recommends -y \
 update-alternatives --install /usr/bin/python3 python3 /usr/local/bin/python3 1
 update-alternatives --install /usr/bin/python python /usr/local/bin/python 1
 
-python3 -m pip install --no-cache-dir --upgrade 'pip==24.0'
+python3 -m pip install --no-cache-dir --upgrade 'pip==24.3.1'
 pip install --no-cache-dir -r /src/requirements.txt
 
 # add user
@@ -213,7 +213,7 @@ EOF
 
 USER dragon
 
-ARG PYTHON_VERSION=3.12
+ARG PYTHON_VERSION=3.13
 FROM python:${PYTHON_VERSION}-slim-bookworm
 
 COPY --link --from=builder / /
