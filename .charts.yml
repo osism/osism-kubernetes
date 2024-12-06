@@ -107,34 +107,34 @@ charts:
       url: https://headlamp-k8s.github.io/headlamp/
 # YAOOK charts
   - name: cds-operator
-    version: 0.20241021.0
+    version: 0.20241205.2
     repository:
       url: https://charts.yaook.cloud/operator/stable
   - name: crds
-    version: 0.20241021.0
+    version: 0.20241205.2
     repository:
       url: https://charts.yaook.cloud/operator/stable
   - name: infra-operator
-    version: 0.20241021.0
+    version: 0.20241205.2
     repository:
       url: https://charts.yaook.cloud/operator/stable
   - name: keystone-operator
-    version: 0.20241021.0
+    version: 0.20241205.2
     repository:
       url: https://charts.yaook.cloud/operator/stable
   - name: keystone-resources-operator
-    version: 0.20241021.0
+    version: 0.20241205.2
     repository:
       url: https://charts.yaook.cloud/operator/stable
   - name: cinder-operator
-    version: 0.20241021.0
+    version: 0.20241205.2
     repository:
       url: https://charts.yaook.cloud/operator/stable
   - name: glance-operator
-    version: 0.20241021.0
+    version: 0.20241205.2
     repository:
       url: https://charts.yaook.cloud/operator/stable
   - name: horizon-operator
-    version: 0.20241021.0
+    version: 0.20241205.2
     repository:
       url: https://charts.yaook.cloud/operator/stable

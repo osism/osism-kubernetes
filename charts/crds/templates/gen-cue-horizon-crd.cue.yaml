@@ -224,6 +224,7 @@ spec:
                   upgrade.
                 enum:
                 - train
+                - zed
                 type: string
             required:
             - keystoneRef
