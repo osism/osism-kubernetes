@@ -2262,6 +2262,26 @@ spec:
                           stops creating eviction jobs.
                         type: integer
                     type: object
+                  netboxCreds:
+                    description: 'Secret reference to Credentials for netbox, containing
+                      keys: URL, TOKEN'
+                    properties:
+                      credentialsSecretRef:
+                        description: ''
+                        properties:
+                          name:
+                            type: string
+                        required:
+                        - name
+                        type: object
+                    required:
+                    - credentialsSecretRef
+                    type: object
+                  netboxSetFailed:
+                    default: false
+                    description: option to set a node to failed in netbox if it is
+                      to be evicted
+                    type: boolean
                   volumeLockDurationSeconds:
                     default: 0
                     description: wait for releasing the volume lock during the eviction

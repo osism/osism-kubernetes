@@ -2,6 +2,6 @@ apiVersion: v2
 description: CustomResourceDefinitions used by Yaook.
 type: application
 name: crds
-version:  "0.20241021.0"
-appVersion: "0.20241021.0"
+version:  "0.20241205.2"
+appVersion: "0.20241205.2"
 kubeVersion: ">=1.16.0-0"

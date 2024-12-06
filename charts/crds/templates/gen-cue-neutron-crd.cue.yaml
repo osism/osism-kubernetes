@@ -1891,6 +1891,10 @@ spec:
                             - ScheduleAnyway
                             - DoNotSchedule
                             type: string
+                          threads:
+                            description: the amount of threads northd should use
+                            minimum: 1
+                            type: integer
                         type: object
                       southboundOVSDB:
                         description: Southbound OpenvSwitch Database deployment configuration

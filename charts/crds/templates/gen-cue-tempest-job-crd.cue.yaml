@@ -139,6 +139,8 @@ spec:
                     - nova
                     - neutron
                     - barbican
+                    - telemetry
+                    - designate
                     - all
                     type: string
                 type: object
