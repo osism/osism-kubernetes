@@ -33,7 +33,6 @@ CAPI_VERSION=1.8.5
 CILIUM_CLI_VERSION=v0.16.20
 KUBECTL_VERSION=1.30.7
 OPERATOR_SDK_VERSION=v1.38.0
-YAKE_VERSION=v1.108.0-0
 
 # shellcheck disable=SC2046
 ARCH=$(case $(uname -m) in x86_64) echo -n amd64 ;; aarch64) echo -n arm64 ;; *) echo -n $(uname -m) ;; esac)
@@ -155,9 +154,6 @@ chmod +x /usr/local/bin/clusterctl
 # install kubectl
 curl -Lo /usr/local/bin/kubectl https://dl.k8s.io/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl
 chmod +x /usr/local/bin/kubectl
-
-# install yake
-git clone --depth 1 --branch $YAKE_VERSION https://github.com/YAKEcloud/yake /yake
 
 # prepare .kube directory
 mkdir -p /ansible/.kube
