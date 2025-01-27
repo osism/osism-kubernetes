@@ -399,14 +399,6 @@ spec:
                     required:
                     - schedule
                     type: object
-                  clientDriver:
-                    default: pymysql
-                    description: SQLAlchemy driver used by the client to connect to
-                      the database.
-                    enum:
-                    - pymysql
-                    - mysqldb
-                    type: string
                   mysqlConfig:
                     description: Additional MySQL configuration. This is more detailed
                       than typical configuration snippets because of the special `optimizer_switch`
@@ -1305,6 +1297,64 @@ spec:
                             description: Container resource requests/limits for OVN-controller
                               related containers
                             properties:
+                              neutron-ovn-metadata-agent:
+                                description: Define resource requests/limits for the  container
+                                properties:
+                                  limits:
+                                    description: Define resource limits for the container
+                                    properties:
+                                      cpu:
+                                        description: CPU time limit for the container
+                                        pattern: ^[1-9][0-9]*m?$
+                                        type: string
+                                      memory:
+                                        description: Memory limit for the container
+                                        pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
+                                        type: string
+                                    type: object
+                                  requests:
+                                    description: Define resource requests for the
+                                      container
+                                    properties:
+                                      cpu:
+                                        description: CPU time request for the container
+                                        pattern: ^[1-9][0-9]*m?$
+                                        type: string
+                                      memory:
+                                        description: Memory request for the container
+                                        pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
+                                        type: string
+                                    type: object
+                                type: object
+                              ovn-controller:
+                                description: Define resource requests/limits for the  container
+                                properties:
+                                  limits:
+                                    description: Define resource limits for the container
+                                    properties:
+                                      cpu:
+                                        description: CPU time limit for the container
+                                        pattern: ^[1-9][0-9]*m?$
+                                        type: string
+                                      memory:
+                                        description: Memory limit for the container
+                                        pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
+                                        type: string
+                                    type: object
+                                  requests:
+                                    description: Define resource requests for the
+                                      container
+                                    properties:
+                                      cpu:
+                                        description: CPU time request for the container
+                                        pattern: ^[1-9][0-9]*m?$
+                                        type: string
+                                      memory:
+                                        description: Memory request for the container
+                                        pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
+                                        type: string
+                                    type: object
+                                type: object
                               ovs-vswitchd:
                                 description: Define resource requests/limits for the  container
                                 properties:
@@ -1364,64 +1414,6 @@ spec:
                                     type: object
                                 type: object
                               ovsdb-server:
-                                description: Define resource requests/limits for the  container
-                                properties:
-                                  limits:
-                                    description: Define resource limits for the container
-                                    properties:
-                                      cpu:
-                                        description: CPU time limit for the container
-                                        pattern: ^[1-9][0-9]*m?$
-                                        type: string
-                                      memory:
-                                        description: Memory limit for the container
-                                        pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
-                                        type: string
-                                    type: object
-                                  requests:
-                                    description: Define resource requests for the
-                                      container
-                                    properties:
-                                      cpu:
-                                        description: CPU time request for the container
-                                        pattern: ^[1-9][0-9]*m?$
-                                        type: string
-                                      memory:
-                                        description: Memory request for the container
-                                        pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
-                                        type: string
-                                    type: object
-                                type: object
-                              service-reload:
-                                description: Define resource requests/limits for the  container
-                                properties:
-                                  limits:
-                                    description: Define resource limits for the container
-                                    properties:
-                                      cpu:
-                                        description: CPU time limit for the container
-                                        pattern: ^[1-9][0-9]*m?$
-                                        type: string
-                                      memory:
-                                        description: Memory limit for the container
-                                        pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
-                                        type: string
-                                    type: object
-                                  requests:
-                                    description: Define resource requests for the
-                                      container
-                                    properties:
-                                      cpu:
-                                        description: CPU time request for the container
-                                        pattern: ^[1-9][0-9]*m?$
-                                        type: string
-                                      memory:
-                                        description: Memory request for the container
-                                        pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
-                                        type: string
-                                    type: object
-                                type: object
-                              ssl-terminator:
                                 description: Define resource requests/limits for the  container
                                 properties:
                                   limits:

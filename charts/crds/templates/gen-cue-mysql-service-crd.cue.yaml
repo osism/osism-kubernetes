@@ -431,6 +431,7 @@ spec:
                 - '10.6'
                 - '10.11'
                 - '11.0'
+                - '11.4'
                 type: string
               tolerateNodeDown:
                 default: false
