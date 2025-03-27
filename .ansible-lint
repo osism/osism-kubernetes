@@ -2,8 +2,16 @@
 exclude_paths:
   - .github
   - charts
+  - playbooks/kubernetes-k3s.yml
 mock_roles:
   - ensure-docker
+  - k3s_agent
+  - k3s_custom_registries
+  - k3s_download
+  - k3s_prereq
+  - k3s_reset
+  - k3s_server
+  - k3s_server_post
 skip_list:
   - galaxy[no-changelog]
   - var-naming
