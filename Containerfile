@@ -19,6 +19,7 @@ COPY --link files/ara.env /ansible/ara.env
 COPY --link files/requirements.yml /ansible/requirements.yml
 COPY --link files/scripts/* /
 COPY --link files/src /src
+COPY --link patches /patches
 
 ADD https://github.com/mitogen-hq/mitogen/archive/refs/tags/v0.3.22.tar.gz /mitogen.tar.gz
 COPY --from=ghcr.io/astral-sh/uv:0.6.10 /uv /usr/local/bin/uv
@@ -101,6 +102,7 @@ sed -i -e "s/ANSIBLE_VERSION/$ansible_version/" /etc/motd
 # create required directories
 mkdir -p \
   /ansible \
+  /ansible/roles \
   /ansible/action_plugins \
   /ansible/cache \
   /ansible/logs \
@@ -110,6 +112,25 @@ mkdir -p \
 
 # install required ansible collections & roles
 ansible-galaxy collection install -v -f -r /ansible/requirements.yml -p /usr/share/ansible/collections
+
+# add k3s-ansible roles
+git clone https://github.com/osism/k3s-ansible /k3s-ansible
+mv /k3s-ansible/roles/{k3s_server,k3s_agent,k3s_server_post,k3s_custom_registries} /ansible/roles
+mv /k3s-ansible/roles/download /ansible/roles/k3s_download
+mv /k3s-ansible/roles/prereq /ansible/roles/k3s_prereq
+mv /k3s-ansible/roles/reset /ansible/roles/k3s_reset
+rm -rf /k3s-ansible
+
+# apply patches
+for role in /ansible/roles/*; do
+  if [ -e /patches/"$(basename "$role")" ]; then
+    for patchfile in /patches/"$(basename "$role")"/*.patch; do
+      echo "$patchfile";
+      ( cd /ansible/roles/"$(basename "$role")" && patch --forward --batch -p1 --dry-run ) < "$patchfile" || exit 1;
+      ( cd /ansible/roles/"$(basename "$role")" && patch --forward --batch -p1 ) < "$patchfile";
+    done;
+  fi;
+done
 
 # install mitogen ansible plugin
 mkdir -p /usr/share/mitogen
@@ -207,7 +228,8 @@ rm -rf \
   /usr/share/doc/* \
   /usr/share/man/* \
   /var/lib/apt/lists/* \
-  /var/tmp/*
+  /var/tmp/* \
+  /patches
 
 uv pip install --no-cache --system pyclean==3.0.0
 pyclean /usr
