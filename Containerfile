@@ -31,6 +31,7 @@ set -x
 
 CAPI_VERSION=1.8.5
 CILIUM_CLI_VERSION=v0.16.20
+FLUX_VERSION=v2.4.0
 KUBECTL_VERSION=1.30.7
 OPERATOR_SDK_VERSION=v1.38.0
 
@@ -126,11 +127,17 @@ apt-get install --no-install-recommends -y \
 # install helm plugins
 helm plugin install https://github.com/databus23/helm-diff
 
-# install cilium CLI
+# install cilium cli
 curl -L --fail --remote-name-all "https://github.com/cilium/cilium-cli/releases/download/${CILIUM_CLI_VERSION}/cilium-linux-${ARCH}.tar.gz{,.sha256sum}"
 sha256sum --check "cilium-linux-${ARCH}.tar.gz.sha256sum"
 tar xzvfC "cilium-linux-${ARCH}.tar.gz" /usr/local/bin
 rm cilium-linux-"${ARCH}".tar.gz{,.sha256sum}
+
+# install flux cli
+CLEAN_FLUX_VERSION=$(echo "$FLUX_VERSION" | sed 's/^v//')
+curl -o flux.tar.gz -L "https://github.com/fluxcd/flux2/releases/download/${FLUX_VERSION}/flux_${CLEAN_FLUX_VERSION}_linux_amd64.tar.gz"
+tar -xzf flux.tar.gz -C /usr/local/bin flux
+rm flux.tar.gz
 
 # install operator-sdk
 OS=$(uname | awk '{print tolower($0)}')
