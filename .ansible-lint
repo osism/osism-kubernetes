@@ -3,6 +3,7 @@ exclude_paths:
   - .github
   - charts
   - playbooks/kubernetes-k3s.yml
+  - playbooks/kubernetes-kubernetes.yml
 mock_roles:
   - ensure-docker
   - k3s_agent
