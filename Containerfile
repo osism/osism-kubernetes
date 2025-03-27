@@ -21,6 +21,7 @@ COPY --link files/scripts/* /
 COPY --link files/src /src
 
 ADD https://github.com/mitogen-hq/mitogen/archive/refs/tags/v0.3.22.tar.gz /mitogen.tar.gz
+COPY --from=ghcr.io/astral-sh/uv:0.6.10 /uv /usr/local/bin/uv
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
@@ -63,8 +64,7 @@ apt-get install --no-install-recommends -y \
 update-alternatives --install /usr/bin/python3 python3 /usr/local/bin/python3 1
 update-alternatives --install /usr/bin/python python /usr/local/bin/python 1
 
-python3 -m pip install --no-cache-dir --upgrade 'pip==24.3.1'
-pip install --no-cache-dir -r /src/requirements.txt
+uv pip install --no-cache --system -r /src/requirements.txt
 
 # add user
 groupadd -g "$GROUP_ID" dragon
@@ -92,7 +92,7 @@ python3 /src/render-python-requirements.py
 python3 /src/render-versions.py
 
 # install required python packages
-pip install --no-cache-dir -r /requirements.txt
+uv pip install --no-cache --system -r /requirements.txt
 
 # set ansible version in the motd
 ansible_version=$(python3 -c 'import ansible; print(ansible.release.__version__)')
@@ -209,9 +209,9 @@ rm -rf \
   /var/lib/apt/lists/* \
   /var/tmp/*
 
-pip install --no-cache-dir pyclean==3.0.0
+uv pip install --no-cache --system pyclean==3.0.0
 pyclean /usr
-pip uninstall -y pyclean
+uv pip uninstall --system pyclean
 EOF
 
 USER dragon
