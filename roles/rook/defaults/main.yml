@@ -583,5 +583,5 @@ rook_ceph_cluster_clients:
 
 rook_ceph_cluster_helm_release_name: "{{ rook_cluster_name }}"
 rook_ceph_cluster_helm_release_namespace: rook-ceph
-rook_ceph_cluster_helm_chart_ref: rook-release/rook-ceph-cluster
+rook_ceph_cluster_helm_chart_ref: /charts/rook-ceph-cluster
 rook_ceph_cluster_helm_values: []
