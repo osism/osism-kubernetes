@@ -1,0 +1,6 @@
+---
+- name: Run k3s play
+  ansible.builtin.import_playbook: /ansible/kubernetes-k3s.yml
+
+- name: Run kubernetes-label-nodes play
+  ansible.builtin.import_playbook: /ansible/kubernetes-kubernetes-label-nodes.yml
