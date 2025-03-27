@@ -13,7 +13,7 @@ rook_operator_image: "{{ container_registry_rook_operator }}/rook/ceph"
 # renovate: datasource=docker depName=index.docker.io/rook/ceph
 rook_operator_image_tag: 'v1.16.5'
 
-rook_operator_helm_chart_ref: rook-release/rook-ceph
+rook_operator_helm_chart_ref: /charts/rook-ceph
 rook_operator_helm_release_name: rook-ceph
 rook_operator_helm_release_namespace: rook-ceph
 
