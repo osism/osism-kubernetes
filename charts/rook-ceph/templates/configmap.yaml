@@ -20,6 +20,13 @@ data:
 {{- if .Values.discoverDaemonUdev }}
   DISCOVER_DAEMON_UDEV_BLACKLIST: {{ .Values.discoverDaemonUdev | quote }}
 {{- end }}
+{{- if .Values.revisionHistoryLimit }}
+  ROOK_REVISION_HISTORY_LIMIT: {{ .Values.revisionHistoryLimit | quote }}
+{{- end }}
+{{- if .Values.enforceHostNetwork }}
+  ROOK_ENFORCE_HOST_NETWORK: {{ .Values.enforceHostNetwork | quote }}
+{{- end }}
+
 {{- if .Values.csi }}
   ROOK_CSI_ENABLE_RBD: {{ .Values.csi.enableRbdDriver | quote }}
   ROOK_CSI_ENABLE_CEPHFS: {{ .Values.csi.enableCephfsDriver | quote }}
@@ -31,7 +38,6 @@ data:
   CSI_ENABLE_ENCRYPTION: {{ .Values.csi.enableCSIEncryption | quote }}
   CSI_ENABLE_OMAP_GENERATOR: {{ .Values.csi.enableOMAPGenerator | quote }}
   CSI_ENABLE_HOST_NETWORK: {{ .Values.csi.enableCSIHostNetwork | quote }}
-  CSI_DISABLE_HOLDER_PODS: {{ .Values.csi.disableHolderPods | quote }}
   CSI_ENABLE_METADATA: {{ .Values.csi.enableMetadata | quote }}
   CSI_ENABLE_VOLUME_GROUP_SNAPSHOT: {{ .Values.csi.enableVolumeGroupSnapshot | quote }}
 {{- if .Values.csi.csiDriverNamePrefix }}
@@ -163,9 +169,6 @@ data:
 {{- if .Values.csi.nfsProvisionerNodeAffinity }}
   CSI_NFS_PROVISIONER_NODE_AFFINITY: {{ .Values.csi.nfsProvisionerNodeAffinity }}
 {{- end }}
-{{- if .Values.csi.allowUnsupportedVersion }}
-  ROOK_CSI_ALLOW_UNSUPPORTED_VERSION: {{ .Values.csi.allowUnsupportedVersion | quote }}
-{{- end }}
 {{- if .Values.csi.pluginTolerations }}
   CSI_PLUGIN_TOLERATIONS: {{ toYaml .Values.csi.pluginTolerations | quote }}
 {{- end }}
@@ -201,6 +204,12 @@ data:
 {{- end }}
 {{- if .Values.csi.csiAddonsPort }}
   CSIADDONS_PORT: {{ .Values.csi.csiAddonsPort | quote }}
+{{- end }}
+{{- if .Values.csi.csiAddonsRBDProvisionerPort }}
+  CSIADDONS_RBD_PROVISIONER_PORT: {{ .Values.csi.csiAddonsRBDProvisionerPort | quote }}
+{{- end }}
+{{- if .Values.csi.csiAddonsCephFSProvisionerPort }}
+  CSIADDONS_CEPHFS_PROVISIONER_PORT: {{ .Values.csi.csiAddonsCephFSProvisionerPort | quote }}
 {{- end }}
 {{- if .Values.csi.forceCephFSKernelClient }}
   CSI_FORCE_CEPHFS_KERNEL_CLIENT: {{ .Values.csi.forceCephFSKernelClient | quote }}
