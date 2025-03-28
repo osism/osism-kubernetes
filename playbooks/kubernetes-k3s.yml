@@ -42,10 +42,10 @@
       role: k3s_agent
 
 - name: Run kubeconfig play
-  ansible.builtin.import_playbook: /ansible/infrastructure/kubeconfig.yml
+  ansible.builtin.import_playbook: /ansible/kubernetes-kubeconfig.yml
 
 - name: Run kubectl play
-  ansible.builtin.import_playbook: /ansible/infrastructure/kubectl.yml
+  ansible.builtin.import_playbook: /ansible/kubernetes-kubectl.yml
 
 - name: Run post actions on master nodes
   hosts: "{{ hosts_k3s_master|default('k3s_master') }}"
