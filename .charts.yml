@@ -82,7 +82,7 @@ charts:
       url: https://helm.mariadb.com/mariadb-operator
   - name: rabbitmq-cluster-operator
     # https://artifacthub.io/packages/helm/bitnami/rabbitmq-cluster-operator
-    version: 4.3.20
+    version: 4.4.6
     repository:
       url: https://charts.bitnami.com/bitnami
   - name: kube-prometheus-stack
