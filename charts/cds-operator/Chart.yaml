@@ -2,6 +2,6 @@ apiVersion: v2
 description: Yaook ConfiguredDaemonSet operator
 type: application
 name: cds-operator
-version:  "0.20250127.0"
-appVersion: "0.20250127.0"
+version:  "0.20250324.1"
+appVersion: "0.20250324.1"
 kubeVersion: ">=1.16.0-0"

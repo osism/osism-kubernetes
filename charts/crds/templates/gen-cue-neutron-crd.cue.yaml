@@ -1000,6 +1000,15 @@ spec:
                                   conflicting values will always cause an InvalidConfiguration
                                   error during rollout.'
                                 properties:
+                                  bgpAgentConfig:
+                                    additionalProperties:
+                                      type: object
+                                      x-kubernetes-preserve-unknown-fields: true
+                                    description: BGP Agent OpenStack config. The keys
+                                      of this object are the configuration file sections,
+                                      the values are objects whose keys correspond
+                                      to config keys within that section.
+                                    type: object
                                   config:
                                     properties:
                                       addressScopes:
@@ -1167,7 +1176,6 @@ spec:
                                         type: integer
                                     required:
                                     - bridgeName
-                                    - driver
                                     - localAS
                                     - peers
                                     type: object
@@ -1243,14 +1251,6 @@ spec:
                                     - openstackPhysicalNetwork
                                     type: object
                                   type: array
-                                monitoringDsUpdateStrategy:
-                                  description: Update strategy configuration for the
-                                    monitoring DaemonSet. This is not validated but
-                                    the body is passed as is as the body of the updateStrategy
-                                    field of the DaemonSet, so syntax errors will
-                                    result in reconcile failures.
-                                  type: object
-                                  x-kubernetes-preserve-unknown-fields: true
                                 neutronMetadataAgentConfig:
                                   additionalProperties:
                                     type: object
@@ -1279,20 +1279,32 @@ spec:
                                     - matchLabels
                                     type: object
                                   type: array
-                                ovnMonitorAll:
-                                  description: Monitor everything in the ovs-database.
-                                    Setting this to `true` will reduce the load on
-                                    the north- and southbound database while increasing
-                                    memory consumption of ovn-controllers.
-                                  type: boolean
-                                scrapeIntervalMs:
-                                  description: time in milliseconds the metrics of
-                                    the local ovsdb server is scraped
-                                  type: integer
                               required:
                               - nodeSelectors
                               type: object
                             type: array
+                          jemallocBackgroundThreads:
+                            description: Maximum number of jemalloc background threads
+                              that are used to purge unused memory. Having 1-2 background
+                              threads can help to avoid ovn-controller latency spikes
+                              in large deployments. Setting this to zero (default)
+                              disables background threads.
+                            minimum: 0
+                            type: integer
+                          monitoringDsUpdateStrategy:
+                            description: Update strategy configuration for the monitoring
+                              DaemonSet. This is not validated but the body is passed
+                              as is as the body of the updateStrategy field of the
+                              DaemonSet, so syntax errors will result in reconcile
+                              failures.
+                            type: object
+                            x-kubernetes-preserve-unknown-fields: true
+                          ovnMonitorAll:
+                            description: Monitor everything in the ovs-database. Setting
+                              this to `true` will reduce the load on the north- and
+                              southbound database while increasing memory consumption
+                              of ovn-controllers.
+                            type: boolean
                           resources:
                             description: Container resource requests/limits for OVN-controller
                               related containers
@@ -1443,6 +1455,10 @@ spec:
                                     type: object
                                 type: object
                             type: object
+                          scrapeIntervalMs:
+                            description: time in milliseconds the metrics of the local
+                              ovsdb server is scraped
+                            type: integer
                         required:
                         - configTemplates
                         type: object
@@ -1507,7 +1523,10 @@ spec:
                               connection as inactive
                             type: integer
                           ovnRelay:
-                            description: Configure and use an OVN relay (optional)
+                            description: Configure and use an OVN relay (optional).
+                              This is userfull for larger OVN environments. A good
+                              first guess would be one replica per 25 compute nodes
+                              you have.
                             properties:
                               replicas:
                                 default: 3
@@ -1623,6 +1642,10 @@ spec:
                                 - DoNotSchedule
                                 type: string
                             type: object
+                          raftElectionTimerMs:
+                            description: raft leader election timeout of the cluster
+                              in milliseconds
+                            type: integer
                           replicas:
                             default: 3
                             description: Number of replicas for the service
@@ -1837,6 +1860,14 @@ spec:
                       northd:
                         description: northd deployment configuration
                         properties:
+                          jemallocBackgroundThreads:
+                            description: Maximum number of jemalloc background threads
+                              that are used to purge unused memory. Having 1-2 background
+                              threads can help to avoid northd latency spikes in large
+                              deployments. Setting this to zero (default) disables
+                              background threads.
+                            minimum: 0
+                            type: integer
                           replicas:
                             default: 3
                             description: Number of replicas for the service
@@ -2068,6 +2099,10 @@ spec:
                                 - DoNotSchedule
                                 type: string
                             type: object
+                          raftElectionTimerMs:
+                            description: raft leader election timeout of the cluster
+                              in milliseconds
+                            type: integer
                           replicas:
                             default: 3
                             description: Number of replicas for the service

@@ -92,6 +92,13 @@ spec:
                 required:
                 - name
                 type: object
+              jemallocBackgroundThreads:
+                description: Maximum number of jemalloc background threads that are
+                  used to purge unused memory. Having 1-2 background threads can help
+                  to avoid ovn-controller latency spikes in large deployments. Setting
+                  this to zero (default) disables background threads.
+                minimum: 0
+                type: integer
               keystoneRef:
                 description: Keystone deployment to link this service to
                 properties:

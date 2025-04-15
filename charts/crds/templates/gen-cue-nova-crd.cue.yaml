@@ -363,6 +363,26 @@ spec:
                             the values are arrays or objects within that section.
                           type: object
                           x-kubernetes-preserve-unknown-fields: true
+                        ephemeralStorage:
+                          description: Configure a PVC for ephemeral storage. By default,
+                            YAOOK will mount /var/lib/nova from the host. Configuring
+                            this setting for a node will make YAOOK allocate a PVC
+                            for that path instead.
+                          properties:
+                            storageClassName:
+                              description: Storage class name. If unset, the cluster-wide
+                                default storage class will be used. If that storage
+                                class is not set or does not work, the deployment
+                                will be broken. Changing storage classes after the
+                                initial rollout requires manual intervention.
+                              type: string
+                            storageSize:
+                              default: 8Gi
+                              description: Size to request for the PVC. Changing the
+                                size after the initial rollout requires manual intervention.
+                              pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                              type: string
+                          type: object
                         hostAggregates:
                           description: NovaHostAggregate resource names, identifying
                             host aggregates this compute node should be part of. These
@@ -631,55 +651,6 @@ spec:
                       Nova Conductor pods
                     properties:
                       nova-conductor:
-                        description: Define resource requests/limits for the  container
-                        properties:
-                          limits:
-                            description: Define resource limits for the container
-                            properties:
-                              cpu:
-                                description: CPU time limit for the container
-                                pattern: ^[1-9][0-9]*m?$
-                                type: string
-                              memory:
-                                description: Memory limit for the container
-                                pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
-                                type: string
-                            type: object
-                          requests:
-                            description: Define resource requests for the container
-                            properties:
-                              cpu:
-                                description: CPU time request for the container
-                                pattern: ^[1-9][0-9]*m?$
-                                type: string
-                              memory:
-                                description: Memory request for the container
-                                pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
-                                type: string
-                            type: object
-                        type: object
-                    type: object
-                  scheduleRuleWhenUnsatisfiable:
-                    default: ScheduleAnyway
-                    description: whenUnsatisfiable indicates how to deal with a Pod
-                      if it doesn't satisfy the spread constraint
-                    enum:
-                    - ScheduleAnyway
-                    - DoNotSchedule
-                    type: string
-                type: object
-              consoleauth:
-                description: Nova Consoleauth service deployment configuration
-                properties:
-                  replicas:
-                    default: 3
-                    description: Number of replicas for the service
-                    type: integer
-                  resources:
-                    description: Resource requests/limits related to containers in
-                      Nova Consoleauth service pods
-                    properties:
-                      nova-consoleauth:
                         description: Define resource requests/limits for the  container
                         properties:
                           limits:
@@ -3195,6 +3166,9 @@ spec:
                   upgrade.
                 enum:
                 - zed
+                - '2023.1'
+                - '2023.2'
+                - '2024.1'
                 type: string
               vnc:
                 description: VNC proxy service deployment configuration
