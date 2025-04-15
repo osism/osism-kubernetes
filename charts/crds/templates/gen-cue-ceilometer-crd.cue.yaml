@@ -559,6 +559,9 @@ spec:
                   upgrade.
                 enum:
                 - zed
+                - '2023.1'
+                - '2023.2'
+                - '2024.1'
                 type: string
             required:
             - keystoneRef

@@ -48,6 +48,26 @@ spec:
                   if their coresponding node-label is removed. Manual deletion of
                   novacomputenode resource is needed.
                 type: boolean
+              spareNodes:
+                properties:
+                  amount:
+                    minimum: 1
+                    pattern: ^(100|[0-9]{1,2})%$
+                    x-kubernetes-int-or-string: true
+                  spareAggregateRef:
+                    description: ''
+                    properties:
+                      name:
+                        type: string
+                    required:
+                    - name
+                    type: object
+                  spotTrait:
+                    type: string
+                required:
+                - amount
+                - spareAggregateRef
+                type: object
             required:
             - nodeSelectors
             - maxUnavailable
@@ -68,6 +88,10 @@ spec:
                       type: string
                     readyInstances:
                       type: integer
+                    spareNodes:
+                      items:
+                        type: string
+                      type: array
                     type:
                       type: string
                     updatedInstances:

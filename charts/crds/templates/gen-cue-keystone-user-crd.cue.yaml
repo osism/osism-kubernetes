@@ -48,10 +48,36 @@ spec:
                 - name
                 type: object
               role:
-                description: Uses this role to bind the User to the service project.
+                description: Uses this role to bind the User to the target scope(s).
                   If not provided the admin role will be used. If the role does not
-                  exists, it will be created.
+                  exist, it will be created. Target scope(s) for the role assignment
+                  are either defined by the scopes property or default to the service
+                  project if not specified.
                 type: string
+              scopes:
+                description: Optional list of scopes to assign the role in for the
+                  User. List entries are key-value pairs where the key is one of the
+                  scope types 'project', 'domain' or 'system' and the value is the
+                  individual name of the respective scope. If not provided, will default
+                  to the project scope for the service project.
+                items:
+                  oneOf:
+                  - required:
+                    - project
+                  - required:
+                    - domain
+                  - required:
+                    - system
+                  properties:
+                    domain:
+                      type: string
+                    project:
+                      type: string
+                    system:
+                      type: string
+                  type: object
+                minItems: 1
+                type: array
             required:
             - keystoneRef
             type: object

@@ -1,7 +1,7 @@
 apiVersion: v2
-description: Yaook horizon operator
+description: Yaook octavia operator
 type: application
-name: horizon-operator
+name: octavia-operator
 version:  "0.20250324.1"
 appVersion: "0.20250324.1"
 kubeVersion: ">=1.16.0-0"

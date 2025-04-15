@@ -44,6 +44,14 @@ spec:
                 items:
                   type: string
                 type: array
+              bgpAgentConfig:
+                additionalProperties:
+                  type: object
+                  x-kubernetes-preserve-unknown-fields: true
+                description: The keys of this object are the configuration file sections,
+                  the values are objects whose keys correspond to config keys within
+                  that section.
+                type: object
               bgpNodeAnnotationSuffix:
                 type: string
               bridgeName:
@@ -214,7 +222,6 @@ spec:
             required:
             - bgpNodeAnnotationSuffix
             - bridgeName
-            - driver
             - localAS
             - lockName
             - peers

@@ -46,6 +46,8 @@ spec:
         properties:
           spec:
             properties:
+              appliedDisruptionBudget:
+                type: string
               caCertificates:
                 description: CA Certificates that should be added to all services
                   can be placed here. CAs that issue certificates to the service are
@@ -84,6 +86,16 @@ spec:
                   type: object
                   x-kubernetes-preserve-unknown-fields: true
                 type: array
+              ephemeralStorage:
+                properties:
+                  storageClassName:
+                    type: string
+                  storageSize:
+                    type: string
+                required:
+                - storageClassName
+                - storageSize
+                type: object
               eviction:
                 description: Compute node eviction configuration
                 properties:
@@ -173,6 +185,8 @@ spec:
                   nova-compute:
                     type: string
                 type: object
+              isSpareNode:
+                type: boolean
               keystoneRef:
                 description: Keystone deployment to link this service to
                 properties:
@@ -429,6 +443,9 @@ spec:
                   upgrade.
                 enum:
                 - zed
+                - '2023.1'
+                - '2023.2'
+                - '2024.1'
                 type: string
               vnc:
                 properties:

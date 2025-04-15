@@ -112,7 +112,7 @@ spec:
               imageRef:
                 type: string
               inactivityProbeMs:
-                description: Time in milliseconds till ovsdb server see connection
+                description: time in milliseconds till ovsdb server see connection
                   as inactive
                 type: integer
               issuerRef:
@@ -124,13 +124,17 @@ spec:
                 - name
                 type: object
               ovnRelay:
-                description: Information, if and how many ovn-relays should be created.
+                description: Configure and use an OVN relay (optional). This is userfull
+                  for larger OVN environments. A good first guess would be one replica
+                  per 25 compute nodes you have.
                 properties:
                   replicas:
                     default: 3
                     description: Number of replicas for the service
                     type: integer
                   resources:
+                    description: Container resource requests/limits for the relay
+                      containers
                     properties:
                       ovn-relay:
                         description: Define resource requests/limits for the  container
@@ -226,6 +230,9 @@ spec:
                     - DoNotSchedule
                     type: string
                 type: object
+              raftElectionTimerMs:
+                description: raft leader election timeout of the cluster in milliseconds
+                type: integer
               replicas:
                 default: 3
                 description: Number of replicas for the service
@@ -410,8 +417,8 @@ spec:
                 - DoNotSchedule
                 type: string
               scrapeIntervalMs:
-                description: Time in milliseconds the metrics of the ovsdb server
-                  are scraped
+                description: time in milliseconds the metrics of the ovsdb server
+                  is scraped
                 type: integer
               serviceMonitor:
                 description: Configure the ServiceMonitor objects created by the operator.
