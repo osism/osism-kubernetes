@@ -31,11 +31,11 @@ RUN <<EOF
 set -e
 set -x
 
-CAPI_VERSION=1.8.5
-CILIUM_CLI_VERSION=v0.16.20
-FLUX_VERSION=v2.4.0
-KUBECTL_VERSION=1.30.7
-OPERATOR_SDK_VERSION=v1.38.0
+CAPI_VERSION=1.9.6
+CILIUM_CLI_VERSION=v0.18.3
+FLUX_VERSION=v2.5.1
+KUBECTL_VERSION=1.32.3
+OPERATOR_SDK_VERSION=v1.39.2
 
 # shellcheck disable=SC2046
 ARCH=$(case $(uname -m) in x86_64) echo -n amd64 ;; aarch64) echo -n arm64 ;; *) echo -n $(uname -m) ;; esac)
