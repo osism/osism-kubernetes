@@ -31,6 +31,7 @@ RUN <<EOF
 set -e
 set -x
 
+HUBBLE_VERSION=v1.17.2
 CAPI_VERSION=1.9.6
 CILIUM_CLI_VERSION=v0.18.3
 FLUX_VERSION=v2.5.1
@@ -156,6 +157,13 @@ curl -L --fail --remote-name-all "https://github.com/cilium/cilium-cli/releases/
 sha256sum --check "cilium-linux-${ARCH}.tar.gz.sha256sum"
 tar xzvfC "cilium-linux-${ARCH}.tar.gz" /usr/local/bin
 rm cilium-linux-"${ARCH}".tar.gz{,.sha256sum}
+
+# install hubble cli
+HUBBLE_ARCH=amd64
+curl -L --fail --remote-name-all https://github.com/cilium/hubble/releases/download/$HUBBLE_VERSION/hubble-linux-${ARCH}.tar.gz{,.sha256sum}
+sha256sum --check hubble-linux-${ARCH}.tar.gz.sha256sum
+tar xzvfC hubble-linux-${ARCH}.tar.gz /usr/local/bin
+rm hubble-linux-${ARCH}.tar.gz{,.sha256sum}
 
 # install flux cli
 CLEAN_FLUX_VERSION=$(echo "$FLUX_VERSION" | sed 's/^v//')
