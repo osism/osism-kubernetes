@@ -3,38 +3,38 @@
     name: SECRET_OSISM_KUBERNETES
     data:
       DTRACK_API_KEY: !encrypted/pkcs1-oaep
-        - E4KqeSYLZWvnk/RvcXlPK9+9vMpPlcR1T7a8JdoRpEWaHIjSfkR/z6iweljyy1fVFH5wS
-          vxzeSPSuFz3w8e47aV6QrxsOekkeghFCXvZv20A5E9Eluzk/vvvLm/5089YK5t7RkHInr
-          PUqvcv1yoPjhCO4A8L5+th2aNhjNN4EtVrXL/UGQnCn64v1BUHeLKiCymCO6mI4C1HWV8
-          nU0SgqDnwqinVHr6d+ZHhxR2wvDrMcQM7Dti7RZCKesfwgQxnLC0LenP7KI5E4z0W7R+E
-          ipHTcrn5p03mgtwUs4wBt8muCUm7xRbIC7vpJvEJf8KpFXVBZxqUWha46OqQ/q+OH4z3p
-          vcpSoXaexDXJnMGIYCniN4QarV4zSixvuPmvxV1HowzNzVNuffcFya+2PGCc43WgHmTH6
-          SEbuRgX35x2p3g2lTSZgonR2Cj6uyNmvlXg9qVkUwweyJ+/dvyHi8jHoNpi7SG+Xe8MD7
-          FBF0rL45l4DTI4+FXoCA10uyT9dDFujuqjxxCzgFoCzEM5CEQZ7xHdsQ0mDgi7QUs/Bzb
-          q8BxFwdKRe8lwm72sRUAIkrcBIRMdLPohPAmFqDuh/ASlSBMO+a8JoVpglI6STIAAM6tc
-          eJPW0sl33UqeL4mzBe1jTvqD+NsMxHeEtQ/E/ymIyWzwHxK0MjN0fgP3tTfJAc=
-      DOCKER_USERNAME: !encrypted/pkcs1-oaep
-        - NFbD4TjpIXkwWB7THs9NxmFSD5Rawtlx0DhLlUga1mXc1NzVN++UruucUKyXarWrJEgw7
-          i48SSRa6b+795NrC1ZGWH/Pd/oZfCsxMn1YACISRUm/+QEl6+C8r6gB+NLUytl/N+64vo
-          zbb9s67wL+F9Qo4BV5QzCZE2Aw9JkfwjxhvaERplGZ6Fxx/ZQNbsUPyjOq863DqI2j11A
-          wOdXWZolZli7feCAUdVuhxe+nIctRrA6tmuOarW1R0HWoD59HsocPhqTJaJhsGIOeV7t8
-          7/4ZTVLzmm1K0G+hLpmz5WlR4x2wdg3OOOlCjRhlLJhwuxi2iifVXpYBOJuwID4hCJqTS
-          x9l5t5+Pbb1GMMF4M3SAJIFE6FoApXQ8STTvwm5hrSU0Jk1vQUIFKTPfJZ7lY6bn7W2Jc
-          QBlgBX+P6L7NH86wfTzaXFxTt29/DXgfZb9PBetLElS8RAG7vekLPsdRWTxucN0jGu8PD
-          UO7Fz4JaQXY9/wpFjO0Acbhyifv9tWVTP3Atgtk6FFUfMbLdSeQHZHElH8FdoLFKblUeB
-          bvLFgQGKhN9Wztn9Rv9WPUdFA53jKSA79AS7bZwXn0sb2tbD05eM8B7Ak4t2QbSOekM0z
-          Kfl6tZzw+ah8fnaCIbxm4E0wOmNrL3tpkctbyHGkr5473+HyulaBiHLVxskGT4=
+        - Pq8lVvQiXGMFWwUfydoJ7P3DZe2DA3rkkS4WpMBEmOak1fV7nF7toagE3pHIpC4lOOK1D
+          3waaYt6v1VZtykFoNBg3yGaYOeZ52+f4APiM7Tl+Qv4YADUEbdSEYtta/nDkzqPv9DUhd
+          8jGDMwMB+/JHaMgcFQUVdtMFB33TVgqrRzYAedqwcoZa/zmkI5diYWqDrdbMprp/zcVjg
+          LQk76QrqGg8iJzJDiQ8JnUaNeWIUkr48Dkiw3ONWLuoV1VlxsgQU4LjS8HnnI7N9/qwMQ
+          DwYOAve6KiugiwG51k55rUUG2FL1fsr1zPEXCMIHKGZiT7kYOZT/dGg5rSMnZC+nqMeuV
+          blAIleRIAOoUN9wwCpwzwK9Z+InrN2DFpWW9HjGfGtXTtDos/z2efcU/qr4sIs1fTREwI
+          ulWR1g60FIaPVrVsHlzcJnqPbm7x/NpDJobcumxuC5z4Xcyfqr8bnrdvqDirZyr4LR6wG
+          QaOJH/NhIQvp1t7S7zOio5fWi/nBdaTzjMk7bk6QbP/ZSbQybh2nzgEuncZuefNY9iaLR
+          JHoPjXyz5Sy66DPETqKkiKGe54/OkGKLy5k+EXztq79OHo4ivdKW3ao1gJvA7dpY89+gp
+          Z0ZMTt5JEsKVynFTABIsc69E+KwJaly2RnqajCUqTQmStksROSWXQXYaThgbBU=
       DOCKER_PASSWORD: !encrypted/pkcs1-oaep
-        - MHKouuRJANvo9qURBpZ3jNhu5qirGCVdIgk1I19NrQ5Fm7MnJ2s1C/Lr4O+fQ+8vEyV5Z
-          GFTg6fWzn5K0HwzrNHI6t/EorpJeXQ8hI+ShDE/V+fABnrcqesbGgy9uc7nIRZsBLB/lj
-          0LGOXygeLSYnYYS8gpcQBz3kHWBxwbEwS4eZnrX2/L2mAznbSspiVTxPbGsORTMJI2JI1
-          C7tEztbO18igssABR2xmeoTzJ4xEn3Vf8iZPM1gx1Gl7FwLMAs5b4GysEd9vGYHjBLxLB
-          8w2ir5I4lGyC2p/njZvRuvLw4QMmcYwCQvNNXggwGcCSwk4NvJ3dRYI69kTS1CDLdVBvH
-          tKaUjXVEMjIrjIRYw/WjLCB2Sv+e6qpSeSSL4KcxPVRO8x+q5/hd0Tb/Fuy7wDr2av2tN
-          JHdRRR5uts0K2xFsNrClNRWaE65QqewhYl9GmkGkq/M4TA0P5FM6XbtNQRSYg4b3UvsYD
-          D3TFTwb3a3TVc75bhk7NKelbuiPy/Gn1Zfef64nwJqexETlPmjTtLsF/563hchqcMhhVF
-          gd2Iq2DKaYbBzbpe33RJSwNo2DXt3+fIkmDsdETBNh6FuFHXl3Sa21QktNaPI/N+W/87n
-          tM8sWD+u3LLG8lMPMv95EjFmUmc4CL2BrKQsZgGZTMFfup1kzaGg+5JbXw49NY=
+        - SCNF848hTkhOxmGS+XZ4YV5CHJD2GO/4qDCCJLabzsEfhRjMMFpp5k5YI9hM4gkcpq+pR
+          L8Rt2Eqw3mNLr4AuG9VMDWdeKyBGXYCNVfZ9L71eZFfnoG5CvCtbq0GgR+8Oc94M6Af8+
+          Lf1ao77josgzX6kv8tsOMlawCW7Q47IxemWZn5SNFFOzw5EHSs9VVwV52f/ZHdzqJmnfk
+          BG4nsHwlKhrQX3iLtlJxtnn0HJWywsYfeH3ZefKcrm1MZZf8o7mwB7HRad1vGZJAw6xKd
+          qFf7nyZqe3RcBMZf4zIvoIobRneToWTsInhFxEijlfogoAST6MOCpFobYm0lFXdUY148z
+          44y2DVLRuNN6Gqnr5j8IST7RPgTLwnGI76yFAwIO8tjRG9CBjmUz9wuN4qcpbQkoPXuT6
+          DwYuV79pW4y8Z6WqBJ6C7xG+Knx/OQQ+sjDbwQoZHVeRaPJ2IzegsdYGu5kwZVOeXQ/Nk
+          a83E9oAcXHe0LDed5jGfQ0yBiti45z3xTF9MpcLHSY2Y7NjqrcM2QLggxdgaDE63BC6GD
+          w2Yc/sg3T8OjR4ZJnkWLRDUPZ+UQMtykqzE7d0DGTBYUFrvnKd3ZB5yi96roZoKVuYAfY
+          +bcCDx5jX+G7+jPsLZpZh5DGvJ7zc235pT8AoYApk1E8YTFVaZPrYDWe2VAxkw=
+      DOCKER_USERNAME: !encrypted/pkcs1-oaep
+        - mfdwWUdhoPMNJX1z3ioAGEscQxn/T7nKjPieDi3JEcAUop7gtLxaL19Sw//tzLqmbdTad
+          2JV77mlpf2jT59mnebl0YeMTKhVMKJ0tm92kZ2o8j7a8PO1NSEjkkrSkkLnRulsYSnx+W
+          Vtvacr7Q2z+Z2Qtyj7C0vW5YnkDDQ6mZ4r6VjK4qerxVF0dnxiV0/MJd2JFyOuEPvA9j7
+          zgi92Q4Y4k2eog4zNqDUDrmN9vfF8mIMua5W5BdWuCPqPxk2v4dO7QXnFE+ER2DqzCwf+
+          6vHLGLyoRFiVje667B6qQEvgdc6pw+3a1znvospZyvjwc4ZG7v18rpvgAdmgF2omcofPz
+          EyIfsxUniVsNFabeE8U6cU+kUjPlkRm8dzKSN6YvrHaZu3b/jacTIG/khEWyoDhFfkbAs
+          q2HPLBhew0TeLl+KqOaQEa07T6x7mpxp5CuQ2ESOt6/qk9pIb5Sgi4OBL4oM26WpUHgYW
+          iU0piew7eSwWXSvXwf0TVgnMRv/4ityumZe5gEzKzYY8UBgDPWVTj7uabL1Lli2C7R95Z
+          RZCELIzP9fE6xCPPyjKTN7KVwTq+d/8P6Nth0AYkD6ahPAXUSuTeXMeZYB/AtUReLYHJY
+          k7S4YQWsygbt/gmUXTCfHB4u+BbdGez5rNeh15fBYPmfwT8SWVSKjHKzuLCenc=
 
 - semaphore:
     name: semaphore-osism-kubernetes-push
