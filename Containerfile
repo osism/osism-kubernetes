@@ -1,5 +1,5 @@
 ARG PYTHON_VERSION=3.13
-ARG IMAGE=registry.osism.tech/python
+ARG IMAGE=registry.osism.tech/dockerhub/python
 
 FROM ${IMAGE}:${PYTHON_VERSION}-slim-bookworm AS builder
 
@@ -252,7 +252,7 @@ EOF
 USER dragon
 
 ARG PYTHON_VERSION=3.13
-ARG IMAGE=registry.osism.tech/python
+ARG IMAGE=registry.osism.tech/dockerhub/python
 
 FROM ${IMAGE}:${PYTHON_VERSION}-slim-bookworm
 
