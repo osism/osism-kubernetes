@@ -329,6 +329,12 @@ spec:
                     - ScheduleAnyway
                     - DoNotSchedule
                     type: string
+                  wsgiProcesses:
+                    description: Number of uWSGI processes to spawn per pod. This
+                      sets PYTHON_CPU_COUNT with a factor of 1/1.5. Gnocchi spawns
+                      PYTHON_CPU_COUNT*1.5 processes with PYTHON_CPU_COUNT threads
+                      each, so be careful with thus number.
+                    type: integer
                 required:
                 - ingress
                 type: object

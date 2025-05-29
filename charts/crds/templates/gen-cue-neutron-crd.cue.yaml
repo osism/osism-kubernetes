@@ -1206,6 +1206,19 @@ spec:
                           - configTemplates
                           type: object
                         type: object
+                      centralCA:
+                        description: ovn central CA configuration
+                        properties:
+                          duration:
+                            default: 672h
+                            description: lifetime of the CA in hours
+                            type: string
+                          renewBefore:
+                            default: 504h
+                            description: timeframe until the CA has to be renewed
+                              in hours
+                            type: string
+                        type: object
                       controller:
                         description: Per-node configuration for the OVN controller
                           services.
@@ -1305,6 +1318,13 @@ spec:
                               southbound database while increasing memory consumption
                               of ovn-controllers.
                             type: boolean
+                          remoteInactivityProbeMs:
+                            description: time in milliseconds till ovn-controller
+                              treats the connection to the remote ovsdb server as
+                              inactive (corresponds to `Open_vSwitch` column `external_ids:ovn-remote-probe-interval`)
+                              (defaults to value of spec.setup.ovn.southboundOVSDB.inactivityProbeMs,
+                              if set, otherwise 5000ms)
+                            type: integer
                           resources:
                             description: Container resource requests/limits for OVN-controller
                               related containers
@@ -1518,16 +1538,35 @@ spec:
                             required:
                             - schedule
                             type: object
+                          externalCACertificates:
+                            description: List of external CA certificates.
+                            items:
+                              type: string
+                            type: array
                           inactivityProbeMs:
-                            description: time in milliseconds till ovsdb server see
-                              connection as inactive
+                            description: time in milliseconds till ovsdb server treats
+                              connections from clients as inactive (default 5000ms)
                             type: integer
                           ovnRelay:
                             description: Configure and use an OVN relay (optional).
-                              This is userfull for larger OVN environments. A good
-                              first guess would be one replica per 25 compute nodes
-                              you have.
+                              This is useful for larger OVN environments. A good first
+                              guess would be one replica per 25 compute nodes you
+                              have.
                             properties:
+                              inactivityProbeMs:
+                                description: time in milliseconds till ovn relays
+                                  treat connections from clients (e.g., northd or
+                                  ovn-controller) as inactive (defaults to value of
+                                  inactivityProbeMs of the parent OVSDB that is relayed,
+                                  if set, otherwise 60000ms)
+                                type: integer
+                              remoteInactivityProbeMs:
+                                description: time in milliseconds till ovn relays
+                                  treat the connection to a remote ovsdb server (e.g.,
+                                  northbound or southbound) as inactive (defaults
+                                  to value of inactivityProbeMs of the parent OVSDB
+                                  that is relayed, if set, otherwise 60000ms)
+                                type: integer
                               replicas:
                                 default: 3
                                 description: Number of replicas for the service
@@ -1651,8 +1690,8 @@ spec:
                             description: Number of replicas for the service
                             type: integer
                           resources:
-                            description: Container resource requests/limits for northbound
-                              OVSDB containers
+                            description: Container resource requests/limits for ovsdb
+                              containers
                             properties:
                               backup-creator:
                                 description: Define resource requests/limits for the  container
@@ -1868,6 +1907,13 @@ spec:
                               background threads.
                             minimum: 0
                             type: integer
+                          remoteInactivityProbeMs:
+                            description: time in milliseconds till northd treats connections
+                              to remote ovsdb servers (e.g., northbound or southbound)
+                              as inactive (corresponds to `NB_Global` column `options:northd_probe_interval`)
+                              (defaults to value of spec.setup.ovn.northboundOVSDB.inactivityProbeMs,
+                              if set, otherwise 15000ms)
+                            type: integer
                           replicas:
                             default: 3
                             description: Number of replicas for the service
@@ -1975,16 +2021,35 @@ spec:
                             required:
                             - schedule
                             type: object
+                          externalCACertificates:
+                            description: List of external CA certificates.
+                            items:
+                              type: string
+                            type: array
                           inactivityProbeMs:
-                            description: time in milliseconds till ovsdb server see
-                              connection as inactive
+                            description: time in milliseconds till ovsdb server treats
+                              connections from clients as inactive (default 5000ms)
                             type: integer
                           ovnRelay:
                             description: Configure and use an OVN relay (optional).
-                              This is userfull for larger OVN environments. A good
-                              first guess would be one replica per 25 compute nodes
-                              you have.
+                              This is useful for larger OVN environments. A good first
+                              guess would be one replica per 25 compute nodes you
+                              have.
                             properties:
+                              inactivityProbeMs:
+                                description: time in milliseconds till ovn relays
+                                  treat connections from clients (e.g., northd or
+                                  ovn-controller) as inactive (defaults to value of
+                                  inactivityProbeMs of the parent OVSDB that is relayed,
+                                  if set, otherwise 60000ms)
+                                type: integer
+                              remoteInactivityProbeMs:
+                                description: time in milliseconds till ovn relays
+                                  treat the connection to a remote ovsdb server (e.g.,
+                                  northbound or southbound) as inactive (defaults
+                                  to value of inactivityProbeMs of the parent OVSDB
+                                  that is relayed, if set, otherwise 60000ms)
+                                type: integer
                               replicas:
                                 default: 3
                                 description: Number of replicas for the service
@@ -2108,8 +2173,8 @@ spec:
                             description: Number of replicas for the service
                             type: integer
                           resources:
-                            description: Container resource requests/limits for southbound
-                              OVSDB containers
+                            description: Container resource requests/limits for ovsdb
+                              containers
                             properties:
                               backup-creator:
                                 description: Define resource requests/limits for the  container

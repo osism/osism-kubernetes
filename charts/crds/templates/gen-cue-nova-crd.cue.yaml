@@ -2150,6 +2150,17 @@ spec:
                 description: Configuration of a periodic database cleanup job, using
                   nova-manage.
                 properties:
+                  clearAllEvents:
+                    default: false
+                    description: Delete all instance events older than deletionTimeRange.
+                      This is useful for long living VMs with many instance actions.
+                    type: boolean
+                  clearOnlyMigrationEvents:
+                    default: false
+                    description: Delete only events older than deletionTimeRange that
+                      concern offline or live migration. This is useful especially
+                      for long living vms as these create a big amount of events
+                    type: boolean
                   deletionTimeRange:
                     default: 60
                     description: Deleted database rows older than this number of days
