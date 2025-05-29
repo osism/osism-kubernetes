@@ -97,6 +97,11 @@ spec:
                 - northbound
                 - southbound
                 type: string
+              externalCACertificates:
+                description: List of external CA certificates.
+                items:
+                  type: string
+                type: array
               imagePullSecrets:
                 description: References to image pull secrets which should be included
                   in all Pods spawned directly or indirectly by this resource.
@@ -112,8 +117,8 @@ spec:
               imageRef:
                 type: string
               inactivityProbeMs:
-                description: time in milliseconds till ovsdb server see connection
-                  as inactive
+                description: time in milliseconds till ovsdb server treats connections
+                  from clients as inactive (default 5000ms)
                 type: integer
               issuerRef:
                 description: ''
@@ -124,10 +129,22 @@ spec:
                 - name
                 type: object
               ovnRelay:
-                description: Configure and use an OVN relay (optional). This is userfull
+                description: Configure and use an OVN relay (optional). This is useful
                   for larger OVN environments. A good first guess would be one replica
                   per 25 compute nodes you have.
                 properties:
+                  inactivityProbeMs:
+                    description: time in milliseconds till ovn relays treat connections
+                      from clients (e.g., northd or ovn-controller) as inactive (defaults
+                      to value of inactivityProbeMs of the parent OVSDB that is relayed,
+                      if set, otherwise 60000ms)
+                    type: integer
+                  remoteInactivityProbeMs:
+                    description: time in milliseconds till ovn relays treat the connection
+                      to a remote ovsdb server (e.g., northbound or southbound) as
+                      inactive (defaults to value of inactivityProbeMs of the parent
+                      OVSDB that is relayed, if set, otherwise 60000ms)
+                    type: integer
                   replicas:
                     default: 3
                     description: Number of replicas for the service
@@ -238,6 +255,7 @@ spec:
                 description: Number of replicas for the service
                 type: integer
               resources:
+                description: Container resource requests/limits for ovsdb containers
                 properties:
                   backup-creator:
                     description: Define resource requests/limits for the  container

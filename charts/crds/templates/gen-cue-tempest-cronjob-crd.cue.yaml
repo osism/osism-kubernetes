@@ -153,9 +153,9 @@ spec:
                 description: The release to deploy. Changing this will trigger an
                   upgrade.
                 enum:
-                - 27.0.0
                 - 32.0.0
                 - 36.0.0
+                - 41.0.0
                 type: string
               tempestConfig:
                 additionalProperties:

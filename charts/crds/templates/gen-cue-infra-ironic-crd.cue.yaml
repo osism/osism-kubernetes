@@ -1652,6 +1652,10 @@ spec:
                     - DoNotSchedule
                     type: string
                 type: object
+              policy:
+                description: OpenStack policy to merge with the default policy
+                type: object
+                x-kubernetes-preserve-unknown-fields: true
               pxe:
                 properties:
                   dhcp:

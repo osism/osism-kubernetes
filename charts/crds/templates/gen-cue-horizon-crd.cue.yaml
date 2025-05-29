@@ -223,8 +223,11 @@ spec:
                 description: The release to deploy. Changing this will trigger an
                   upgrade.
                 enum:
-                - train
                 - zed
+                - '2023.1'
+                - '2023.2'
+                - '2024.1'
+                - '2024.2'
                 type: string
             required:
             - keystoneRef
