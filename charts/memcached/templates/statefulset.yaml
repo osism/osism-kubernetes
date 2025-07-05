@@ -94,7 +94,7 @@ spec:
           securityContext:
             runAsUser: {{ .Values.volumePermissions.containerSecurityContext.runAsUser }}
           {{- if .Values.volumePermissions.resources }}
-          resources: {{- toYaml .Values.volumePermissions.resources | nindent 12 }}
+          resources: {{- include "common.tplvalues.render" (dict "value" .Values.volumePermissions.resources "context" $) | nindent 12 }}
           {{- else if ne .Values.volumePermissions.resourcesPreset "none" }}
           resources: {{- include "common.resources.preset" (dict "type" .Values.volumePermissions.resourcesPreset) | nindent 12 }}
           {{- end }}
@@ -138,11 +138,16 @@ spec:
             {{- if .Values.auth.enabled }}
             - name: MEMCACHED_USERNAME
               value: {{ .Values.auth.username | quote }}
+            {{- if .Values.auth.usePasswordFiles }}
+            - name: MEMCACHED_PASSWORD_FILE
+              value: "/opt/bitnami/memcached/secrets/memcached-password"
+            {{- else }}
             - name: MEMCACHED_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ template "memcached.secretPasswordName" . }}
                   key: memcached-password
+            {{- end }}
             {{- end }}
             {{- if .Values.extraEnvVars }}
             {{- include "common.tplvalues.render" (dict "value" .Values.extraEnvVars "context" $) | nindent 12 }}
@@ -200,7 +205,7 @@ spec:
                     sleep 60s
           {{- end }}
           {{- if .Values.resources }}
-          resources: {{- toYaml .Values.resources | nindent 12 }}
+          resources: {{- include "common.tplvalues.render" (dict "value" .Values.resources "context" $) | nindent 12 }}
           {{- else if ne .Values.resourcesPreset "none" }}
           resources: {{- include "common.resources.preset" (dict "type" .Values.resourcesPreset) | nindent 12 }}
           {{- end }}
@@ -214,7 +219,11 @@ spec:
               subPath: app-conf-dir
             - name: empty-dir
               mountPath: /tmp
-              subPath: tmp-dir              
+              subPath: tmp-dir
+            {{- if and .Values.auth.enabled .Values.auth.usePasswordFiles }}
+            - name: memcached-secrets
+              mountPath: /opt/bitnami/memcached/secrets
+            {{- end }}
             {{- if .Values.extraVolumeMounts }}
             {{- include "common.tplvalues.render" ( dict "value" .Values.extraVolumeMounts "context" $ ) | nindent 12 }}
             {{- end }}
@@ -253,7 +262,7 @@ spec:
           {{- end }}
           {{- end }}
           {{- if .Values.metrics.resources }}
-          resources: {{- toYaml .Values.metrics.resources | nindent 12 }}
+          resources: {{- include "common.tplvalues.render" (dict "value" .Values.metrics.resources "context" $) | nindent 12 }}
           {{- else if ne .Values.metrics.resourcesPreset "none" }}
           resources: {{- include "common.resources.preset" (dict "type" .Values.metrics.resourcesPreset) | nindent 12 }}
           {{- end }}
@@ -263,7 +272,19 @@ spec:
         {{- end }}
       volumes:
         - name: empty-dir
+        {{- if eq .Values.emptyDir.medium "Memory" }}
+          emptyDir:
+            medium: "Memory"
+        {{- else }}
           emptyDir: {}
+        {{- end }}
+        {{- if and .Values.auth.enabled .Values.auth.usePasswordFiles }}
+        - name: memcached-secrets
+          projected:
+            sources:
+              - secret:
+                  name:  {{ include "memcached.secretPasswordName" . }}
+        {{- end }}
         {{- if .Values.extraVolumes }}
         {{- include "common.tplvalues.render" (dict "value" .Values.extraVolumes "context" $) | nindent 8 }}
         {{- end }}

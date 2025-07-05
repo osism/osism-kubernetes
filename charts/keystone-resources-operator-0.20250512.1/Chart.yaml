@@ -1,0 +1,7 @@
+apiVersion: v2
+description: Yaook Keystone resources operator (users, endpoints)
+type: application
+name: keystone-resources-operator
+version:  "0.20250512.1"
+appVersion: "0.20250512.1"
+kubeVersion: ">=1.16.0-0"

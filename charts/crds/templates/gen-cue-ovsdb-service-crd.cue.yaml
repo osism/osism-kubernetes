@@ -92,10 +92,25 @@ spec:
                   type: string
                 type: array
                 x-kubernetes-list-type: set
+              dbName:
+                type: string
               dbSchema:
                 enum:
                 - northbound
                 - southbound
+                - custom
+                type: string
+              dbSchemaConfigmap:
+                description: configmap containing the db schema. Use when 'dbSchema'
+                  is 'custom'. Key 'schema.ovsschema' must contain a valid ovsdb database
+                  schema. Only used during deployment, changes are ignored.
+                properties:
+                  name:
+                    type: string
+                required:
+                - name
+                type: object
+              dbStanza:
                 type: string
               externalCACertificates:
                 description: List of external CA certificates.
@@ -461,7 +476,6 @@ spec:
                 type: string
             required:
             - dbSchema
-            - imageRef
             - issuerRef
             - storageSize
             - backup

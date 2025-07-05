@@ -1,0 +1,48 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    helm.sh/resource-policy: keep
+  name: sshidentities.compute.yaook.cloud
+spec:
+  group: compute.yaook.cloud
+  names:
+    kind: SSHIdentity
+    plural: sshidentities
+    shortNames: []
+    singular: sshidentity
+  scope: Namespaced
+  versions:
+  - additionalPrinterColumns: []
+    name: v1
+    schema:
+      openAPIV3Schema:
+        properties:
+          status:
+            properties:
+              keys:
+                properties:
+                  host:
+                    items:
+                      regex: ^ssh-\S+\s+[a-zA-Z0-9/+]+(\s+\S+)?$
+                      type: string
+                    type: array
+                    x-kubernetes-list-type: set
+                  user:
+                    items:
+                      regex: ^ssh-\S+\s+[a-zA-Z0-9/+]+(\s+\S+)?$
+                      type: string
+                    type: array
+                    x-kubernetes-list-type: set
+                required:
+                - host
+                - user
+                type: object
+            required:
+            - keys
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}

@@ -160,6 +160,18 @@ spec:
                       type: string
                     nullable: true
                     type: array
+                  github_permissions:
+                    description: GitHubPermissions defines GitHub integration related
+                      permissions.
+                    items:
+                      properties:
+                        orgs:
+                          items:
+                            type: string
+                          nullable: true
+                          type: array
+                      type: object
+                    type: array
                   group_labels:
                     additionalProperties:
                       x-kubernetes-preserve-unknown-fields: true
@@ -261,6 +273,10 @@ spec:
                       Role grants access to.
                     items:
                       properties:
+                        api_group:
+                          description: APIGroup specifies the Kubernetes API group
+                            of the Kubernetes resource. It supports wildcards.
+                          type: string
                         kind:
                           description: Kind specifies the Kubernetes Resource type.
                           type: string
@@ -348,6 +364,10 @@ spec:
                           "kube_cluster" and enforce requesting any of its subresources.'
                         items:
                           properties:
+                            api_group:
+                              description: APIGroup specifies the Kubernetes Resource
+                                API group.
+                              type: string
                             kind:
                               description: kind specifies the Kubernetes Resource
                                 type.
@@ -360,6 +380,20 @@ spec:
                           is used.
                         format: duration
                         type: string
+                      reason:
+                        description: Reason defines settings for the reason for the
+                          access provided by the user.
+                        nullable: true
+                        properties:
+                          mode:
+                            description: Mode can be either "required" or "optional".
+                              Empty string is treated as "optional". If a role has
+                              the request reason mode set to "required", then reason
+                              is required for all Access Requests requesting roles
+                              or resources allowed by this role. It applies only to
+                              users who have this role assigned.
+                            type: string
+                        type: object
                       roles:
                         description: Roles is the name of roles which will match the
                           request rule.
@@ -584,6 +618,17 @@ spec:
                       type: string
                     nullable: true
                     type: array
+                  workload_identity_labels:
+                    additionalProperties:
+                      x-kubernetes-preserve-unknown-fields: true
+                    description: WorkloadIdentityLabels controls whether or not specific
+                      WorkloadIdentity resources can be invoked. Further authorization
+                      controls exist on the WorkloadIdentity resource itself.
+                    type: object
+                  workload_identity_labels_expression:
+                    description: WorkloadIdentityLabelsExpression is a predicate expression
+                      used to allow/deny access to issuing a WorkloadIdentity.
+                    type: string
                 type: object
               deny:
                 description: Deny is the set of conditions evaluated to deny access.
@@ -711,6 +756,18 @@ spec:
                       type: string
                     nullable: true
                     type: array
+                  github_permissions:
+                    description: GitHubPermissions defines GitHub integration related
+                      permissions.
+                    items:
+                      properties:
+                        orgs:
+                          items:
+                            type: string
+                          nullable: true
+                          type: array
+                      type: object
+                    type: array
                   group_labels:
                     additionalProperties:
                       x-kubernetes-preserve-unknown-fields: true
@@ -812,6 +869,10 @@ spec:
                       Role grants access to.
                     items:
                       properties:
+                        api_group:
+                          description: APIGroup specifies the Kubernetes API group
+                            of the Kubernetes resource. It supports wildcards.
+                          type: string
                         kind:
                           description: Kind specifies the Kubernetes Resource type.
                           type: string
@@ -899,6 +960,10 @@ spec:
                           "kube_cluster" and enforce requesting any of its subresources.'
                         items:
                           properties:
+                            api_group:
+                              description: APIGroup specifies the Kubernetes Resource
+                                API group.
+                              type: string
                             kind:
                               description: kind specifies the Kubernetes Resource
                                 type.
@@ -911,6 +976,20 @@ spec:
                           is used.
                         format: duration
                         type: string
+                      reason:
+                        description: Reason defines settings for the reason for the
+                          access provided by the user.
+                        nullable: true
+                        properties:
+                          mode:
+                            description: Mode can be either "required" or "optional".
+                              Empty string is treated as "optional". If a role has
+                              the request reason mode set to "required", then reason
+                              is required for all Access Requests requesting roles
+                              or resources allowed by this role. It applies only to
+                              users who have this role assigned.
+                            type: string
+                        type: object
                       roles:
                         description: Roles is the name of roles which will match the
                           request rule.
@@ -1135,6 +1214,17 @@ spec:
                       type: string
                     nullable: true
                     type: array
+                  workload_identity_labels:
+                    additionalProperties:
+                      x-kubernetes-preserve-unknown-fields: true
+                    description: WorkloadIdentityLabels controls whether or not specific
+                      WorkloadIdentity resources can be invoked. Further authorization
+                      controls exist on the WorkloadIdentity resource itself.
+                    type: object
+                  workload_identity_labels_expression:
+                    description: WorkloadIdentityLabelsExpression is a predicate expression
+                      used to allow/deny access to issuing a WorkloadIdentity.
+                    type: string
                 type: object
               options:
                 description: Options is for OpenSSH options like agent forwarding.
@@ -1284,9 +1374,7 @@ spec:
                       generation and usage
                     type: boolean
                   port_forwarding:
-                    description: PortForwarding defines if the certificate will have
-                      "permit-port-forwarding" in the certificate. PortForwarding
-                      is "yes" if not set, that's why this is a pointer
+                    description: 'Deprecated: Use SSHPortForwarding instead'
                     type: boolean
                   record_session:
                     description: RecordDesktopSession indicates whether desktop access
@@ -1307,7 +1395,7 @@ spec:
                         type: string
                     type: object
                   request_access:
-                    description: RequestAccess defines the request strategy (optional|note|always)
+                    description: RequestAccess defines the request strategy (optional|reason|always)
                       where optional is the default.
                     type: string
                   request_prompt:
@@ -1324,6 +1412,26 @@ spec:
                       via SCP or SFTP are allowed over an SSH session. It defaults
                       to true unless explicitly set to false.
                     type: boolean
+                  ssh_port_forwarding:
+                    description: SSHPortForwarding configures what types of SSH port
+                      forwarding are allowed by a role.
+                    nullable: true
+                    properties:
+                      local:
+                        description: Allow local port forwarding.
+                        nullable: true
+                        properties:
+                          enabled:
+                            type: boolean
+                        type: object
+                      remote:
+                        description: Allow remote port forwarding.
+                        nullable: true
+                        properties:
+                          enabled:
+                            type: boolean
+                        type: object
+                    type: object
                 type: object
             type: object
           status:

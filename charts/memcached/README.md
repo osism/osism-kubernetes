@@ -20,8 +20,6 @@ Looking to use Memcached in production? Try [VMware Tanzu Application Catalog](h
 
 This chart bootstraps a [Memcached](https://github.com/bitnami/containers/tree/main/bitnami/memcached) deployment on a [Kubernetes](https://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
-Bitnami charts can be used with [Kubeapps](https://kubeapps.dev/) for deployment and management of Helm Charts in clusters.
-
 ## Prerequisites
 
 - Kubernetes 1.23+
@@ -47,13 +45,38 @@ These commands deploy Memcached on the Kubernetes cluster in the default configu
 
 Bitnami charts allow setting resource requests and limits for all containers inside the chart deployment. These are inside the `resources` value (check parameter table). Setting requests is essential for production workloads and these should be adapted to your specific use case.
 
-To make this process easier, the chart contains the `resourcesPreset` values, which automatically sets the `resources` section according to different presets. Check these presets in [the bitnami/common chart](https://github.com/bitnami/charts/blob/main/bitnami/common/templates/_resources.tpl#L15). However, in production workloads using `resourcePreset` is discouraged as it may not fully adapt to your specific needs. Find more information on container resource management in the [official Kubernetes documentation](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/).
+To make this process easier, the chart contains the `resourcesPreset` values, which automatically sets the `resources` section according to different presets. Check these presets in [the bitnami/common chart](https://github.com/bitnami/charts/blob/main/bitnami/common/templates/_resources.tpl#L15). However, in production workloads using `resourcesPreset` is discouraged as it may not fully adapt to your specific needs. Find more information on container resource management in the [official Kubernetes documentation](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/).
 
-### [Rolling vs Immutable tags](https://docs.vmware.com/en/VMware-Tanzu-Application-Catalog/services/tutorials/GUID-understand-rolling-tags-containers-index.html)
+### Prometheus metrics
+
+This chart can be integrated with Prometheus by setting `metrics.enabled` to `true`. This will deploy a sidecar container with [memcached_exporter](https://github.com/prometheus/memcached_exporter) in all pods and a `metrics` service, which can be configured under the `metrics.service` section. This `metrics` service will have the necessary annotations to be automatically scraped by Prometheus.
+
+#### Prometheus requirements
+
+It is necessary to have a working installation of Prometheus or Prometheus Operator for the integration to work. Install the [Bitnami Prometheus helm chart](https://github.com/bitnami/charts/tree/main/bitnami/prometheus) or the [Bitnami Kube Prometheus helm chart](https://github.com/bitnami/charts/tree/main/bitnami/kube-prometheus) to easily have a working Prometheus in your cluster.
+
+#### Integration with Prometheus Operator
+
+The chart can deploy `ServiceMonitor` objects for integration with Prometheus Operator installations. To do so, set the value `metrics.serviceMonitor.enabled=true`. Ensure that the Prometheus Operator `CustomResourceDefinitions` are installed in the cluster or it will fail with the following error:
+
+```text
+no matches for kind "ServiceMonitor" in version "monitoring.coreos.com/v1"
+```
+
+Install the [Bitnami Kube Prometheus helm chart](https://github.com/bitnami/charts/tree/main/bitnami/kube-prometheus) for having the necessary CRDs and the Prometheus Operator.
+
+### [Rolling vs Immutable tags](https://techdocs.broadcom.com/us/en/vmware-tanzu/application-catalog/tanzu-application-catalog/services/tac-doc/apps-tutorials-understand-rolling-tags-containers-index.html)
 
 It is strongly recommended to use immutable tags in a production environment. This ensures your deployment does not change automatically if the same tag is updated with a different image.
 
 Bitnami will release a new chart updating its containers if a new version of the main container, significant changes, or critical vulnerabilities exist.
+
+### Update credentials
+
+The Bitnami Memcached chart, when upgrading, reuses the secret previously rendered by the chart or the one specified in `auth.existingPasswordSecret`. To update credentials, use one of the following:
+
+- Run `helm upgrade` specifying a new password in `auth.password`
+- Run `helm upgrade` specifying a new secret in `auth.existingPasswordSecret`
 
 ### Use Sidecars and Init Containers
 
@@ -101,6 +124,10 @@ This chart allows you to set your custom affinity using the `affinity` parameter
 
 As an alternative, you can use the preset configurations for pod affinity, pod anti-affinity, and node affinity available at the [bitnami/common](https://github.com/bitnami/charts/tree/main/bitnami/common#affinities) chart. To do so, set the `podAffinityPreset`, `podAntiAffinityPreset`, or `nodeAffinityPreset` parameters.
 
+### Backup and restore
+
+To back up and restore Helm chart deployments on Kubernetes, you need to back up the persistent volumes from the source deployment and attach them to a new deployment using [Velero](https://velero.io/), a Kubernetes backup/restore tool. Find the instructions for using Velero in [this guide](https://techdocs.broadcom.com/us/en/vmware-tanzu/application-catalog/tanzu-application-catalog/services/tac-doc/apps-tutorials-backup-restore-deployments-velero-index.html).
+
 ## Persistence
 
 When using `architecture: "high-availability"` the [Bitnami Memcached](https://github.com/bitnami/containers/tree/main/bitnami/memcached) image stores the cache-state at the `/cache-state` path of the container if enabled.
@@ -115,13 +142,14 @@ If you encounter errors when working with persistent volumes, refer to our [trou
 
 ### Global parameters
 
-| Name                                                  | Description                                                                                                                                                                                                                                                                                                                                                         | Value  |
-| ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
-| `global.imageRegistry`                                | Global Docker image registry                                                                                                                                                                                                                                                                                                                                        | `""`   |
-| `global.imagePullSecrets`                             | Global Docker registry secret names as an array                                                                                                                                                                                                                                                                                                                     | `[]`   |
-| `global.defaultStorageClass`                          | Global default StorageClass for Persistent Volume(s)                                                                                                                                                                                                                                                                                                                | `""`   |
-| `global.storageClass`                                 | DEPRECATED: use global.defaultStorageClass instead                                                                                                                                                                                                                                                                                                                  | `""`   |
-| `global.compatibility.openshift.adaptSecurityContext` | Adapt the securityContext sections of the deployment to make them compatible with Openshift restricted-v2 SCC: remove runAsUser, runAsGroup and fsGroup and let the platform use their allowed default IDs. Possible values: auto (apply if the detected running cluster is Openshift), force (perform the adaptation always), disabled (do not perform adaptation) | `auto` |
+| Name                                                  | Description                                                                                                                                                                                                                                                                                                                                                         | Value   |
+| ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| `global.imageRegistry`                                | Global Docker image registry                                                                                                                                                                                                                                                                                                                                        | `""`    |
+| `global.imagePullSecrets`                             | Global Docker registry secret names as an array                                                                                                                                                                                                                                                                                                                     | `[]`    |
+| `global.defaultStorageClass`                          | Global default StorageClass for Persistent Volume(s)                                                                                                                                                                                                                                                                                                                | `""`    |
+| `global.storageClass`                                 | DEPRECATED: use global.defaultStorageClass instead                                                                                                                                                                                                                                                                                                                  | `""`    |
+| `global.security.allowInsecureImages`                 | Allows skipping image verification                                                                                                                                                                                                                                                                                                                                  | `false` |
+| `global.compatibility.openshift.adaptSecurityContext` | Adapt the securityContext sections of the deployment to make them compatible with Openshift restricted-v2 SCC: remove runAsUser, runAsGroup and fsGroup and let the platform use their allowed default IDs. Possible values: auto (apply if the detected running cluster is Openshift), force (perform the adaptation always), disabled (do not perform adaptation) | `auto`  |
 
 ### Common parameters
 
@@ -153,6 +181,7 @@ If you encounter errors when working with persistent volumes, refer to our [trou
 | `auth.username`               | Memcached admin user                                                                                      | `""`                        |
 | `auth.password`               | Memcached admin password                                                                                  | `""`                        |
 | `auth.existingPasswordSecret` | Existing secret with Memcached credentials (must contain a value for `memcached-password` key)            | `""`                        |
+| `auth.usePasswordFiles`       | Mount credentials as files instead of using environment variables                                         | `true`                      |
 | `command`                     | Override default container command (useful when using custom images)                                      | `[]`                        |
 | `args`                        | Override default container args (useful when using custom images)                                         | `[]`                        |
 | `extraEnvVars`                | Array with extra environment variables to add to Memcached nodes                                          | `[]`                        |
@@ -223,6 +252,7 @@ If you encounter errors when working with persistent volumes, refer to our [trou
 | `terminationGracePeriodSeconds`                     | In seconds, time the given to the memcached pod needs to terminate gracefully                                                                                                                                     | `""`             |
 | `updateStrategy.type`                               | Memcached statefulset strategy type                                                                                                                                                                               | `RollingUpdate`  |
 | `updateStrategy.rollingUpdate`                      | Memcached statefulset rolling update configuration parameters                                                                                                                                                     | `{}`             |
+| `emptyDir.medium`                                   | Override emptyDir Volume type, defaults to emptyDir: {}                                                                                                                                                           | `""`             |
 | `extraVolumes`                                      | Optionally specify extra list of additional volumes for the Memcached pod(s)                                                                                                                                      | `[]`             |
 | `extraVolumeMounts`                                 | Optionally specify extra list of additional volumeMounts for the Memcached container(s)                                                                                                                           | `[]`             |
 | `sidecars`                                          | Add additional sidecar containers to the Memcached pod(s)                                                                                                                                                         | `[]`             |
@@ -246,6 +276,7 @@ If you encounter errors when working with persistent volumes, refer to our [trou
 | `service.nodePorts.memcached`           | Node port for Memcached                                                                                       | `""`        |
 | `service.sessionAffinity`               | Control where client requests go, to the same pod or round-robin                                              | `""`        |
 | `service.sessionAffinityConfig`         | Additional settings for the sessionAffinity                                                                   | `{}`        |
+| `service.trafficDistribution`           | Traffic distribution preference                                                                               | `""`        |
 | `service.clusterIP`                     | Memcached service Cluster IP                                                                                  | `""`        |
 | `service.loadBalancerIP`                | Memcached service Load Balancer IP                                                                            | `""`        |
 | `service.loadBalancerSourceRanges`      | Memcached service Load Balancer sources                                                                       | `[]`        |
@@ -347,6 +378,7 @@ If you encounter errors when working with persistent volumes, refer to our [trou
 | `metrics.serviceMonitor.interval`                           | Interval at which metrics should be scraped.                                                                                                                                                                                                          | `""`                                 |
 | `metrics.serviceMonitor.scrapeTimeout`                      | Timeout after which the scrape is ended                                                                                                                                                                                                               | `""`                                 |
 | `metrics.serviceMonitor.labels`                             | Additional labels that can be used so ServiceMonitor will be discovered by Prometheus                                                                                                                                                                 | `{}`                                 |
+| `metrics.serviceMonitor.podTargetLabels`                    | Labels from the Kubernetes pod to be transferred to the created metrics                                                                                                                                                                               | `[]`                                 |
 | `metrics.serviceMonitor.selector`                           | Prometheus instance selector labels                                                                                                                                                                                                                   | `{}`                                 |
 | `metrics.serviceMonitor.relabelings`                        | RelabelConfigs to apply to samples before scraping                                                                                                                                                                                                    | `[]`                                 |
 | `metrics.serviceMonitor.metricRelabelings`                  | MetricRelabelConfigs to apply to samples before ingestion                                                                                                                                                                                             | `[]`                                 |
@@ -381,6 +413,10 @@ helm install my-release -f values.yaml oci://REGISTRY_NAME/REPOSITORY_NAME/memca
 Find more information about how to deal with common errors related to Bitnami's Helm charts in [this troubleshooting guide](https://docs.bitnami.com/general/how-to/troubleshoot-helm-chart-issues).
 
 ## Upgrading
+
+### To 7.6.0
+
+This version introduces image verification for security purposes. To disable it, set `global.security.allowInsecureImages` to `true`. More details at [GitHub issue](https://github.com/bitnami/charts/issues/30850).
 
 ### To 7.0.0
 
@@ -442,7 +478,7 @@ kubectl patch deployment memcached --type=json -p='[{"op": "remove", "path": "/s
 
 ## License
 
-Copyright &copy; 2024 Broadcom. The term "Broadcom" refers to Broadcom Inc. and/or its subsidiaries.
+Copyright &copy; 2025 Broadcom. The term "Broadcom" refers to Broadcom Inc. and/or its subsidiaries.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
