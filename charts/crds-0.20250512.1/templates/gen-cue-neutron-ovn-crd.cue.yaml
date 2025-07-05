@@ -1,0 +1,436 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    helm.sh/resource-policy: keep
+  name: neutronovnagents.network.yaook.cloud
+spec:
+  group: network.yaook.cloud
+  names:
+    kind: NeutronOVNAgent
+    plural: neutronovnagents
+    shortNames:
+    - ovnagent
+    - ovnagents
+    singular: neutronovnagent
+  scope: Namespaced
+  versions:
+  - additionalPrinterColumns:
+    - description: Current status of the Resource
+      jsonPath: .status.phase
+      name: Phase
+      type: string
+    - description: The reason for the current status
+      jsonPath: .status.conditions[?(@.type=="Converged")].reason
+      name: Reason
+      type: string
+    - description: The state of the service
+      jsonPath: .status.state
+      name: State
+      type: string
+    - description: The used OVN version
+      jsonPath: .status.ovnVersion
+      name: OVN Version
+      type: string
+    - description: Requires Recreation status
+      jsonPath: .status.conditions[?(@.type=="RequiresRecreation")].status
+      name: Requires Recreation
+      type: string
+    name: v1
+    schema:
+      openAPIV3Schema:
+        properties:
+          spec:
+            properties:
+              bridgeConfig:
+                items:
+                  properties:
+                    bridgeName:
+                      type: string
+                    openstackPhysicalNetwork:
+                      description: This must be the same as `--provider-physical-network`,
+                        when setting up the provider network
+                      type: string
+                    uplinkDevice:
+                      type: string
+                  required:
+                  - bridgeName
+                  - uplinkDevice
+                  - openstackPhysicalNetwork
+                  type: object
+                type: array
+              caConfigMapName:
+                type: string
+              deployedOnComputeNode:
+                type: boolean
+              imagePullSecrets:
+                description: References to image pull secrets which should be included
+                  in all Pods spawned directly or indirectly by this resource.
+                items:
+                  description: ''
+                  properties:
+                    name:
+                      type: string
+                  required:
+                  - name
+                  type: object
+                type: array
+              imageRef:
+                properties:
+                  neutron-ovn-agent:
+                    type: string
+                  ovn:
+                    type: string
+                  ovs:
+                    type: string
+                type: object
+              issuerRef:
+                description: ''
+                properties:
+                  name:
+                    type: string
+                required:
+                - name
+                type: object
+              jemallocBackgroundThreads:
+                description: Maximum number of jemalloc background threads that are
+                  used to purge unused memory. Having 1-2 background threads can help
+                  to avoid ovn-controller latency spikes in large deployments. Setting
+                  this to zero (default) disables background threads.
+                minimum: 0
+                type: integer
+              keystoneRef:
+                description: Keystone deployment to link this service to
+                properties:
+                  kind:
+                    default: KeystoneDeployment
+                    description: Specify the kind of Keystone deployment to reference
+                    enum:
+                    - KeystoneDeployment
+                    - ExternalKeystoneDeployment
+                    type: string
+                  name:
+                    type: string
+                required:
+                - name
+                type: object
+              neutronMetadataAgentConfig:
+                items:
+                  additionalProperties:
+                    type: object
+                    x-kubernetes-preserve-unknown-fields: true
+                  description: The keys of this object are the configuration file
+                    sections, the values are objects whose keys correspond to config
+                    keys within that section.
+                  type: object
+                type: array
+              northboundServers:
+                items:
+                  description: Connection information to northbound ovsdb or ovn relay,
+                    like 'ssl:10.101.161.234:6642'
+                  regex: ^[A-Za-z]{3,9}:[^\:]+:[0-9]{1,5}$
+                  type: string
+                type: array
+              novaRef:
+                description: ''
+                properties:
+                  name:
+                    type: string
+                required:
+                - name
+                type: object
+              ovnMonitorAll:
+                default: true
+                type: boolean
+              region:
+                description: Configure the Region to use for this OpenStack service.
+                properties:
+                  name:
+                    default: RegionOne
+                    description: Name of the OpenStack region to connect with and
+                      to set up the own endpoints in.
+                    type: string
+                  parent:
+                    type: string
+                type: object
+              resources:
+                properties:
+                  neutron-ovn-metadata-agent:
+                    description: Define resource requests/limits for the  container
+                    properties:
+                      limits:
+                        description: Define resource limits for the container
+                        properties:
+                          cpu:
+                            description: CPU time limit for the container
+                            pattern: ^[1-9][0-9]*m?$
+                            type: string
+                          memory:
+                            description: Memory limit for the container
+                            pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
+                            type: string
+                        type: object
+                      requests:
+                        description: Define resource requests for the container
+                        properties:
+                          cpu:
+                            description: CPU time request for the container
+                            pattern: ^[1-9][0-9]*m?$
+                            type: string
+                          memory:
+                            description: Memory request for the container
+                            pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
+                            type: string
+                        type: object
+                    type: object
+                  ovn-controller:
+                    description: Define resource requests/limits for the  container
+                    properties:
+                      limits:
+                        description: Define resource limits for the container
+                        properties:
+                          cpu:
+                            description: CPU time limit for the container
+                            pattern: ^[1-9][0-9]*m?$
+                            type: string
+                          memory:
+                            description: Memory limit for the container
+                            pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
+                            type: string
+                        type: object
+                      requests:
+                        description: Define resource requests for the container
+                        properties:
+                          cpu:
+                            description: CPU time request for the container
+                            pattern: ^[1-9][0-9]*m?$
+                            type: string
+                          memory:
+                            description: Memory request for the container
+                            pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
+                            type: string
+                        type: object
+                    type: object
+                  ovs-vswitchd:
+                    description: Define resource requests/limits for the  container
+                    properties:
+                      limits:
+                        description: Define resource limits for the container
+                        properties:
+                          cpu:
+                            description: CPU time limit for the container
+                            pattern: ^[1-9][0-9]*m?$
+                            type: string
+                          memory:
+                            description: Memory limit for the container
+                            pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
+                            type: string
+                        type: object
+                      requests:
+                        description: Define resource requests for the container
+                        properties:
+                          cpu:
+                            description: CPU time request for the container
+                            pattern: ^[1-9][0-9]*m?$
+                            type: string
+                          memory:
+                            description: Memory request for the container
+                            pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
+                            type: string
+                        type: object
+                    type: object
+                  ovs-vswitchd-monitoring:
+                    description: Define resource requests/limits for the  container
+                    properties:
+                      limits:
+                        description: Define resource limits for the container
+                        properties:
+                          cpu:
+                            description: CPU time limit for the container
+                            pattern: ^[1-9][0-9]*m?$
+                            type: string
+                          memory:
+                            description: Memory limit for the container
+                            pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
+                            type: string
+                        type: object
+                      requests:
+                        description: Define resource requests for the container
+                        properties:
+                          cpu:
+                            description: CPU time request for the container
+                            pattern: ^[1-9][0-9]*m?$
+                            type: string
+                          memory:
+                            description: Memory request for the container
+                            pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
+                            type: string
+                        type: object
+                    type: object
+                  ovsdb-server:
+                    description: Define resource requests/limits for the  container
+                    properties:
+                      limits:
+                        description: Define resource limits for the container
+                        properties:
+                          cpu:
+                            description: CPU time limit for the container
+                            pattern: ^[1-9][0-9]*m?$
+                            type: string
+                          memory:
+                            description: Memory limit for the container
+                            pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
+                            type: string
+                        type: object
+                      requests:
+                        description: Define resource requests for the container
+                        properties:
+                          cpu:
+                            description: CPU time request for the container
+                            pattern: ^[1-9][0-9]*m?$
+                            type: string
+                          memory:
+                            description: Memory request for the container
+                            pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
+                            type: string
+                        type: object
+                    type: object
+                type: object
+              scrapeInterval:
+                description: Time in milliseconds the metrics of the local ovsdb server
+                  are scraped
+                type: integer
+              serviceMonitor:
+                description: Configure the ServiceMonitor objects created by the operator.
+                properties:
+                  additionalLabels:
+                    additionalProperties:
+                      type: string
+                    description: Additional labels to set on the ServiceMonitor metadata.
+                    type: object
+                type: object
+              southboundInactivityProbe:
+                description: Time in milliseconds till ovsdb server see connection
+                  as inactive
+                type: integer
+              southboundServers:
+                items:
+                  description: Connection information to southbound ovsdb or ovn relay,
+                    like 'ssl:10.101.161.234:6642'
+                  regex: ^[A-Za-z]{3,9}:[^\:]+:[0-9]{1,5}$
+                  type: string
+                type: array
+              state:
+                default: Enabled
+                enum:
+                - Enabled
+                - Disabled
+                - DisabledAndCleared
+                type: string
+              targetRelease:
+                description: The release to deploy. Changing this will trigger an
+                  upgrade.
+                enum:
+                - zed
+                - '2023.1'
+                - '2023.2'
+                - '2024.1'
+                type: string
+            required:
+            - keystoneRef
+            - novaRef
+            - caConfigMapName
+            - deployedOnComputeNode
+            - southboundServers
+            - issuerRef
+            - targetRelease
+            type: object
+          status:
+            properties:
+              conditions:
+                items:
+                  properties:
+                    lastTransitionTime:
+                      pattern: '[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z'
+                      type: string
+                    lastUpdateTime:
+                      pattern: '[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z'
+                      type: string
+                    message:
+                      type: string
+                    reason:
+                      type: string
+                    status:
+                      type: string
+                    type:
+                      enum:
+                      - Converged
+                      - GarbageCollected
+                      - Evicted
+                      - Enabled
+                      - BoundToNode
+                      - RequiresRecreation
+                      type: string
+                  required:
+                  - lastTransitionTime
+                  - lastUpdateTime
+                  - message
+                  - reason
+                  - status
+                  - type
+                  type: object
+                type: array
+                x-kubernetes-list-map-keys:
+                - type
+                x-kubernetes-list-type: map
+              eviction:
+                nullable: true
+                properties:
+                  reason:
+                    type: string
+                required:
+                - reason
+                type: object
+              installedRelease:
+                description: The last successfully deployed release.
+                type: string
+              nextRelease:
+                description: The next release to roll out. This differs from installedRelease
+                  during upgrades and from targetRelease during multi-step upgrades.
+                type: string
+              observedGeneration:
+                type: integer
+              ovnVersion:
+                type: string
+              phase:
+                enum:
+                - Created
+                - Updating
+                - WaitingForDependency
+                - Updated
+                - BackingOff
+                - InvalidConfiguration
+                type: string
+              state:
+                default: Creating
+                enum:
+                - Creating
+                - Enabled
+                - Disabled
+                - Evicting
+                - DisabledAndCleared
+                type: string
+              updatedGeneration:
+                type: integer
+            required:
+            - conditions
+            - observedGeneration
+            - phase
+            type: object
+        required:
+        - spec
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}

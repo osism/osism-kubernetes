@@ -1,149 +1,148 @@
 ---
 charts:
   - name: opensearch
-    # https://artifacthub.io/packages/helm/opensearch-project-helm-charts/opensearch
-    version: 2.32.0
+    source: https://artifacthub.io/packages/helm/opensearch-project-helm-charts/opensearch
+    version: 3.1.0
     repository:
       url: https://opensearch-project.github.io/helm-charts/
   - name: teleport-cluster
-    # https://artifacthub.io/packages/helm/teleport-agent-kube/teleport-cluster
-    version: 17.0.2
+    source: https://artifacthub.io/packages/helm/teleport-agent-kube/teleport-cluster
+    version: 18.0.0
     repository:
       url: https://charts.releases.teleport.dev
   - name: teleport-kube-agent
-    # https://artifacthub.io/packages/helm/teleport-agent-kube/teleport-kube-agent
-    version: 17.0.2
+    source: https://artifacthub.io/packages/helm/teleport-agent-kube/teleport-kube-agent
+    version: 18.0.0
     repository:
       url: https://charts.releases.teleport.dev
   - name: ingress-nginx
-    # https://artifacthub.io/packages/helm/ingress-nginx/ingress-nginx
-    version: 4.12.1
+    source: https://artifacthub.io/packages/helm/ingress-nginx/ingress-nginx
+    version: 4.12.3
     repository:
       url: https://kubernetes.github.io/ingress-nginx
   - name: cert-manager
-    # https://artifacthub.io/packages/helm/cert-manager/cert-manager
-    version: 1.15.3
+    source: https://artifacthub.io/packages/helm/cert-manager/cert-manager
+    version: 1.18.2
     repository:
       url: https://charts.jetstack.io
   - name: cert-manager-crds
-    # https://artifacthub.io/packages/helm/wiremind/cert-manager-crds
-    version: 1.15.0
+    source: https://artifacthub.io/packages/helm/wiremind/cert-manager-crds
+    version: 1.18.1
     repository:
       url: https://wiremind.github.io/wiremind-helm-charts
   - name: argo-cd
-    # https://artifacthub.io/packages/helm/argo/argo-cd
-    version: 7.5.0
+    source: https://artifacthub.io/packages/helm/argo/argo-cd
+    version: 8.1.2
     repository:
       url: https://argoproj.github.io/argo-helm
   - name: memcached
-    # https://artifacthub.io/packages/helm/bitnami/memcached
-    version: 7.4.12
+    source: https://artifacthub.io/packages/helm/bitnami/memcached
+    version: 7.9.0
     repository:
       url: https://charts.bitnami.com/bitnami
   - name: node-feature-discovery
-    # https://artifacthub.io/packages/helm/node-feature-discovery/node-feature-discovery
-    version: 0.16.4
+    source: https://artifacthub.io/packages/helm/node-feature-discovery/node-feature-discovery
+    version: 0.17.3
     repository:
       url: https://kubernetes-sigs.github.io/node-feature-discovery/charts
   - name: prometheus-pushgateway
-    # https://artifacthub.io/packages/helm/prometheus-community/prometheus-pushgateway
-    version: 2.14.0
+    source: https://artifacthub.io/packages/helm/prometheus-community/prometheus-pushgateway
+    version: 3.4.0
     repository:
       url: https://prometheus-community.github.io/helm-charts
   - name: keycloak
-    # https://artifacthub.io/packages/helm/bitnami/keycloak
-    version: 24.6.3
+    source: https://artifacthub.io/packages/helm/bitnami/keycloak
+    version: 24.7.5
     repository:
       url: https://charts.bitnami.com/bitnami
   - name: pxc-operator
-    # https://artifacthub.io/packages/helm/percona/pxc-operator
-    version: 1.15.0
+    source: https://artifacthub.io/packages/helm/percona/pxc-operator
+    version: 1.17.0
     repository:
       url: https://percona.github.io/percona-helm-charts
   - name: cloudnative-pg
-    # https://artifacthub.io/packages/helm/cloudnative-pg/cloudnative-pg
-    version: 0.22.0
+    source: https://artifacthub.io/packages/helm/cloudnative-pg/cloudnative-pg
+    version: 0.24.0
     repository:
       url: https://cloudnative-pg.github.io/charts
   - name: rook-ceph
-    # https://artifacthub.io/packages/helm/rook/rook-ceph
-    version: 1.16.6
+    source: https://artifacthub.io/packages/helm/rook/rook-ceph
+    version: 1.17.5
     repository:
       url: https://charts.rook.io/release
   - name: rook-ceph-cluster
-    # https://artifacthub.io/packages/helm/rook/rook-ceph-cluster
-    version: 1.16.6
+    source: https://artifacthub.io/packages/helm/rook/rook-ceph-cluster
+    version: 1.17.5
     repository:
       url: https://charts.rook.io/release
   - name: mariadb-operator
-    # https://artifacthub.io/packages/helm/mariadb-operator/mariadb-operator
-    version: 0.36.0
+    source: https://artifacthub.io/packages/helm/mariadb-operator/mariadb-operator
+    version: 0.38.1
     repository:
       url: https://helm.mariadb.com/mariadb-operator
   - name: mariadb-operator-crds
-    # https://artifacthub.io/packages/helm/mariadb-operator/mariadb-operator-crds
-    version: 0.36.0
+    source: https://artifacthub.io/packages/helm/mariadb-operator/mariadb-operator-crds
+    version: 0.38.1
     repository:
       url: https://helm.mariadb.com/mariadb-operator
   - name: rabbitmq-cluster-operator
-    # https://artifacthub.io/packages/helm/bitnami/rabbitmq-cluster-operator
-    version: 4.4.6
+    source: https://artifacthub.io/packages/helm/bitnami/rabbitmq-cluster-operator
+    version: 4.4.24
     repository:
       url: https://charts.bitnami.com/bitnami
   - name: kube-prometheus-stack
-    # https://artifacthub.io/packages/helm/prometheus-community/kube-prometheus-stack
-    version: 62.3.1
+    source: https://artifacthub.io/packages/helm/prometheus-community/kube-prometheus-stack
+    version: 75.8.1
     repository:
       url: https://prometheus-community.github.io/helm-charts
   - name: prometheus-operator-crds
-    # https://artifacthub.io/packages/helm/prometheus-community/prometheus-operator-crds
-    version: 14.0.0
+    source: https://artifacthub.io/packages/helm/prometheus-community/prometheus-operator-crds
+    version: 21.0.0
     repository:
       url: https://prometheus-community.github.io/helm-charts
   - name: kubernetes-dashboard
-    # https://artifacthub.io/packages/helm/k8s-dashboard/kubernetes-dashboard
-    version: 7.5.0
+    source: https://artifacthub.io/packages/helm/k8s-dashboard/kubernetes-dashboard
+    version: 7.13.0
     repository:
       url: https://kubernetes.github.io/dashboard
   - name: headlamp
-    # https://artifacthub.io/packages/helm/headlamp/headlamp
-    version: 0.24.0
+    source: https://artifacthub.io/packages/helm/headlamp/headlamp
+    version: 0.32.1
     repository:
-      url: https://headlamp-k8s.github.io/headlamp/
-# YAOOK charts
+      url: https://kubernetes-sigs.github.io/headlamp/
   - name: cds-operator
-    version: 0.20250512.1
+    version: 0.20250602.0
     repository:
       url: https://charts.yaook.cloud/operator/stable
   - name: crds
-    version: 0.20250512.1
+    version: 0.20250602.0
     repository:
       url: https://charts.yaook.cloud/operator/stable
   - name: infra-operator
-    version: 0.20250512.1
+    version: 0.20250602.0
     repository:
       url: https://charts.yaook.cloud/operator/stable
   - name: keystone-operator
-    version: 0.20250512.1
+    version: 0.20250602.0
     repository:
       url: https://charts.yaook.cloud/operator/stable
   - name: keystone-resources-operator
-    version: 0.20250512.1
+    version: 0.20250602.0
     repository:
       url: https://charts.yaook.cloud/operator/stable
   - name: cinder-operator
-    version: 0.20250512.1
+    version: 0.20250602.0
     repository:
       url: https://charts.yaook.cloud/operator/stable
   - name: glance-operator
-    version: 0.20250512.1
+    version: 0.20250602.0
     repository:
       url: https://charts.yaook.cloud/operator/stable
   - name: horizon-operator
-    version: 0.20250512.1
+    version: 0.20250602.0
     repository:
       url: https://charts.yaook.cloud/operator/stable
   - name: octavia-operator
-    version: 0.20250512.1
+    version: 0.20250602.0
     repository:
       url: https://charts.yaook.cloud/operator/stable

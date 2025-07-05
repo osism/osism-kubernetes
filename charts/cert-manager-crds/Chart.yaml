@@ -1,7 +1,7 @@
 annotations:
   category: DeveloperTools
 apiVersion: v2
-appVersion: v1.15.0
+appVersion: v1.18.1
 description: Manage cert-manager CRDs
 icon: https://raw.githubusercontent.com/jetstack/cert-manager/master/logo/logo.png
 keywords:
@@ -15,4 +15,4 @@ name: cert-manager-crds
 sources:
 - https://github.com/wiremind/wiremind-helm-charts/tree/main/charts/cert-manager-crds
 - https://github.com/cert-manager/cert-manager
-version: 1.15.0
+version: 1.18.1

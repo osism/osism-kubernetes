@@ -1,10 +1,13 @@
 {{- if .Values.ingress.dashboard.host }}
 ---
-apiVersion: {{ include "capabilities.ingress.apiVersion" . }}
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ template "clusterName" . }}-dashboard
   namespace: {{ .Release.Namespace }} # namespace:cluster
+  {{- if .Values.ingress.dashboard.labels }}
+  labels: {{- toYaml .Values.ingress.dashboard.labels | nindent 4 }}
+  {{- end}}
   {{- if .Values.ingress.dashboard.annotations }}
   annotations: {{- toYaml .Values.ingress.dashboard.annotations | nindent 4 }}
   {{- end }}
@@ -15,7 +18,6 @@ spec:
         paths:
           - path: {{ .Values.ingress.dashboard.host.path | default "/" }}
             backend:
-{{- if (eq "networking.k8s.io/v1" (include "capabilities.ingress.apiVersion" .)) }}
               service:
                 name: rook-ceph-mgr-dashboard
                 port:
@@ -25,14 +27,6 @@ spec:
                   name: http-dashboard
                   {{- end }}
             pathType: {{ .Values.ingress.dashboard.host.pathType | default "Prefix" }}
-{{- else }}
-              serviceName: rook-ceph-mgr-dashboard
-              {{- if .Values.cephClusterSpec.dashboard.ssl }}
-              servicePort: https-dashboard
-              {{- else }}
-              servicePort: http-dashboard
-              {{- end }}
-{{- end }}
   {{- if .Values.ingress.dashboard.ingressClassName }}
   ingressClassName: {{ .Values.ingress.dashboard.ingressClassName }}
   {{- end }}

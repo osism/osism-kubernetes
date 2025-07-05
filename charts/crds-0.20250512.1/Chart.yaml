@@ -1,0 +1,7 @@
+apiVersion: v2
+description: CustomResourceDefinitions used by Yaook.
+type: application
+name: crds
+version:  "0.20250512.1"
+appVersion: "0.20250512.1"
+kubeVersion: ">=1.16.0-0"

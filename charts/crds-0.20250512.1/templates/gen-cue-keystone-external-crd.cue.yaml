@@ -1,0 +1,145 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    helm.sh/resource-policy: keep
+  name: externalkeystonedeployments.yaook.cloud
+spec:
+  group: yaook.cloud
+  names:
+    kind: ExternalKeystoneDeployment
+    plural: externalkeystonedeployments
+    shortNames:
+    - ekd
+    - ekds
+    singular: externalkeystonedeployment
+  scope: Namespaced
+  versions:
+  - additionalPrinterColumns:
+    - description: Current status of the Resource
+      jsonPath: .status.phase
+      name: Phase
+      type: string
+    - description: The reason for the current status
+      jsonPath: .status.conditions[?(@.type=="Converged")].reason
+      name: Reason
+      type: string
+    - description: Informative messages
+      jsonPath: .status.conditions[?(@.type=="Converged")].message
+      name: Message
+      type: string
+    name: v1
+    schema:
+      openAPIV3Schema:
+        properties:
+          spec:
+            properties:
+              authType:
+                default: password
+                type: string
+              authURL:
+                type: string
+              caCertificates:
+                description: CA Certificates that should be added to all services
+                  can be placed here. CAs that issue certificates to the service are
+                  automatically added and do not need to be specified.
+                items:
+                  type: string
+                type: array
+                x-kubernetes-list-type: set
+              interface:
+                default: public
+                type: string
+              memcachedServers:
+                items:
+                  regex: ^[^\:]+:[0-9]{1,5}$
+                  type: string
+                type: array
+              password:
+                description: ''
+                properties:
+                  key:
+                    default: password
+                    description: Key within the Secret to extract
+                    type: string
+                  name:
+                    type: string
+                required:
+                - name
+                type: object
+              projectDomainName:
+                default: default
+                type: string
+              projectName:
+                default: admin
+                type: string
+              userDomainName:
+                default: default
+                type: string
+              username:
+                type: string
+            required:
+            - username
+            - password
+            - authURL
+            - memcachedServers
+            type: object
+          status:
+            properties:
+              conditions:
+                items:
+                  properties:
+                    lastTransitionTime:
+                      pattern: '[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z'
+                      type: string
+                    lastUpdateTime:
+                      pattern: '[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z'
+                      type: string
+                    message:
+                      type: string
+                    reason:
+                      type: string
+                    status:
+                      type: string
+                    type:
+                      enum:
+                      - Converged
+                      - GarbageCollected
+                      type: string
+                  required:
+                  - lastTransitionTime
+                  - lastUpdateTime
+                  - message
+                  - reason
+                  - status
+                  - type
+                  type: object
+                type: array
+                x-kubernetes-list-map-keys:
+                - type
+                x-kubernetes-list-type: map
+              observedGeneration:
+                type: integer
+              phase:
+                enum:
+                - Created
+                - Updating
+                - WaitingForDependency
+                - Updated
+                - BackingOff
+                - InvalidConfiguration
+                type: string
+              updatedGeneration:
+                type: integer
+            required:
+            - conditions
+            - observedGeneration
+            - phase
+            type: object
+        required:
+        - spec
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}

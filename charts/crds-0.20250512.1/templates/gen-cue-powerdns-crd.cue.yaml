@@ -1,0 +1,621 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    helm.sh/resource-policy: keep
+  name: powerdnsservices.infra.yaook.cloud
+spec:
+  group: infra.yaook.cloud
+  names:
+    kind: PowerDNSService
+    plural: powerdnsservices
+    shortNames:
+    - pdnss
+    - pdns
+    singular: powerdnsservice
+  scope: Namespaced
+  versions:
+  - additionalPrinterColumns:
+    - description: Current status of the Resource
+      jsonPath: .status.phase
+      name: Phase
+      type: string
+    - description: The reason for the current status
+      jsonPath: .status.conditions[?(@.type=="Converged")].reason
+      name: Reason
+      type: string
+    - description: Informative messages
+      jsonPath: .status.conditions[?(@.type=="Converged")].message
+      name: Message
+      type: string
+    name: v1
+    schema:
+      openAPIV3Schema:
+        properties:
+          spec:
+            properties:
+              apiKeySecret:
+                description: A single secret injection configuration. This will set
+                  the secret value as the API key inside the PowerDNS configuration.
+                properties:
+                  key:
+                    description: Key of the Kubernetes Secret to read
+                    type: string
+                  secretName:
+                    description: Name of the Kubernetes Secret to read
+                    type: string
+                required:
+                - secretName
+                - key
+                type: object
+              caCertificates:
+                description: CA Certificates that should be added to all services
+                  can be placed here. CAs that issue certificates to the service are
+                  automatically added and do not need to be specified.
+                items:
+                  type: string
+                type: array
+                x-kubernetes-list-type: set
+              database:
+                description: Configure the database deployment
+                properties:
+                  backup:
+                    description: Configure automated database backups
+                    properties:
+                      mysqldump:
+                        default: false
+                        description: Execute a plain mysqldump in addition to the
+                          standard backup.
+                        type: boolean
+                      schedule:
+                        default: 0 0 * * *
+                        description: Schedule in which to create backups. The schedule
+                          is given in standard cron notation.
+                        pattern: ((\d+|([\d*]+(\/|-)\d+)|\*) ?){5}
+                        type: string
+                      targets:
+                        anyOf:
+                        - required:
+                          - s3
+                        description: Configure zero or more targets to save the backups
+                          to. If no targets are configured, backups will only be stored
+                          within the pod and are gone when the pod is deleted.
+                        properties:
+                          s3:
+                            description: Send backups into an S3 bucket.
+                            properties:
+                              addressingStyle:
+                                default: virtual
+                                type: string
+                              bucket:
+                                description: Name of the bucket to store data into
+                                type: string
+                              credentialRef:
+                                description: Reference a Secret for the S3 credentials
+                                properties:
+                                  name:
+                                    type: string
+                                required:
+                                - name
+                                type: object
+                              endpoint:
+                                description: URL to the S3 service
+                                type: string
+                              filePrefix:
+                                description: Prefix to add to the file name before
+                                  storing it in the bucket
+                                type: string
+                            required:
+                            - endpoint
+                            - bucket
+                            - credentialRef
+                            type: object
+                        type: object
+                    required:
+                    - schedule
+                    type: object
+                  mysqlConfig:
+                    description: Additional MySQL configuration. This is more detailed
+                      than typical configuration snippets because of the special `optimizer_switch`
+                      config option.
+                    properties:
+                      client-server:
+                        description: Configuration options for the client-server section.
+                        type: object
+                        x-kubernetes-preserve-unknown-fields: true
+                      galera:
+                        description: Configuration options for the galera section.
+                        type: object
+                        x-kubernetes-preserve-unknown-fields: true
+                      mysqld:
+                        description: Configuration options for the mysqld section.
+                        properties:
+                          optimizer_switch:
+                            additionalProperties:
+                              type: boolean
+                            description: Boolean flags for individual optimizer switches.
+                              See MariaDB upstream configuration for details.
+                            type: object
+                        type: object
+                        x-kubernetes-preserve-unknown-fields: true
+                      sst:
+                        description: Configuration options for the sst section.
+                        type: object
+                        x-kubernetes-preserve-unknown-fields: true
+                    type: object
+                  proxy:
+                    description: Configure the proxy deployment, which brokers traffic
+                      to the database
+                    properties:
+                      replicas:
+                        default: 2
+                        description: Number of replicas for the service
+                        type: integer
+                      resources:
+                        description: Configure resource requests/limits for containers
+                          related to the database proxy.
+                        properties:
+                          create-ca-bundle:
+                            description: Define resource requests/limits for the create-ca-bundle
+                              container
+                            properties:
+                              limits:
+                                description: Define resource limits for the container
+                                properties:
+                                  cpu:
+                                    description: CPU time limit for the container
+                                    pattern: ^[1-9][0-9]*m?$
+                                    type: string
+                                  memory:
+                                    description: Memory limit for the container
+                                    pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
+                                    type: string
+                                type: object
+                              requests:
+                                description: Define resource requests for the container
+                                properties:
+                                  cpu:
+                                    description: CPU time request for the container
+                                    pattern: ^[1-9][0-9]*m?$
+                                    type: string
+                                  memory:
+                                    description: Memory request for the container
+                                    pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
+                                    type: string
+                                type: object
+                            type: object
+                          haproxy:
+                            description: Define resource requests/limits for the haproxy
+                              container
+                            properties:
+                              limits:
+                                description: Define resource limits for the container
+                                properties:
+                                  cpu:
+                                    description: CPU time limit for the container
+                                    pattern: ^[1-9][0-9]*m?$
+                                    type: string
+                                  memory:
+                                    description: Memory limit for the container
+                                    pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
+                                    type: string
+                                type: object
+                              requests:
+                                description: Define resource requests for the container
+                                properties:
+                                  cpu:
+                                    description: CPU time request for the container
+                                    pattern: ^[1-9][0-9]*m?$
+                                    type: string
+                                  memory:
+                                    description: Memory request for the container
+                                    pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
+                                    type: string
+                                type: object
+                            type: object
+                          service-reload:
+                            description: Define resource requests/limits for the service-reload
+                              container
+                            properties:
+                              limits:
+                                description: Define resource limits for the container
+                                properties:
+                                  cpu:
+                                    description: CPU time limit for the container
+                                    pattern: ^[1-9][0-9]*m?$
+                                    type: string
+                                  memory:
+                                    description: Memory limit for the container
+                                    pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
+                                    type: string
+                                type: object
+                              requests:
+                                description: Define resource requests for the container
+                                properties:
+                                  cpu:
+                                    description: CPU time request for the container
+                                    pattern: ^[1-9][0-9]*m?$
+                                    type: string
+                                  memory:
+                                    description: Memory request for the container
+                                    pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
+                                    type: string
+                                type: object
+                            type: object
+                        type: object
+                      scheduleRuleWhenUnsatisfiable:
+                        default: ScheduleAnyway
+                        description: whenUnsatisfiable indicates how to deal with
+                          a Pod if it doesn't satisfy the spread constraint
+                        enum:
+                        - ScheduleAnyway
+                        - DoNotSchedule
+                        type: string
+                    type: object
+                  replicas:
+                    default: 3
+                    description: Number of replicas for the service
+                    type: integer
+                  resources:
+                    properties:
+                      backup-creator:
+                        description: Define resource requests/limits for the backup-creator
+                          container
+                        properties:
+                          limits:
+                            description: Define resource limits for the container
+                            properties:
+                              cpu:
+                                description: CPU time limit for the container
+                                pattern: ^[1-9][0-9]*m?$
+                                type: string
+                              memory:
+                                description: Memory limit for the container
+                                pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
+                                type: string
+                            type: object
+                          requests:
+                            description: Define resource requests for the container
+                            properties:
+                              cpu:
+                                description: CPU time request for the container
+                                pattern: ^[1-9][0-9]*m?$
+                                type: string
+                              memory:
+                                description: Memory request for the container
+                                pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
+                                type: string
+                            type: object
+                        type: object
+                      backup-shifter:
+                        description: Define resource requests/limits for the backup-shifter
+                          container
+                        properties:
+                          limits:
+                            description: Define resource limits for the container
+                            properties:
+                              cpu:
+                                description: CPU time limit for the container
+                                pattern: ^[1-9][0-9]*m?$
+                                type: string
+                              memory:
+                                description: Memory limit for the container
+                                pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
+                                type: string
+                            type: object
+                          requests:
+                            description: Define resource requests for the container
+                            properties:
+                              cpu:
+                                description: CPU time request for the container
+                                pattern: ^[1-9][0-9]*m?$
+                                type: string
+                              memory:
+                                description: Memory request for the container
+                                pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
+                                type: string
+                            type: object
+                        type: object
+                      mariadb-galera:
+                        description: Define resource requests/limits for the mariadb-galera
+                          container
+                        properties:
+                          limits:
+                            description: Define resource limits for the container
+                            properties:
+                              cpu:
+                                description: CPU time limit for the container
+                                pattern: ^[1-9][0-9]*m?$
+                                type: string
+                              memory:
+                                description: Memory limit for the container
+                                pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
+                                type: string
+                            type: object
+                          requests:
+                            description: Define resource requests for the container
+                            properties:
+                              cpu:
+                                description: CPU time request for the container
+                                pattern: ^[1-9][0-9]*m?$
+                                type: string
+                              memory:
+                                description: Memory request for the container
+                                pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
+                                type: string
+                            type: object
+                        type: object
+                      mysqld-exporter:
+                        description: Define resource requests/limits for the mysqld-exporter
+                          container
+                        properties:
+                          limits:
+                            description: Define resource limits for the container
+                            properties:
+                              cpu:
+                                description: CPU time limit for the container
+                                pattern: ^[1-9][0-9]*m?$
+                                type: string
+                              memory:
+                                description: Memory limit for the container
+                                pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
+                                type: string
+                            type: object
+                          requests:
+                            description: Define resource requests for the container
+                            properties:
+                              cpu:
+                                description: CPU time request for the container
+                                pattern: ^[1-9][0-9]*m?$
+                                type: string
+                              memory:
+                                description: Memory request for the container
+                                pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
+                                type: string
+                            type: object
+                        type: object
+                    type: object
+                  scheduleRuleWhenUnsatisfiable:
+                    default: ScheduleAnyway
+                    description: whenUnsatisfiable indicates how to deal with a Pod
+                      if it doesn't satisfy the spread constraint
+                    enum:
+                    - ScheduleAnyway
+                    - DoNotSchedule
+                    type: string
+                  storageClassName:
+                    description: Storage class name. If unset, the cluster-wide default
+                      storage class will be used. If that storage class is not set
+                      or does not work, the deployment will be broken. Changing storage
+                      classes after the initial rollout requires manual intervention.
+                    type: string
+                  storageSize:
+                    default: 8Gi
+                    description: Size to request for the PVC. Changing the size after
+                      the initial rollout requires manual intervention.
+                    pattern: ^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$
+                    type: string
+                  timeoutClient:
+                    default: 300
+                    description: Defines the maximum time a client can be inactive
+                      when connected to the server. Hint should be ~10% more than
+                      connection_recycle_time.
+                    type: integer
+                  tolerateNodeDown:
+                    default: false
+                    description: If set, Kubernetes will not evict the pod after 300s
+                      in case of a NodeDown or Node unreachable.
+                    type: boolean
+                required:
+                - proxy
+                - backup
+                type: object
+              issuerRef:
+                description: Reference an issuer for the certificates used internally
+                  by YAOOK (and, by default, also for external services unless overridden).
+                properties:
+                  name:
+                    default: ca-issuer
+                    description: Name of the cert-manager Issuer object
+                    type: string
+                type: object
+              loadBalancerIP:
+                description: IP address of the load balancer for the PowerDNS webserver
+                type: string
+              powerdnsConfig:
+                description: Key value pairs to overwrite pdns.conf settings
+                type: object
+                x-kubernetes-preserve-unknown-fields: true
+              replicas:
+                default: 3
+                description: Number of replicas for the service
+                type: integer
+              resources:
+                properties:
+                  powerdns:
+                    description: Define resource requests/limits for the  container
+                    properties:
+                      limits:
+                        description: Define resource limits for the container
+                        properties:
+                          cpu:
+                            description: CPU time limit for the container
+                            pattern: ^[1-9][0-9]*m?$
+                            type: string
+                          memory:
+                            description: Memory limit for the container
+                            pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
+                            type: string
+                        type: object
+                      requests:
+                        description: Define resource requests for the container
+                        properties:
+                          cpu:
+                            description: CPU time request for the container
+                            pattern: ^[1-9][0-9]*m?$
+                            type: string
+                          memory:
+                            description: Memory request for the container
+                            pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
+                            type: string
+                        type: object
+                    type: object
+                  service-reload:
+                    description: Define resource requests/limits for the  container
+                    properties:
+                      limits:
+                        description: Define resource limits for the container
+                        properties:
+                          cpu:
+                            description: CPU time limit for the container
+                            pattern: ^[1-9][0-9]*m?$
+                            type: string
+                          memory:
+                            description: Memory limit for the container
+                            pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
+                            type: string
+                        type: object
+                      requests:
+                        description: Define resource requests for the container
+                        properties:
+                          cpu:
+                            description: CPU time request for the container
+                            pattern: ^[1-9][0-9]*m?$
+                            type: string
+                          memory:
+                            description: Memory request for the container
+                            pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
+                            type: string
+                        type: object
+                    type: object
+                  ssl-terminator:
+                    description: Define resource requests/limits for the  container
+                    properties:
+                      limits:
+                        description: Define resource limits for the container
+                        properties:
+                          cpu:
+                            description: CPU time limit for the container
+                            pattern: ^[1-9][0-9]*m?$
+                            type: string
+                          memory:
+                            description: Memory limit for the container
+                            pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
+                            type: string
+                        type: object
+                      requests:
+                        description: Define resource requests for the container
+                        properties:
+                          cpu:
+                            description: CPU time request for the container
+                            pattern: ^[1-9][0-9]*m?$
+                            type: string
+                          memory:
+                            description: Memory request for the container
+                            pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
+                            type: string
+                        type: object
+                    type: object
+                type: object
+              scheduleRuleWhenUnsatisfiable:
+                default: ScheduleAnyway
+                description: whenUnsatisfiable indicates how to deal with a Pod if
+                  it doesn't satisfy the spread constraint
+                enum:
+                - ScheduleAnyway
+                - DoNotSchedule
+                type: string
+              serviceMonitor:
+                description: Configure the ServiceMonitor objects created by the operator.
+                properties:
+                  additionalLabels:
+                    additionalProperties:
+                      type: string
+                    description: Additional labels to set on the ServiceMonitor metadata.
+                    type: object
+                type: object
+              subnetCidr:
+                description: IP range of the k8s pod network. Used to only allow requests
+                  from within the k8s network.
+                type: string
+              targetRelease:
+                description: The release to deploy. Changing this will trigger an
+                  upgrade.
+                enum:
+                - '4.9'
+                type: string
+            required:
+            - database
+            - targetRelease
+            - subnetCidr
+            - apiKeySecret
+            - issuerRef
+            type: object
+          status:
+            properties:
+              conditions:
+                items:
+                  properties:
+                    lastTransitionTime:
+                      pattern: '[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z'
+                      type: string
+                    lastUpdateTime:
+                      pattern: '[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z'
+                      type: string
+                    message:
+                      type: string
+                    reason:
+                      type: string
+                    status:
+                      type: string
+                    type:
+                      enum:
+                      - Converged
+                      - GarbageCollected
+                      type: string
+                  required:
+                  - lastTransitionTime
+                  - lastUpdateTime
+                  - message
+                  - reason
+                  - status
+                  - type
+                  type: object
+                type: array
+                x-kubernetes-list-map-keys:
+                - type
+                x-kubernetes-list-type: map
+              installedRelease:
+                description: The last successfully deployed release.
+                type: string
+              nextRelease:
+                description: The next release to roll out. This differs from installedRelease
+                  during upgrades and from targetRelease during multi-step upgrades.
+                type: string
+              observedGeneration:
+                type: integer
+              phase:
+                enum:
+                - Created
+                - Updating
+                - WaitingForDependency
+                - Updated
+                - BackingOff
+                - InvalidConfiguration
+                type: string
+              replicas:
+                type: integer
+              updatedGeneration:
+                type: integer
+            required:
+            - conditions
+            - observedGeneration
+            - phase
+            type: object
+        required:
+        - spec
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
