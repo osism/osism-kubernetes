@@ -2,4 +2,6 @@
 headlamp_helm_chart_ref: /charts/headlamp
 headlamp_helm_release_name: headlamp
 headlamp_helm_release_namespace: kube-system
-headlamp_helm_values: {}
+headlamp_helm_values:
+  service:
+    type: LoadBalancer
