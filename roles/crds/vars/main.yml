@@ -1,5 +1,4 @@
 ---
-_crds_cert_manager_helm_values: {}
 _crds_mariadb_operator_helm_values: {}
 _crds_prometheus_operator_helm_values: {}
 _crds_yaook_operators_helm_values: {}

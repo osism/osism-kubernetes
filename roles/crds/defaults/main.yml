@@ -1,10 +1,4 @@
 ---
-crds_cert_manager: true
-crds_cert_manager_helm_chart_ref: /charts/cert-manager-crds
-crds_cert_manager_helm_release_name: cert-manager-crds
-crds_cert_manager_helm_release_namespace: crds
-crds_cert_manager_helm_values: {}
-
 crds_mariadb_operator: true
 crds_mariadb_operator_helm_chart_ref: /charts/mariadb-operator-crds
 crds_mariadb_operator_helm_release_name: mariadb-operator-crds

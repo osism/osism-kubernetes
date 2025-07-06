@@ -1,15 +1,4 @@
 ---
-- name: Deploy cert-manager crds
-  kubernetes.core.helm:
-    release_name: "{{ crds_cert_manager_helm_release_name }}"
-    chart_ref: "{{ crds_cert_manager_helm_chart_ref }}"
-    release_namespace: "{{ crds_cert_manager_helm_release_namespace }}"
-    create_namespace: true
-    kubeconfig: /share/kubeconfig
-    wait: true
-    values: "{{ _crds_cert_manager_helm_values | combine(crds_cert_manager_helm_values, recursive=True) }}"
-  when: crds_cert_manager | bool
-
 - name: Deploy mariadb-operator crds
   kubernetes.core.helm:
     release_name: "{{ crds_mariadb_operator_helm_release_name }}"
