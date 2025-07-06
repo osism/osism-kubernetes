@@ -67,3 +67,15 @@
       register: result
       changed_when: "'Performing upgrade' in result.stdout"
       when: capi_system_phase == "Active"
+
+    - name: Install openstack-resource-controller
+      ansible.builtin.shell: |
+        set -o pipefail
+
+        export KUBECONFIG=/share/kubeconfig
+
+        kubectl apply --server-side -f /install-korc.yaml
+      args:
+        executable: /bin/bash
+      register: result
+      changed_when: true
