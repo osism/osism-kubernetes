@@ -1,4 +1,15 @@
 ---
+- name: Deploy yaook operators crds
+  kubernetes.core.helm:
+    release_name: "{{ yaook_operators_crds_helm_release_name }}"
+    chart_ref: "{{ yaook_operators_crds_helm_chart_ref }}"
+    release_namespace: "{{ yaook_operators_crds_helm_release_namespace }}"
+    create_namespace: true
+    kubeconfig: /share/kubeconfig
+    wait: true
+    values: "{{ _yaook_operators_crds_helm_values | combine(yaook_operators_crds_helm_values, recursive=True) }}"
+  when: yaook_operators_crds | bool
+
 - name: Deploy cds-operator
   kubernetes.core.helm:
     release_name: "{{ yaook_operators_cds_helm_release_name }}"
