@@ -1,4 +1,10 @@
 ---
+yaook_operators_crds: true
+yaook_operators_crds_helm_chart_ref: /charts/crds
+yaook_operators_crds_helm_release_name: yaook-operators-crds
+yaook_operators_crds_helm_release_namespace: crds
+yaook_operators_crds_helm_values: {}
+
 yaook_operators_helm_release_namespace: yaook-operators
 
 yaook_operators_cds_helm_release_name: yaook-cds-operator

@@ -1,4 +1,5 @@
 ---
+_yaook_operators_crds_helm_values: {}
 _yaook_operators_cds_helm_values: {}
 _yaook_operators_cinder_helm_values: {}
 _yaook_operators_glance_helm_values: {}
