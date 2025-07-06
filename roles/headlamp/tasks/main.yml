@@ -1,4 +1,14 @@
 ---
+- name: Deploy headlamp
+  kubernetes.core.helm:
+    release_name: "{{ headlamp_helm_release_name }}"
+    chart_ref: "{{ headlamp_helm_chart_ref }}"
+    release_namespace: "{{ headlamp_helm_release_namespace }}"
+    create_namespace: true
+    kubeconfig: /share/kubeconfig
+    wait: true
+    values: "{{ _headlamp_helm_values | combine(headlamp_helm_values, recursive=True) }}"
+
 - name: Apply headlamp ServiceAccount
   kubernetes.core.k8s:
     definition: "{{ lookup('template', 'serviceaccount.yml.j2') | from_yaml }}"
@@ -10,13 +20,3 @@
     definition: "{{ lookup('template', 'clusterrolebinding.yml.j2') | from_yaml }}"
     kubeconfig: /share/kubeconfig
     state: present
-
-- name: Deploy headlamp
-  kubernetes.core.helm:
-    release_name: "{{ headlamp_helm_release_name }}"
-    chart_ref: "{{ headlamp_helm_chart_ref }}"
-    release_namespace: "{{ headlamp_helm_release_namespace }}"
-    create_namespace: true
-    kubeconfig: /share/kubeconfig
-    wait: true
-    values: "{{ _headlamp_helm_values | combine(headlamp_helm_values, recursive=True) }}"
