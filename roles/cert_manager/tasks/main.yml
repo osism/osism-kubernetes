@@ -1,4 +1,15 @@
 ---
+- name: Deploy cert-manager crds
+  kubernetes.core.helm:
+    release_name: "{{ cert_manager_crds_helm_release_name }}"
+    chart_ref: "{{ cert_manager_crds_helm_chart_ref }}"
+    release_namespace: "{{ cert_manager_crds_helm_release_namespace }}"
+    create_namespace: true
+    kubeconfig: /share/kubeconfig
+    wait: true
+    values: "{{ _cert_manager_crds_helm_values | combine(cert_manager_crds_helm_values, recursive=True) }}"
+  when: cert_manager_crds | bool
+
 - name: Deploy cert-manager
   kubernetes.core.helm:
     release_name: "{{ cert_manager_helm_release_name }}"

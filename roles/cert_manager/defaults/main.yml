@@ -1,4 +1,10 @@
 ---
+cert_manager_crds: true
+cert_manager_crds_helm_chart_ref: /charts/cert-manager-crds
+cert_manager_crds_helm_release_name: cert-manager-crds
+cert_manager_crds_helm_release_namespace: crds
+cert_manager_crds_helm_values: {}
+
 cert_manager_helm_chart_ref: /charts/cert-manager
 cert_manager_helm_release_name: cert-manager
 cert_manager_helm_release_namespace: certificates
