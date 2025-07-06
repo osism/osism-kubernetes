@@ -2,7 +2,7 @@
 container_registry_mariadb_operator: docker-registry3.mariadb.com  # noqa var-naming[no-role-prefix]
 mariadb_operator_image: "{{ container_registry_mariadb_operator }}/mariadb-operator/mariadb-operator"
 # renovate: datasource=docker depName=docker-registry3.mariadb.com/mariadb-operator/mariadb-operator
-mariadb_operator_image_tag: "0.36.0"
+mariadb_operator_image_tag: "0.38.1"
 
 mariadb_operator_helm_chart_ref: /charts/mariadb-operator
 mariadb_operator_helm_release_name: mariadb-operator
