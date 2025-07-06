@@ -1,4 +1,15 @@
 ---
+- name: Deploy mariadb-operator crds
+  kubernetes.core.helm:
+    release_name: "{{ mariadb_operator_crds_helm_release_name }}"
+    chart_ref: "{{ mariadb_operator_crds_helm_chart_ref }}"
+    release_namespace: "{{ mariadb_operator_crds_helm_release_namespace }}"
+    create_namespace: true
+    kubeconfig: /share/kubeconfig
+    wait: true
+    values: "{{ _mariadb_operator_crds_helm_values | combine(mariadb_operator_crds_helm_values, recursive=True) }}"
+  when: mariadb_operator_crds | bool
+
 - name: Deploy mariadb-operator
   kubernetes.core.helm:
     release_name: "{{ mariadb_operator_helm_release_name }}"

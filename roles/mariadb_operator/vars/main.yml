@@ -1,5 +1,6 @@
 # source: https://raw.githubusercontent.com/mariadb-operator/mariadb-operator/main/deploy/charts/mariadb-operator/values.yaml
 ---
+_mariadb_operator_crds_helm_values: {}
 _mariadb_operator_helm_values:
   nameOverride: ""
   fullnameOverride: ""

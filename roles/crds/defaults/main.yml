@@ -1,10 +1,4 @@
 ---
-crds_mariadb_operator: true
-crds_mariadb_operator_helm_chart_ref: /charts/mariadb-operator-crds
-crds_mariadb_operator_helm_release_name: mariadb-operator-crds
-crds_mariadb_operator_helm_release_namespace: crds
-crds_mariadb_operator_helm_values: {}
-
 crds_prometheus_operator: true
 crds_prometheus_operator_helm_chart_ref: /charts/prometheus-operator-crds
 crds_prometheus_operator_helm_release_name: prometheus-operator-crds
