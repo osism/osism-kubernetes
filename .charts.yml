@@ -1,5 +1,10 @@
 ---
 charts:
+  - name: redis-operator
+    source: https://artifacthub.io/packages/helm/ot-container-kit/redis-operator
+    version: 0.21.1
+    repository:
+      url: https://ot-container-kit.github.io/helm-charts/
   - name: opensearch
     source: https://artifacthub.io/packages/helm/opensearch-project-helm-charts/opensearch
     version: 3.1.0
