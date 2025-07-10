@@ -47,6 +47,12 @@ spec:
         - manager
         args:
         - --leader-elect
+        {{- if .Values.redisOperator.pprof.enabled }}
+        - --pprof-bind-address={{ .Values.redisOperator.pprof.bindAddress }}
+        {{- end }}
+        {{- if .Values.redisOperator.metrics.enabled }}
+        - --metrics-bind-address={{ .Values.redisOperator.metrics.bindAddress }}
+        {{- end }}
         {{- range $arg := .Values.redisOperator.extraArgs }}
         - {{ $arg }}
         {{- end }}
@@ -54,6 +60,16 @@ spec:
         - containerPort: 8081
           name: probe
           protocol: TCP
+      {{- if .Values.redisOperator.metrics.enabled }}
+        - containerPort: {{ .Values.redisOperator.metrics.bindAddress | regexFind ":[0-9]+" | trimPrefix ":" }}
+          name: metrics
+          protocol: TCP
+      {{- end }}
+      {{- if .Values.redisOperator.pprof.enabled }}
+        - containerPort: {{ .Values.redisOperator.pprof.bindAddress | regexFind ":[0-9]+" | trimPrefix ":" }}
+          name: pprof
+          protocol: TCP
+      {{- end }}
       {{- if .Values.redisOperator.webhook }}
         - containerPort: 9443
           name: webhook-server
