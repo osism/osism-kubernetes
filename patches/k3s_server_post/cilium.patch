@@ -1,0 +1,30 @@
+--- a/tasks/cilium.yml
++++ b/tasks/cilium.yml
+@@ -4,6 +4,7 @@
+     - ansible_hostname == hostvars[groups[group_name_master | default('master')][0]]['ansible_hostname']
+     - cilium_cli | default(true) | bool
+   run_once: true
++  delegate_to: localhost
+   block:
+     - name: Create tmp directory on first master
+       ansible.builtin.file:
+@@ -190,7 +191,7 @@
+         --helm-set bpf.loadBalancer.mode={{ bpf_lb_mode }}
+         {% endif %}
+       environment:
+-        KUBECONFIG: "{{ ansible_user_dir }}/.kube/config"
++        KUBECONFIG: /share/kubeconfig
+       register: cilium_install_result
+       changed_when: cilium_install_result.rc == 0
+       when: cilium_installed.rc != 0 or cilium_needs_update
+@@ -234,8 +235,8 @@
+           ansible.builtin.template:
+             src: cilium.crs.j2
+             dest: /tmp/k3s/cilium-bgp.yaml
+-            owner: root
+-            group: root
++            owner: dragon
++            group: dragon
+             mode: "0755"
+
+         - name: Apply BGP manifests
