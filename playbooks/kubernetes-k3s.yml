@@ -12,6 +12,7 @@
     - name: Apply role k3s_download
       become: true
       role: k3s_download
+      when: not k3s_skip_download | default(false)
 
     - name: Apply role k3s_custom_registries
       role: k3s_custom_registries
