@@ -46,6 +46,15 @@ spec:
                 required:
                 - name
                 type: object
+              dnsCacheTTL:
+                description: Caching duration of the Kubernetes DNS server. This is
+                  usually configured inside the ConfigMap `coredns` with the property
+                  `cache`.
+                type: integer
+              enableExporter:
+                default: true
+                description: Enable side car container to export additional metrics
+                type: boolean
               enabledPlugins:
                 default: rabbitmq_management,rabbitmq_prometheus
                 description: Plugins that should be enabled by AMQPServer
@@ -110,8 +119,35 @@ spec:
                 description: Resource limits for containers spawned by the AMQPServer
                 properties:
                   rabbitmq:
-                    description: Define resource requests/limits for the RabbitMQ
-                      container
+                    description: Define resource requests/limits for the  container
+                    properties:
+                      limits:
+                        description: Define resource limits for the container
+                        properties:
+                          cpu:
+                            description: CPU time limit for the container
+                            pattern: ^[1-9][0-9]*m?$
+                            type: string
+                          memory:
+                            description: Memory limit for the container
+                            pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
+                            type: string
+                        type: object
+                      requests:
+                        description: Define resource requests for the container
+                        properties:
+                          cpu:
+                            description: CPU time request for the container
+                            pattern: ^[1-9][0-9]*m?$
+                            type: string
+                          memory:
+                            description: Memory request for the container
+                            pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
+                            type: string
+                        type: object
+                    type: object
+                  rabbitmq-exporter:
+                    description: Define resource requests/limits for the  container
                     properties:
                       limits:
                         description: Define resource limits for the container
