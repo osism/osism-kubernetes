@@ -31,6 +31,7 @@ data:
 {{- end }}
 
 {{- if .Values.csi }}
+  ROOK_USE_CSI_OPERATOR: {{ .Values.csi.rookUseCsiOperator | quote }}
   ROOK_CSI_ENABLE_RBD: {{ .Values.csi.enableRbdDriver | quote }}
   ROOK_CSI_ENABLE_CEPHFS: {{ .Values.csi.enableCephfsDriver | quote }}
   ROOK_CSI_DISABLE_DRIVER: {{ .Values.csi.disableCsiDriver | quote }}
@@ -129,6 +130,9 @@ data:
 {{- if and .Values.csi.csiAddons.repository .Values.csi.csiAddons.tag }}
   ROOK_CSIADDONS_IMAGE: "{{ .Values.csi.csiAddons.repository }}:{{ .Values.csi.csiAddons.tag }}"
 {{- end }}
+{{- end }}
+{{- if .Values.csi.crossNamespaceVolumeDataSource }}
+  CSI_ENABLE_CROSS_NAMESPACE_VOLUME_DATA_SOURCE: {{ .Values.csi.crossNamespaceVolumeDataSource.enabled | quote }}
 {{- end }}
 {{- if .Values.csi.topology }}
   CSI_ENABLE_TOPOLOGY: {{ .Values.csi.topology.enabled | quote }}

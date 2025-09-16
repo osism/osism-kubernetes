@@ -34,6 +34,20 @@ spec:
         properties:
           spec:
             properties:
+              additionalHosts:
+                items:
+                  properties:
+                    hostnames:
+                      items:
+                        type: string
+                      type: array
+                    ip:
+                      type: string
+                  required:
+                  - hostnames
+                  - ip
+                  type: object
+                type: array
               api:
                 description: Configure the Barbican API deployment
                 properties:
@@ -446,6 +460,12 @@ spec:
                               bucket:
                                 description: Name of the bucket to store data into
                                 type: string
+                              checksumValidation:
+                                default: when_required
+                                description: Set AWS_REQUEST_CHECKSUM_CALCULATION
+                                  and AWS_RESPONSE_CHECKSUM_VALIDATION environment
+                                  variables.
+                                type: string
                               credentialRef:
                                 description: Reference a Secret for the S3 credentials
                                 properties:
@@ -730,6 +750,35 @@ spec:
                                 type: string
                             type: object
                         type: object
+                      replication-ports-blackbox-exporter:
+                        description: Define resource requests/limits for the replication-ports-blackbox-exporter
+                          container
+                        properties:
+                          limits:
+                            description: Define resource limits for the container
+                            properties:
+                              cpu:
+                                description: CPU time limit for the container
+                                pattern: ^[1-9][0-9]*m?$
+                                type: string
+                              memory:
+                                description: Memory limit for the container
+                                pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
+                                type: string
+                            type: object
+                          requests:
+                            description: Define resource requests for the container
+                            properties:
+                              cpu:
+                                description: CPU time request for the container
+                                pattern: ^[1-9][0-9]*m?$
+                                type: string
+                              memory:
+                                description: Memory request for the container
+                                pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
+                                type: string
+                            type: object
+                        type: object
                     type: object
                   scheduleRuleWhenUnsatisfiable:
                     default: ScheduleAnyway
@@ -941,6 +990,9 @@ spec:
               messageQueue:
                 description: Configure the RabbitMQ instance.
                 properties:
+                  enableExporter:
+                    description: Enable side car container to export additional metric
+                    type: boolean
                   replicas:
                     default: 3
                     description: Number of replicas for the service
@@ -955,6 +1007,35 @@ spec:
                     properties:
                       rabbitmq:
                         description: Define resource requests/limits for the RabbitMQ
+                          container
+                        properties:
+                          limits:
+                            description: Define resource limits for the container
+                            properties:
+                              cpu:
+                                description: CPU time limit for the container
+                                pattern: ^[1-9][0-9]*m?$
+                                type: string
+                              memory:
+                                description: Memory limit for the container
+                                pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
+                                type: string
+                            type: object
+                          requests:
+                            description: Define resource requests for the container
+                            properties:
+                              cpu:
+                                description: CPU time request for the container
+                                pattern: ^[1-9][0-9]*m?$
+                                type: string
+                              memory:
+                                description: Memory request for the container
+                                pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
+                                type: string
+                            type: object
+                        type: object
+                      rabbitmq-exporter:
+                        description: Define resource requests/limits for the rabbitmq-exporter
                           container
                         properties:
                           limits:

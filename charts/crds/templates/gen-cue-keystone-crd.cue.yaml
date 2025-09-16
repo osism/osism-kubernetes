@@ -376,6 +376,12 @@ spec:
                               bucket:
                                 description: Name of the bucket to store data into
                                 type: string
+                              checksumValidation:
+                                default: when_required
+                                description: Set AWS_REQUEST_CHECKSUM_CALCULATION
+                                  and AWS_RESPONSE_CHECKSUM_VALIDATION environment
+                                  variables.
+                                type: string
                               credentialRef:
                                 description: Reference a Secret for the S3 credentials
                                 properties:
@@ -660,6 +666,35 @@ spec:
                                 type: string
                             type: object
                         type: object
+                      replication-ports-blackbox-exporter:
+                        description: Define resource requests/limits for the replication-ports-blackbox-exporter
+                          container
+                        properties:
+                          limits:
+                            description: Define resource limits for the container
+                            properties:
+                              cpu:
+                                description: CPU time limit for the container
+                                pattern: ^[1-9][0-9]*m?$
+                                type: string
+                              memory:
+                                description: Memory limit for the container
+                                pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
+                                type: string
+                            type: object
+                          requests:
+                            description: Define resource requests for the container
+                            properties:
+                              cpu:
+                                description: CPU time request for the container
+                                pattern: ^[1-9][0-9]*m?$
+                                type: string
+                              memory:
+                                description: Memory request for the container
+                                pattern: ^[1-9][0-9]*(E|P|T|G|M|k|Ei|Pi|Ti|Gi|Mi|Ki)?$
+                                type: string
+                            type: object
+                        type: object
                     type: object
                   scheduleRuleWhenUnsatisfiable:
                     default: ScheduleAnyway
@@ -696,6 +731,15 @@ spec:
                 - proxy
                 - backup
                 type: object
+              extraProjected:
+                description: An additional volume which gets mounted into /mnt/projected
+                  into all pods which also receive the Keystone configuration. This
+                  allows to mount extra files from ConfigMaps or Secrets which are
+                  referenced by the Keystone configuration, such as TLS certificates
+                  for LDAP connectivity.This must be a valid value for a volumes[].projected
+                  key in a PodSpec. See the Kubernetes API for details.
+                type: object
+                x-kubernetes-preserve-unknown-fields: true
               imagePullSecrets:
                 description: References to image pull secrets which should be included
                   in all Pods spawned directly or indirectly by this resource.

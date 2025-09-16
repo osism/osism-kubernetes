@@ -102,6 +102,8 @@ kubectl create secret tls <webhook-server-cert> --key tls.key --cert tls.crt -n 
 | issuer.solver.enabled | bool | `true` |  |
 | issuer.solver.ingressClass | string | `"nginx"` |  |
 | issuer.type | string | `"selfSigned"` |  |
+| manager.config.kubeClientQPS | float | `0` | If value > 0, it will override the default value in the operator |
+| manager.config.kubeClientTimeout | string | `"60s"` |  |
 | nodeSelector | object | `{}` |  |
 | podSecurityContext | object | `{}` |  |
 | priorityClassName | string | `""` |  |
@@ -109,10 +111,12 @@ kubectl create secret tls <webhook-server-cert> --key tls.key --cert tls.crt -n 
 | redisOperator.automountServiceAccountToken | bool | `true` |  |
 | redisOperator.env | list | `[]` |  |
 | redisOperator.extraArgs | list | `[]` |  |
-| redisOperator.imageName | string | `"ghcr.io/ot-container-kit/redis-operator/redis-operator"` |  |
+| redisOperator.imageName | string | `"quay.io/opstree/redis-operator"` |  |
 | redisOperator.imagePullPolicy | string | `"Always"` |  |
 | redisOperator.imagePullSecrets | list | `[]` |  |
 | redisOperator.imageTag | string | `""` |  |
+| redisOperator.metrics.bindAddress | string | `":8080"` |  |
+| redisOperator.metrics.enabled | bool | `true` |  |
 | redisOperator.name | string | `"redis-operator"` |  |
 | redisOperator.podAnnotations | object | `{}` |  |
 | redisOperator.podLabels | object | `{}` |  |

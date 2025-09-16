@@ -1564,6 +1564,27 @@ spec:
                   minReadySeconds:
                     format: int32
                     type: integer
+                  persistentVolumeClaimRetentionPolicy:
+                    description: |-
+                      StatefulSetPersistentVolumeClaimRetentionPolicy describes the policy used for PVCs
+                      created from the StatefulSet VolumeClaimTemplates.
+                    properties:
+                      whenDeleted:
+                        description: |-
+                          WhenDeleted specifies what happens to PVCs created from StatefulSet
+                          VolumeClaimTemplates when the StatefulSet is deleted. The default policy
+                          of `Retain` causes PVCs to not be affected by StatefulSet deletion. The
+                          `Delete` policy causes those PVCs to be deleted.
+                        type: string
+                      whenScaled:
+                        description: |-
+                          WhenScaled specifies what happens to PVCs created from StatefulSet
+                          VolumeClaimTemplates when the StatefulSet is scaled down. The default
+                          policy of `Retain` causes PVCs to not be affected by a scaledown. The
+                          `Delete` policy causes the associated PVCs for any excess pods above
+                          the replica count to be deleted.
+                        type: string
+                    type: object
                   redisSecret:
                     description: ExistingPasswordSecret is the struct to access the
                       existing secret
@@ -5580,6 +5601,8 @@ spec:
                     type: object
                 type: object
               clusterSize:
+                description: ClusterSize defines the default number of replicas for
+                  both leader and follower when not explicitly set
                 format: int32
                 type: integer
               clusterVersion:
@@ -6085,6 +6108,27 @@ spec:
                   minReadySeconds:
                     format: int32
                     type: integer
+                  persistentVolumeClaimRetentionPolicy:
+                    description: |-
+                      StatefulSetPersistentVolumeClaimRetentionPolicy describes the policy used for PVCs
+                      created from the StatefulSet VolumeClaimTemplates.
+                    properties:
+                      whenDeleted:
+                        description: |-
+                          WhenDeleted specifies what happens to PVCs created from StatefulSet
+                          VolumeClaimTemplates when the StatefulSet is deleted. The default policy
+                          of `Retain` causes PVCs to not be affected by StatefulSet deletion. The
+                          `Delete` policy causes those PVCs to be deleted.
+                        type: string
+                      whenScaled:
+                        description: |-
+                          WhenScaled specifies what happens to PVCs created from StatefulSet
+                          VolumeClaimTemplates when the StatefulSet is scaled down. The default
+                          policy of `Retain` causes PVCs to not be affected by a scaledown. The
+                          `Delete` policy causes the associated PVCs for any excess pods above
+                          the replica count to be deleted.
+                        type: string
+                    type: object
                   redisSecret:
                     description: ExistingPasswordSecret is the struct to access the
                       existing secret
@@ -8042,6 +8086,8 @@ spec:
                         type: integer
                     type: object
                   replicas:
+                    description: Replicas overrides clusterSize for follower nodes
+                      count. If not set, uses clusterSize value
                     format: int32
                     type: integer
                   resources:
@@ -9719,6 +9765,8 @@ spec:
                         type: integer
                     type: object
                   replicas:
+                    description: Replicas overrides clusterSize for leader nodes count.
+                      If not set, uses clusterSize value
                     format: int32
                     type: integer
                   resources:
@@ -14779,6 +14827,27 @@ spec:
                   minReadySeconds:
                     format: int32
                     type: integer
+                  persistentVolumeClaimRetentionPolicy:
+                    description: |-
+                      StatefulSetPersistentVolumeClaimRetentionPolicy describes the policy used for PVCs
+                      created from the StatefulSet VolumeClaimTemplates.
+                    properties:
+                      whenDeleted:
+                        description: |-
+                          WhenDeleted specifies what happens to PVCs created from StatefulSet
+                          VolumeClaimTemplates when the StatefulSet is deleted. The default policy
+                          of `Retain` causes PVCs to not be affected by StatefulSet deletion. The
+                          `Delete` policy causes those PVCs to be deleted.
+                        type: string
+                      whenScaled:
+                        description: |-
+                          WhenScaled specifies what happens to PVCs created from StatefulSet
+                          VolumeClaimTemplates when the StatefulSet is scaled down. The default
+                          policy of `Retain` causes PVCs to not be affected by a scaledown. The
+                          `Delete` policy causes the associated PVCs for any excess pods above
+                          the replica count to be deleted.
+                        type: string
+                    type: object
                   redisSecret:
                     description: ExistingPasswordSecret is the struct to access the
                       existing secret
@@ -20277,6 +20346,27 @@ spec:
                   minReadySeconds:
                     format: int32
                     type: integer
+                  persistentVolumeClaimRetentionPolicy:
+                    description: |-
+                      StatefulSetPersistentVolumeClaimRetentionPolicy describes the policy used for PVCs
+                      created from the StatefulSet VolumeClaimTemplates.
+                    properties:
+                      whenDeleted:
+                        description: |-
+                          WhenDeleted specifies what happens to PVCs created from StatefulSet
+                          VolumeClaimTemplates when the StatefulSet is deleted. The default policy
+                          of `Retain` causes PVCs to not be affected by StatefulSet deletion. The
+                          `Delete` policy causes those PVCs to be deleted.
+                        type: string
+                      whenScaled:
+                        description: |-
+                          WhenScaled specifies what happens to PVCs created from StatefulSet
+                          VolumeClaimTemplates when the StatefulSet is scaled down. The default
+                          policy of `Retain` causes PVCs to not be affected by a scaledown. The
+                          `Delete` policy causes the associated PVCs for any excess pods above
+                          the replica count to be deleted.
+                        type: string
+                    type: object
                   redisSecret:
                     description: ExistingPasswordSecret is the struct to access the
                       existing secret

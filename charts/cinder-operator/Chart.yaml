@@ -2,6 +2,6 @@ apiVersion: v2
 description: Yaook cinder operator
 type: application
 name: cinder-operator
-version:  "0.20250602.0"
-appVersion: "0.20250602.0"
+version:  "0.20250904.0"
+appVersion: "0.20250904.0"
 kubeVersion: ">=1.16.0-0"

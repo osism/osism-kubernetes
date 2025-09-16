@@ -34,6 +34,10 @@ spec:
         properties:
           spec:
             properties:
+              additionalFrontendCertDnsNames:
+                items:
+                  type: string
+                type: array
               backup:
                 description: Backup configuration
                 properties:
@@ -59,6 +63,11 @@ spec:
                             type: string
                           bucket:
                             description: Name of the bucket to store data into
+                            type: string
+                          checksumValidation:
+                            default: when_required
+                            description: Set AWS_REQUEST_CHECKSUM_CALCULATION and
+                              AWS_RESPONSE_CHECKSUM_VALIDATION environment variables.
                             type: string
                           credentialRef:
                             description: Reference a Secret for the S3 credentials

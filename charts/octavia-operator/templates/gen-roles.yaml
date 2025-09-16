@@ -5,7 +5,15 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: {{ include "yaook.operator-lib.fullname" . }}
-rules: []
+rules:
+- apiGroups:
+  - ''
+  resources:
+  - nodes
+  verbs:
+  - get
+  - list
+  - watch
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
@@ -42,6 +50,15 @@ rules:
 - apiGroups:
   - ''
   resources:
+  - nodes
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - ''
+  resources:
+  - nodes/status
   - pods
   verbs:
   - get
@@ -90,6 +107,26 @@ rules:
 - apiGroups:
   - apps
   resources:
+  - daemonsets
+  verbs:
+  - create
+  - delete
+  - deletecollection
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - apps
+  resources:
+  - daemonsets/status
+  verbs:
+  - get
+  - list
+- apiGroups:
+  - apps
+  resources:
   - deployments
   verbs:
   - create
@@ -119,6 +156,26 @@ rules:
   - apps
   resources:
   - statefulsets/status
+  verbs:
+  - get
+  - list
+- apiGroups:
+  - apps.yaook.cloud
+  resources:
+  - configureddaemonsets
+  verbs:
+  - create
+  - delete
+  - deletecollection
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - apps.yaook.cloud
+  resources:
+  - configureddaemonsets/status
   verbs:
   - get
   - list
@@ -301,6 +358,28 @@ rules:
   verbs:
   - get
   - list
+- apiGroups:
+  - octavia.yaook.cloud
+  resources:
+  - octavianeutronports
+  verbs:
+  - create
+  - delete
+  - deletecollection
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - octavia.yaook.cloud
+  resources:
+  - octavianeutronports/status
+  verbs:
+  - get
+  - list
+  - patch
+  - update
 - apiGroups:
   - policy
   resources:
