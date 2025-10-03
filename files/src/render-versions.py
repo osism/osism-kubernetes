@@ -16,7 +16,7 @@ environment = jinja2.Environment(loader=loader)
 # render versions.yml
 
 template = environment.get_template("versions.yml.j2")
-result = template.render({})
+result = template.render({"osism_kubernetes_version": versions["manager_version"]})
 
 with open("/ansible/group_vars/all/versions.yml", "w+") as fp:
     fp.write(result)
