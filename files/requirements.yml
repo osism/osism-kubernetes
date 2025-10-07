@@ -11,7 +11,7 @@ collections:
     version: '11.3.0'
   - name: kubernetes.core
     source: https://galaxy.ansible.com
-    version: '6.1.0'
+    version: '6.2.0'
   - name: osism.commons
     source: https://galaxy.ansible.com
     version: '0.20250927.0'
