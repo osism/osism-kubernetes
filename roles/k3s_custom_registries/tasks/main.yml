@@ -20,3 +20,9 @@
   when:
     - custom_registries_yaml is defined
     - custom_registries_yaml | length > 0
+
+- name: Remove /etc/rancher/k3s/registries.yaml when no registries configured
+  ansible.builtin.file:
+    path: /etc/rancher/k3s/registries.yaml
+    state: absent
+  when: custom_registries_yaml is not defined or custom_registries_yaml | length == 0
