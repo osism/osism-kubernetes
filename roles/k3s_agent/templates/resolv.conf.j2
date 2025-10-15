@@ -1,0 +1,8 @@
+{% if k3s_resolvconf_nameserver | length > 0 %}
+{% for nameserver in k3s_resolvconf_nameserver %}
+nameserver {{ nameserver }}
+{% endfor %}
+{% if k3s_resolvconf_search | length > 0 %}
+search {{ k3s_resolvconf_search }}
+{% endif %}
+{% endif %}
