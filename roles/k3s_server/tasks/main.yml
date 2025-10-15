@@ -60,9 +60,31 @@
 - name: Verification
   when: not ansible_check_mode
   block:  # noqa: osism-fqcn
+    - name: Detect Kubernetes version for label compatibility
+      ansible.builtin.command:
+        cmd: "{{ k3s_kubectl_binary | default('k3s kubectl') }} version --output=json"
+      register: k8s_version_output
+      changed_when: false
+      failed_when: false
+
+    - name: Set node role label selector based on Kubernetes version
+      ansible.builtin.set_fact:
+        node_role_label: >-
+          {%- if k8s_version_output.rc == 0 -%}
+            {%- set version_data = k8s_version_output.stdout | from_json -%}
+            {%- set server_version = version_data.serverVersion.gitVersion | regex_replace('^v', '') -%}
+            {%- if server_version is version('1.34', '>=') -%}
+              node-role.kubernetes.io/control-plane=true
+          {%- else -%}
+              node-role.kubernetes.io/master=true
+          {%- endif -%}
+          {%- else -%}
+            node-role.kubernetes.io/master=true
+          {%- endif -%}
+
     - name: Verify that all nodes actually joined (check k3s-init.service if this fails)
       ansible.builtin.command:
-        cmd: "{{ k3s_kubectl_binary | default('k3s kubectl') }} get nodes -l 'node-role.kubernetes.io/master=true' -o=jsonpath='{.items[*].metadata.name}'" # yamllint disable-line rule:line-length
+        cmd: "{{ k3s_kubectl_binary | default('k3s kubectl') }} get nodes -l '{{ node_role_label }}' -o=jsonpath='{.items[*].metadata.name}'" # yamllint disable-line rule:line-length
       register: nodes
       until: nodes.rc == 0 and (nodes.stdout.split() | length) == (groups[group_name_master | default('master')] | length) # yamllint disable-line rule:line-length
       retries: "{{ retry_count | default(20) }}"
