@@ -1,0 +1,7 @@
+---
+extra_agent_args: ""
+group_name_master: master
+systemd_dir: /etc/systemd/system
+
+k3s_resolvconf_nameserver: []
+k3s_resolvconf_search: ""
