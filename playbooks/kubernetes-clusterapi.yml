@@ -44,6 +44,7 @@
 
         export KUBECONFIG=/share/kubeconfig
         export EXP_CLUSTER_RESOURCE_SET=true
+        export EXP_KUBEADM_BOOTSTRAP_FORMAT_IGNITION=true
         export CLUSTER_TOPOLOGY=true
         export GOPROXY=off
 
