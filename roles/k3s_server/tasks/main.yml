@@ -70,10 +70,10 @@
     - name: Set node role label selector based on Kubernetes version
       ansible.builtin.set_fact:
         node_role_label: >-
-          {%- if k8s_version_output.rc == 0 -%}
+          {%- if k8s_version_output.stdout | length > 0 and 'clientVersion' in k8s_version_output.stdout -%}
             {%- set version_data = k8s_version_output.stdout | from_json -%}
-            {%- set server_version = version_data.serverVersion.gitVersion | regex_replace('^v', '') -%}
-            {%- if server_version is version('1.34', '>=') -%}
+            {%- set client_version = version_data.clientVersion.gitVersion | regex_replace('^v', '') -%}
+            {%- if client_version is version('1.34', '>=') -%}
               node-role.kubernetes.io/control-plane=true
           {%- else -%}
               node-role.kubernetes.io/master=true
