@@ -18,7 +18,6 @@ COPY --link roles /ansible/roles
 
 COPY --link files/ansible.cfg /etc/ansible/ansible.cfg
 COPY --link files/ara.env /ansible/ara.env
-COPY --link files/install-korc.yaml /install-korc.yaml
 COPY --link files/requirements.yml /ansible/requirements.yml
 COPY --link files/scripts/* /
 COPY --link files/src /src
