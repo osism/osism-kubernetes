@@ -3,7 +3,7 @@ extends: default
 
 ignore: |
   charts/
-  files/install-korc.yaml
+  files/install-orc.yaml
   roles/keycloak_operator/files/keycloakrealmimports.k8s.keycloak.org-v1.yml
   roles/keycloak_operator/files/keycloaks.k8s.keycloak.org-v1.yml
 

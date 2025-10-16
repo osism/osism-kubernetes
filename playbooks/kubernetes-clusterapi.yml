@@ -84,7 +84,7 @@
 
         export KUBECONFIG=/share/kubeconfig
 
-        kubectl apply --server-side -f /install-korc.yaml
+        kubectl apply --server-side -f /install-orc.yaml
       args:
         executable: /bin/bash
       register: result
