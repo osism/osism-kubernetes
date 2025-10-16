@@ -18,8 +18,8 @@
   vars:
     ansible_python_interpreter: /usr/bin/python3
 
-    capi_version: 1.10.3
-    capo_version: 0.12.4
+    capi_version: 1.11.2
+    capo_version: 0.13.0
 
   tasks:
     - name: Get capi-system namespace phase
