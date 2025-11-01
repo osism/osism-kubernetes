@@ -8,7 +8,9 @@
 {{- $callbackURL := "" }}
 {{- $validatorClientID := "" }}
 {{- $validatorIssuerURL := "" }}
+{{- $usePKCE := "" }}
 {{- $useAccessToken := "" }}
+{{- $meUserInfoURL := "" }}
 
 # This block of code is used to extract the values from the env.
 # This is done to check if the values are non-empty and if they are, they are used in the deployment.yaml.
@@ -37,12 +39,19 @@
   {{- if eq .name "OIDC_USE_ACCESS_TOKEN" }}
     {{- $useAccessToken = .value | toString }}
   {{- end }}
+  {{- if eq .name "OIDC_USE_PKCE" }}
+    {{- $usePKCE = .value | toString }}
+  {{- end }}
+  {{- if eq .name "ME_USER_INFO_URL" }}
+    {{- $meUserInfoURL = .value | toString }}
+  {{- end }}
 {{- end }}
 
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "headlamp.fullname" . }}
+  namespace: {{ include "headlamp.namespace" . }}
   labels:
     {{- include "headlamp.labels" . | nindent 4 }}
   {{- with .Values.deploymentAnnotations }}
@@ -62,6 +71,9 @@ spec:
       {{- end }}
       labels:
         {{- include "headlamp.selectorLabels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -78,7 +90,12 @@ spec:
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
+            {{- if .Values.securityContext }}
+              {{- toYaml .Values.securityContext | nindent 12 }}
+            {{- else }}
+              {{- $defaultSC := dict "allowPrivilegeEscalation" false "runAsNonRoot" true "seccompProfile" (dict "type" "RuntimeDefault") "capabilities" (dict "drop" (list "ALL")) }}
+              {{- toYaml $defaultSC | nindent 12 }}
+            {{- end }}
           image: "{{ .Values.image.registry}}/{{ .Values.image.repository }}:{{ .Values.image.tag | default (printf "v%s" .Chart.AppVersion) }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           {{ if or $oidc .Values.env }}
@@ -150,6 +167,20 @@ spec:
                   name: {{ $oidc.secret.name }}
                   key: useAccessToken
             {{- end }}
+            {{- if $oidc.usePKCE }}
+            - name: OIDC_USE_PKCE
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $oidc.secret.name }}
+                  key: usePKCE
+            {{- end }}
+            {{- if $oidc.meUserInfoURL }}
+            - name: ME_USER_INFO_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $oidc.secret.name }}
+                  key: meUserInfoURL
+            {{- end }}
             {{- else }}
             {{- if $oidc.clientID }}
             - name: OIDC_CLIENT_ID
@@ -183,6 +214,14 @@ spec:
             - name: OIDC_USE_ACCESS_TOKEN
               value: {{ $oidc.useAccessToken }}
             {{- end }}
+            {{- if $oidc.usePKCE }}
+            - name: OIDC_USE_PKCE
+              value: {{ $oidc.usePKCE }}
+            {{- end }}
+            {{- if $oidc.meUserInfoURL }}
+            - name: ME_USER_INFO_URL
+              value: {{ $oidc.meUserInfoURL }}
+            {{- end }}
             {{- end }}
             {{- if .Values.env }}
             {{- toYaml .Values.env | nindent 12 }}
@@ -192,6 +231,9 @@ spec:
           args:
             {{- if .Values.config.inCluster }}
             - "-in-cluster"
+            {{- end }}
+            {{- with .Values.config.enableHelm }}
+            - "-enable-helm"
             {{- end }}
             {{- if .Values.config.watchPlugins }}
             - "-watch-plugins-changes"
@@ -233,6 +275,12 @@ spec:
             # Check if useAccessToken is non false either from env or oidc.config
             - "-oidc-use-access-token=$(OIDC_USE_ACCESS_TOKEN)"
             {{- end }}
+            {{- if or (eq ($oidc.usePKCE | toString) "true") (eq $usePKCE "true") }}
+            - "-oidc-use-pkce=$(OIDC_USE_PKCE)"
+            {{- end }}
+            {{- if or (ne $oidc.meUserInfoURL "") (ne $meUserInfoURL "") }}
+            - "-me-user-info-url=$(ME_USER_INFO_URL)"
+            {{- end }}
             {{- else }}
             - "-oidc-client-id=$(OIDC_CLIENT_ID)"
             - "-oidc-client-secret=$(OIDC_CLIENT_SECRET)"
@@ -250,9 +298,18 @@ spec:
             # Check if validatorIssuerURL is non empty either from env or oidc.config
             - "-oidc-validator-idp-issuer-url=$(OIDC_VALIDATOR_ISSUER_URL)"
             {{- end }}
+            {{- if or (ne $oidc.meUserInfoURL "") (ne $meUserInfoURL "") }}
+            - "-me-user-info-url=$(ME_USER_INFO_URL)"
+            {{- end }}
             {{- end }}
             {{- with .Values.config.baseURL }}
             - "-base-url={{ . }}"
+            {{- end }}
+            {{- with .Values.config.tlsCertPath }}
+            - "-tls-cert-path={{ . }}"
+            {{- end }}
+            {{- with .Values.config.tlsKeyPath }}
+            - "-tls-key-path={{ . }}"
             {{- end }}
             {{- with .Values.config.extraArgs }}
               {{- toYaml . | nindent 12 }}
@@ -283,18 +340,23 @@ spec:
           {{- end }}
         {{- if .Values.pluginsManager.enabled }}
         - name: headlamp-plugin
-
           image: {{ .Values.pluginsManager.baseImage }}
           command: ["/bin/sh", "-c"]
+          {{- if .Values.pluginsManager.env }}
+          env:
+            {{- toYaml .Values.pluginsManager.env | nindent 12 }}
+          {{- end }}
           args:
             - |
-              echo "Installing headlamp-plugin globally..."
-              npm install -g @headlamp-k8s/pluginctl@{{ .Values.pluginsManager.version }}
-              echo "Installed headlamp-plugin successfully."
               if [ -f "/config/plugin.yml" ]; then
                 echo "Installing plugins from config..."
                 cat /config/plugin.yml
-                pluginctl install --config /config/plugin.yml --folderName {{ .Values.config.pluginsDir }} --watch
+                # Use a writable cache directory
+                export NPM_CONFIG_CACHE=/tmp/npm-cache
+                # Use a writable config directory
+                export NPM_CONFIG_USERCONFIG=/tmp/npm-userconfig
+                mkdir -p /tmp/npm-cache /tmp/npm-userconfig
+                npx --yes @headlamp-k8s/pluginctl@{{ .Values.pluginsManager.version }} install --config /config/plugin.yml --folderName {{ .Values.config.pluginsDir }} --watch
               fi
           volumeMounts:
             - name: plugins-dir
@@ -303,6 +365,15 @@ spec:
               mountPath: /config
           resources:
             {{- toYaml .Values.pluginsManager.resources | nindent 12 }}
+          securityContext:
+            {{- if .Values.pluginsManager.securityContext }}
+              {{- toYaml .Values.pluginsManager.securityContext | nindent 12 }}
+            {{- else if $.Values.securityContext }}
+              {{- toYaml $.Values.securityContext | nindent 12 }}
+            {{- else }}
+              {{- $defaultSC := dict "allowPrivilegeEscalation" false "runAsNonRoot" true "seccompProfile" (dict "type" "RuntimeDefault") "capabilities" (dict "drop" (list "ALL")) }}
+              {{- toYaml $defaultSC | nindent 12 }}
+            {{- end }}
         {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
