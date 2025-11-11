@@ -254,7 +254,7 @@ COPY --link --from=builder / /
 ENV PYTHONWARNINGS="ignore::UserWarning"
 ENV KUBECONFIG="/share/kubeconfig"
 
-VOLUME ["/share", "/interface"]
-USER dragon
 WORKDIR /ansible
+RUN chown -R dragon: /ansible
+USER dragon
 ENTRYPOINT ["/entrypoint.sh"]
