@@ -3,6 +3,14 @@
   run_once: true
   delegate_to: localhost
   block:  # noqa: osism-fqcn
+    - name: Create tmp directory on first master
+      ansible.builtin.file:
+        path: /tmp/k3s
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
     - name: Wait for connectivity to kube VIP
       ansible.builtin.command: ping -c 1 {{ apiserver_endpoint }}
       register: ping_result
