@@ -24,7 +24,6 @@ COPY --link files/scripts/* /
 COPY --link files/src /src
 COPY --link patches /patches
 
-ADD https://github.com/mitogen-hq/mitogen/archive/refs/tags/v0.3.22.tar.gz /mitogen.tar.gz
 COPY --from=ghcr.io/astral-sh/uv:0.9.13 /uv /usr/local/bin/uv
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -130,12 +129,6 @@ for role in /ansible/roles/*; do
     done;
   fi;
 done
-
-# install mitogen ansible plugin
-mkdir -p /usr/share/mitogen
-tar xzf /mitogen.tar.gz --strip-components=1 -C /usr/share/mitogen
-rm -rf /usr/share/mitogen/{tests,docs,.ci,.lgtm.yml,.travis.yml}
-rm /mitogen.tar.gz
 
 # install helm
 curl -fsSL https://packages.buildkite.com/helm-linux/helm-debian/gpgkey | gpg --dearmor | tee /usr/share/keyrings/helm.gpg > /dev/null
