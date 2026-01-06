@@ -24,7 +24,7 @@ COPY --link files/scripts/* /
 COPY --link files/src /src
 COPY --link patches /patches
 
-COPY --from=ghcr.io/astral-sh/uv:0.9.18 /uv /usr/local/bin/uv
+COPY --from=ghcr.io/astral-sh/uv:0.9.22 /uv /usr/local/bin/uv
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
