@@ -2,7 +2,7 @@
 collections:
   - name: ansible.utils
     source: https://galaxy.ansible.com
-    version: '6.0.0'
+    version: '6.0.1'
   - name: ansible.posix
     source: https://galaxy.ansible.com
     version: '2.1.0'
