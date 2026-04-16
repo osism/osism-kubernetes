@@ -74,15 +74,9 @@ class Chart(BaseModel):
 
 async def patch(input: bytes, path: aiopath.AsyncPath):
     async with NamedTemporaryFile() as temp_file:
-        await temp_file.write(
-            textwrap.dedent(
-                f"""\
+        await temp_file.write(textwrap.dedent(f"""\
                 {path.name}/*
-                """
-            )
-            .strip()
-            .encode()
-        )
+                """).strip().encode())
         await temp_file.flush()
 
         proc = await asyncio.create_subprocess_shell(
@@ -96,16 +90,10 @@ async def patch(input: bytes, path: aiopath.AsyncPath):
             raise Exception(stderr)
 
     async with NamedTemporaryFile() as temp_file:
-        await temp_file.write(
-            textwrap.dedent(
-                f"""\
+        await temp_file.write(textwrap.dedent(f"""\
                 {path.name}/Chart.yaml
                 {path.name}/values_overrides/*
-                """
-            )
-            .strip()
-            .encode()
-        )
+                """).strip().encode())
         await temp_file.flush()
 
         proc = await asyncio.create_subprocess_shell(
