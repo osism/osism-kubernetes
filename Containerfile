@@ -80,7 +80,7 @@ useradd -l -g dragon -G docker -u "$USER_ID" -m -d /ansible dragon
 git clone https://github.com/osism/release /release
 
 # prepare project repository
-git clone https://github.com/osism/cfg-generics /generics
+git clone https://github.com/osism/generics /generics
 
 if [ "$VERSION" != "latest" ]; then
   ( cd /release || exit; git fetch --all --force; git checkout "osism-kubernetes-$VERSION" )
