@@ -105,39 +105,3 @@ charts:
     version: 0.37.0
     repository:
       url: https://kubernetes-sigs.github.io/headlamp/
-  - name: cds-operator
-    version: 0.20250904.0
-    repository:
-      url: https://charts.yaook.cloud/operator/stable
-  - name: crds
-    version: 0.20250904.0
-    repository:
-      url: https://charts.yaook.cloud/operator/stable
-  - name: infra-operator
-    version: 0.20250904.0
-    repository:
-      url: https://charts.yaook.cloud/operator/stable
-  - name: keystone-operator
-    version: 0.20250904.0
-    repository:
-      url: https://charts.yaook.cloud/operator/stable
-  - name: keystone-resources-operator
-    version: 0.20250904.0
-    repository:
-      url: https://charts.yaook.cloud/operator/stable
-  - name: cinder-operator
-    version: 0.20250904.0
-    repository:
-      url: https://charts.yaook.cloud/operator/stable
-  - name: glance-operator
-    version: 0.20250904.0
-    repository:
-      url: https://charts.yaook.cloud/operator/stable
-  - name: horizon-operator
-    version: 0.20250904.0
-    repository:
-      url: https://charts.yaook.cloud/operator/stable
-  - name: octavia-operator
-    version: 0.20250904.0
-    repository:
-      url: https://charts.yaook.cloud/operator/stable
