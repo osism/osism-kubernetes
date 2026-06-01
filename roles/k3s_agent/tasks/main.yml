@@ -1,6 +1,6 @@
 ---
 - name: Check for PXE-booted system
-  block:  # noqa: osism-fqcn
+  block:
     - name: Check if system is PXE-booted
       ansible.builtin.command:
         cmd: cat /proc/cmdline

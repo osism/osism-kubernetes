@@ -59,7 +59,7 @@
 
 - name: Verification
   when: not ansible_check_mode
-  block:  # noqa: osism-fqcn
+  block:
     - name: Detect Kubernetes version for label compatibility
       ansible.builtin.command:
         cmd: "{{ k3s_kubectl_binary | default('k3s kubectl') }} version --output=json"

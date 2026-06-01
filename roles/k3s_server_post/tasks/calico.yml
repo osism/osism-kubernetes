@@ -2,7 +2,7 @@
 - name: Deploy Calico to cluster
   when: ansible_hostname == hostvars[groups[group_name_master | default('master')][0]]['ansible_hostname']
   run_once: true
-  block:  # noqa: osism-fqcn
+  block:
     - name: Create manifests directory on first master
       ansible.builtin.file:
         path: /tmp/k3s
@@ -28,7 +28,7 @@
         mode: "0755"
 
     - name: Deploy or replace Tigera Operator
-      block:  # noqa: osism-fqcn
+      block:
         - name: Deploy Tigera Operator
           ansible.builtin.command:
             cmd: "{{ k3s_kubectl_binary | default('k3s kubectl') }} create -f /tmp/k3s/tigera-operator.yaml"
@@ -61,7 +61,7 @@
         label: "{{ item.type }}/{{ item.name }}"
 
     - name: Deploy Calico custom resources
-      block:  # noqa: osism-fqcn
+      block:
         - name: Deploy custom resources for Calico
           ansible.builtin.command:
             cmd: "{{ k3s_kubectl_binary | default('k3s kubectl') }} create -f /tmp/k3s/custom-resources.yaml"

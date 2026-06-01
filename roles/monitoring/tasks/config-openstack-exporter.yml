@@ -7,7 +7,7 @@
     group: "{{ operator_group }}"
     mode: 0750
 
-- name: Prepare helm chart values  # noqa: osism-fqcn
+- name: Prepare helm chart values
   block:
     - name: Read openstack exporter clouds.yml file content
       ansible.builtin.set_fact:
