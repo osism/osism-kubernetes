@@ -2,7 +2,7 @@
 - name: Deploy Cilium CNI
   run_once: true
   delegate_to: localhost
-  block:  # noqa: osism-fqcn
+  block:
     - name: Create tmp directory on first master
       ansible.builtin.file:
         path: /tmp/k3s
@@ -35,7 +35,7 @@
 
     - name: Check existing Cilium install
       when: cilium_installed.rc == 0
-      block:  # noqa: osism-fqcn
+      block:
         - name: Check Cilium version
           ansible.builtin.command: cilium version
           register: cilium_version
@@ -140,7 +140,7 @@
 
     - name: Configure Cilium BGP
       when: cilium_bgp
-      block:  # noqa: osism-fqcn
+      block:
         - name: Set _cilium_bgp_neighbors fact
           ansible.builtin.set_fact:
             _cilium_bgp_neighbors: "{{ lookup('community.general.merge_variables', '^cilium_bgp_neighbors__.+$', initial_value=cilium_bgp_neighbors, groups=cilium_bgp_neighbors_groups) }}"  # yamllint disable-line rule:line-length
