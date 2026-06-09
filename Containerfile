@@ -136,11 +136,14 @@ rm -rf /usr/share/mitogen/{tests,docs,.ci,.lgtm.yml,.travis.yml}
 rm /mitogen.tar.gz
 
 # install helm
+# Pin to 3.x: Helm 4 makes "helm plugin install" verify provenance by
+# default, which helm-diff does not ship, breaking the build. Stay on 3
+# until a deliberate, tested Helm 4 migration (3.x EOL 2026-11-11).
 curl -fsSL https://packages.buildkite.com/helm-linux/helm-debian/gpgkey | gpg --dearmor | tee /usr/share/keyrings/helm.gpg > /dev/null
 echo "deb [signed-by=/usr/share/keyrings/helm.gpg] https://packages.buildkite.com/helm-linux/helm-debian/any/ any main" | tee /etc/apt/sources.list.d/helm-stable-debian.list
 apt-get update
 apt-get install --no-install-recommends -y \
-  helm
+  helm=3.20.2-1
 
 # install helm plugins
 helm plugin install https://github.com/databus23/helm-diff
