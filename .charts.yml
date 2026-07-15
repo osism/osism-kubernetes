@@ -1,4 +1,6 @@
 ---
+# Chart versions here are intentionally not Renovate-tracked; refresh them with
+# scripts/update-charts.py, which fetches the latest versions from artifacthub.io.
 charts:
   - name: redis-operator
     source: https://artifacthub.io/packages/helm/ot-container-kit/redis-operator

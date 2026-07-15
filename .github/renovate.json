@@ -4,5 +4,32 @@
   ],
   "ignorePaths": [
     "charts/**"
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Activate the inline 'renovate:' annotations on the Kubernetes component versions pinned in role defaults (operator image tags, k9s, monitoring charts). The shared preset defines no custom manager, so without this these annotations never fire and the pins drift.",
+      "fileMatch": [
+        "^roles/k9s/defaults/main\\.yml$",
+        "^roles/mariadb_operator/defaults/main\\.yml$",
+        "^roles/rabbitmq_operator/defaults/main\\.yml$",
+        "^roles/monitoring/defaults/main\\.yml$"
+      ],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)\\s+\\w+: [\"']?(?<currentValue>[^\"'\\n]+)[\"']?"
+      ]
+    }
+  ],
+  "packageRules": [
+    {
+      "description": "Batch the Kubernetes component version bumps from role defaults into a single monthly PR to keep noise low and keep the related operator/CLI/chart versions reviewable together.",
+      "matchFileNames": [
+        "roles/**/defaults/main.yml"
+      ],
+      "groupName": "kubernetes component versions",
+      "schedule": [
+        "before 9am on the first day of the month"
+      ]
+    }
   ]
 }

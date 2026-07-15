@@ -1,4 +1,7 @@
 ---
+# Intentionally not Renovate-tracked: this is the Kubernetes minor channel of the
+# pkgs.k8s.io repository and must stay aligned with the deployed cluster version,
+# so it is bumped by hand together with the cluster rather than automatically.
 kubectl_version: "1.32"
 
 kubectl_configure_repository: true
