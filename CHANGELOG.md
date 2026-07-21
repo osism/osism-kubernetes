@@ -7,19 +7,46 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 This file was started on April 08, 2025. Changes prior to this date are not included in the CHANGELOG.
 
-## [v0.20260319.0] - 2026-03-19
+## [v0.20260615.0] - 2026-06-15
+
+### Added
+- Automatically add newly opened issues and pull requests to the project board (osism/osism-kubernetes#291)
+
+### Changed
+- Update repository clone URL and playbook references from cfg-generics to generics after the upstream rename (osism/osism-kubernetes#289)
+- Remove obsolete osism-fqcn noqa annotations from block tasks now that the underlying ansible-lint rule no longer flags them (osism/osism-kubernetes#298)
+
+### Fixed
+- Fix rendering of versions.yml where a variable name mismatch left osism_kubernetes_version empty, preventing the container image from being pulled (osism/osism-kubernetes#284)
+- Fix Black CI linter error in sync-charts.py caused by a newer Black formatting style (osism/osism-kubernetes#286)
+- Pin Helm to 3.20.2 to prevent the image build from picking up Helm 4, which broke the helm-diff plugin install step (osism/osism-kubernetes#301)
+
+### Removed
+- Remove yaook operators, charts, and related playbooks/role (osism/osism-kubernetes#290)
+- Remove redundant ara version pin from container build requirements since it is already constrained transitively via python-osism (osism/osism-kubernetes#296)
+
+### Dependencies
+- community.general 11.4.5 → 11.4.9 (osism/osism-kubernetes#283, osism/osism-kubernetes#287, osism/osism-kubernetes#293, osism/osism-kubernetes#305)
+- ansible.utils 6.0.1 → 6.0.2 (osism/osism-kubernetes#285)
+- kubernetes.core 6.3.0 → 6.4.0 (osism/osism-kubernetes#288)
+- ghcr.io/astral-sh/uv 0.10.10 → 0.11.21 (osism/osism-kubernetes#280, osism/osism-kubernetes#292, osism/osism-kubernetes#297, osism/osism-kubernetes#300, osism/osism-kubernetes#303, osism/osism-kubernetes#304)
+- ansible.posix 2.1.0 → 2.2.0 (osism/osism-kubernetes#294)
+- osism.commons 0.20260318.0 → 0.20260601.0 (osism/osism-kubernetes#299)
+
+## [v0.20260322.0] - 2026-03-22
 
 ### Added
 - Support fast inventory directory as alternative to hosts.yml (osism/osism-kubernetes#278)
+- Add CHANGELOG.md file to document notable changes to the project (osism/osism-kubernetes#282)
 
 ### Removed
-- Bundled ingress-nginx and kubernetes-dashboard Helm charts (osism/osism-kubernetes#274)
-- Defaults repository from container build (osism/osism-kubernetes#279)
+- Remove bundled ingress-nginx and kubernetes-dashboard Helm charts (osism/osism-kubernetes#274)
+- Remove defaults repository from container build (osism/osism-kubernetes#279)
 
 ### Dependencies
-- kubernetes.core 6.2.0 → 6.3.0 (osism/osism-kubernetes#273)
 - community.general 11.4.4 → 11.4.5 (osism/osism-kubernetes#275)
 - ghcr.io/astral-sh/uv 0.9.27 → 0.10.10 (osism/osism-kubernetes#272, osism/osism-kubernetes#276)
+- kubernetes.core 6.2.0 → 6.3.0 (osism/osism-kubernetes#273)
 - osism.commons 0.20260127.0 → 0.20260318.0 (osism/osism-kubernetes#277, osism/osism-kubernetes#281)
 
 ## [v0.20260129.0] - 2026-01-29
