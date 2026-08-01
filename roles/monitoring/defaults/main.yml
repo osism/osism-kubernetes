@@ -10,7 +10,7 @@ operator_group: "{{ operator_user }}"
 
 kubernetes_monitoring_chart_source: "dnationcloud/dnation-kubernetes-monitoring-stack"
 # renovate: datasource=github-releases depName=dnationcloud/kubernetes-monitoring-stack
-kubernetes_monitoring_chart_version: "3.5.0"
+kubernetes_monitoring_chart_version: "3.6.2"
 
 ## work directory inside the osism-ansible container:
 kubernetes_monitoring_work_directory: /tmp/kubernetes_monitoring/configuration
