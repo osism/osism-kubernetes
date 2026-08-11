@@ -6,9 +6,16 @@ metadata:
   namespace: {{ .Release.Namespace | quote }}
   labels:
 {{ include "labels.standard" . | indent 4 }}
+    component: haproxy
     {{- range $key, $value := .Values.extraLabels }}
     {{ $key }}: {{ $value | quote }}
     {{- end }}
+  {{- if .Values.haproxy.deploymentAnnotations }}
+  annotations:
+    {{- range $key, $value := .Values.haproxy.deploymentAnnotations }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  {{- end }}
 spec:
   {{- with .Values.haproxy.deploymentStrategy }}
   strategy:
@@ -20,12 +27,14 @@ spec:
     matchLabels:
       app: {{ template "redis-ha.name" . }}-haproxy
       release: {{ .Release.Name }}
+      component: haproxy
   template:
     metadata:
       name: {{ template "redis-ha.fullname" . }}-haproxy
       labels:
         app: {{ template "redis-ha.name" . }}-haproxy
         release: {{ .Release.Name }}
+        component: haproxy
         {{- range $key, $value := .Values.haproxy.labels }}
         {{ $key }}: {{ $value | toString }}
         {{- end }}
@@ -39,8 +48,8 @@ spec:
         prometheus.io/path: "{{ .Values.haproxy.metrics.scrapePath }}"
       {{- end }}
         checksum/config: {{ print (include "config-haproxy.cfg" .) (include "config-haproxy_init.sh" .) | sha256sum }}
-      {{- if .Values.haproxy.annotations }}
-{{ toYaml .Values.haproxy.annotations | indent 8 }}
+      {{- if .Values.haproxy.podAnnotations }}
+{{ toYaml .Values.haproxy.podAnnotations | indent 8 }}
       {{- end }}
     spec:
       # Needed when using unmodified rbac-setup.yml
@@ -71,6 +80,7 @@ spec:
                 matchLabels:
                   app: {{ template "redis-ha.name" . }}-haproxy
                   release: {{ .Release.Name }}
+                  component: haproxy
               topologyKey: kubernetes.io/hostname
     {{- else }}
           preferredDuringSchedulingIgnoredDuringExecution:
@@ -80,6 +90,7 @@ spec:
                   matchLabels:
                     app: {{ template "redis-ha.name" . }}-haproxy
                     release: {{ .Release.Name }}
+                    component: haproxy
                 topologyKey: kubernetes.io/hostname
     {{- end }}
     {{- end }}
@@ -92,6 +103,7 @@ spec:
           matchLabels:
             app: {{ template "redis-ha.name" . }}-haproxy
             release: {{ .Release.Name }}
+            component: haproxy
       {{- end }}
       initContainers:
       - name: config-init
@@ -124,8 +136,8 @@ spec:
         - name: AUTH
           valueFrom:
             secretKeyRef:
-            {{- if .Values.existingSecret }}
-              name: {{ .Values.existingSecret }}
+            {{- if tpl (.Values.existingSecret | default "" ) . }}
+              name: {{ tpl (.Values.existingSecret | default "" ) . }}
             {{- else }}
               name: {{ template "redis-ha.fullname" . }}
             {{- end }}
@@ -135,8 +147,8 @@ spec:
         - name: SENTINELAUTH
           valueFrom:
             secretKeyRef:
-            {{- if .Values.sentinel.existingSecret }}
-              name: {{ .Values.sentinel.existingSecret }}
+            {{- if tpl (.Values.sentinel.existingSecret | default "" ) . }}
+              name: {{ tpl (.Values.sentinel.existingSecret | default "" ) . }}
             {{- else }}
               name: {{ template "redis-ha.fullname" . }}-sentinel
             {{- end }}
@@ -168,6 +180,10 @@ spec:
         - name: metrics-port
           containerPort: {{ default "9101" .Values.haproxy.metrics.port }}
         {{- end }}
+        {{- range .Values.haproxy.additionalPorts }}
+        - name: {{ .name }}
+          containerPort: {{ .containerPort }}
+        {{- end }}
         resources:
 {{ toYaml .Values.haproxy.resources | indent 10 }}
         volumeMounts:
@@ -188,7 +204,7 @@ spec:
 {{- if .Values.haproxy.tls.enabled }}
       - name: pemfile
         secret:
-          secretName: {{ .Values.haproxy.tls.secretName }}
+          secretName: {{ tpl .Values.haproxy.tls.secretName . }}
 {{- end }}
       - name: config-volume
         configMap:
