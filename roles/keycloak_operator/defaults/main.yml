@@ -12,3 +12,13 @@ keycloak_operator_directory: /tmp/keycloak_operator
 keycloak_operator_template_directory: .
 
 keycloak_operator_namespace: keycloak
+
+keycloak_operator_crd_directory: "{{ role_path }}/files"
+
+keycloak_operator_crds:
+  - keycloaks.k8s.keycloak.org-v1.yml
+  - keycloakrealmimports.k8s.keycloak.org-v1.yml
+
+keycloak_operator_crd_names:
+  - keycloaks.k8s.keycloak.org
+  - keycloakrealmimports.k8s.keycloak.org

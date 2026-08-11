@@ -3,6 +3,10 @@
   ansible.builtin.include_tasks: config.yml
   tags: config
 
+- name: Include crds tasks
+  ansible.builtin.include_tasks: crds.yml
+  tags: crds
+
 - name: Include namespace tasks
   ansible.builtin.include_tasks: namespace.yml
   tags: namespace

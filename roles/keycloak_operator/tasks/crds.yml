@@ -1,0 +1,30 @@
+---
+- name: Apply keycloak-operator CRDs
+  # The CRDs must exist before the operator Deployment, otherwise the operator
+  # has nothing to reconcile. server_side_apply is required: these two files are
+  # ~205 KB and ~176 KB, and a client-side apply stores the full object in the
+  # last-applied-configuration annotation, which exceeds the metadata size limit.
+  kubernetes.core.k8s:
+    definition: "{{ lookup('file', keycloak_operator_crd_directory + '/' + item) | from_yaml }}"
+    kubeconfig: /share/kubeconfig
+    state: present
+    apply: true
+    server_side_apply:
+      field_manager: osism-keycloak-operator
+  loop: "{{ keycloak_operator_crds }}"
+
+- name: Wait for keycloak-operator CRDs to be established
+  kubernetes.core.k8s_info:
+    api_version: apiextensions.k8s.io/v1
+    kind: CustomResourceDefinition
+    name: "{{ item }}"
+    kubeconfig: /share/kubeconfig
+  register: _keycloak_operator_crd
+  until: >-
+    _keycloak_operator_crd.resources | length > 0 and
+    (_keycloak_operator_crd.resources[0].status.conditions | default([])
+     | selectattr('type', 'equalto', 'Established')
+     | selectattr('status', 'equalto', 'True') | list | length) > 0
+  retries: 20
+  delay: 5
+  loop: "{{ keycloak_operator_crd_names }}"
