@@ -53,6 +53,64 @@ $ helm install my-headlamp headlamp/headlamp \
   --set ingress.hosts[0].paths[0].path=/
 ```
 
+### Upgrade note about image tags
+
+If `image.tag` is set explicitly (for example in a values file or via `--set image.tag=...`), Helm upgrades will keep that value.
+This means the release can show a newer chart/app version while still running an older container image.
+
+To ensure the running image matches the chart version during upgrade, set the tag explicitly to the chart's appVersion-derived format.
+```console
+$ helm upgrade my-headlamp headlamp/headlamp \
+  --namespace kube-system \
+  --reuse-values \
+  --set image.tag=v<appVersion>
+```
+
+### Installation with Cluster Inventory
+
+> **Warning**
+> Cluster Inventory support in Headlamp is alpha/experimental and disabled by
+> default. The upstream Cluster Inventory API is currently `v1alpha1` and this
+> integration uses the `v0.1.x` API, so fields and behavior may change.
+
+```console
+$ helm install my-headlamp headlamp/headlamp \
+  --namespace kube-system \
+  --values cluster-inventory-values.yaml
+```
+
+`cluster-inventory-values.yaml`:
+
+```yaml
+config:
+  clusterInventory:
+    enabled: true
+    accessProvidersConfig:
+      providers:
+        - name: secretreader
+          execConfig:
+            apiVersion: client.authentication.k8s.io/v1
+            command: /access-plugins/secretreader/bin/secretreader-plugin
+            interactiveMode: Never
+            provideClusterInfo: true
+        - name: kubeconfig-secretreader
+          execConfig:
+            apiVersion: client.authentication.k8s.io/v1
+            command: /access-plugins/kubeconfig-secretreader/bin/kubeconfig-secretreader-plugin
+            interactiveMode: Never
+            provideClusterInfo: true
+    plugins:
+      - name: secretreader
+        image: registry.k8s.io/cluster-inventory-api/secretreader:v0.1.3@sha256:ec3090dc166aa2b42fb35d714d161c417d8b27bbc463404c8f615f5f4c610a1d
+        mountPath: /access-plugins/secretreader
+      - name: kubeconfig-secretreader
+        image: registry.k8s.io/cluster-inventory-api/kubeconfig-secretreader:v0.1.3@sha256:b92966cc6e4ac78002a63862921022a71d54956826f6e4febcb7247495eb98c0
+        mountPath: /access-plugins/kubeconfig-secretreader
+```
+
+`plugins[]` mounts Cluster Inventory access provider binaries as Kubernetes
+`image` volumes; it is not for Headlamp UI plugins.
+
 ## Configuration
 
 ### Core Parameters
@@ -71,11 +129,29 @@ $ helm install my-headlamp headlamp/headlamp \
 |--------------------|--------|-----------------------|---------------------------------------------------------------------------|
 | config.inCluster   | bool   | `true`                | Run Headlamp in-cluster                                                   |
 | config.baseURL     | string | `""`                  | Base URL path for Headlamp UI                                             |
+| config.sessionTTL  | int    | `86400`               | The time in seconds for the internal session to remain valid (Default: 86400/24h, Min: 1 , Max: 31536000/1yr) |
+| config.unsafeUseServiceAccountToken | bool | `false` | UNSAFE: authenticate every user as the pod's service account when running in-cluster. Only safe behind an auth proxy |
+| config.serviceAccountTokenPath | string | `""` | Path to the service account token file. Used only when `unsafeUseServiceAccountToken` is true |
 | config.pluginsDir  | string | `"/headlamp/plugins"` | Directory to load Headlamp plugins from                                   |
+| config.staticPlugins.enabled | bool | `true` | Serve the bundled static plugins shipped in the image (e.g. the Prometheus "Show Prometheus metrics" plugin). Set to false to disable them |
 | config.enableHelm  | bool   | `false`               | Enable Helm operations like install, upgrade and uninstall of Helm charts |
+| config.podDebugImage | string | `""`                | Default image to use when creating pod debug containers                    |
+| config.nodeShellImage | string | `""`               | Default image to use when creating node shell pods                         |
+| config.nodeShellNamespace | string | `""`            | Default namespace to use when creating node shell pods                      |
+| config.clusterInventory.enabled | bool | `false` | Enable experimental/alpha Cluster Inventory discovery |
+| config.clusterInventory.accessProvidersConfig | object | `{}` | Experimental/alpha Cluster Inventory access providers config. Required when Cluster Inventory is enabled |
+| config.clusterInventory.plugins | list | `[]` | Kubernetes image volumes that provide experimental/alpha Cluster Inventory access provider binaries |
+| config.clusterInventory.labelSelector | string | `"!headlamp.dev/ignore"` | Kubernetes label selector used to filter experimental/alpha ClusterProfile resources |
+| config.clusterInventory.rootReconcileInterval | string | `""` | Override the experimental/alpha Cluster Inventory root reconcile interval. Empty uses the Headlamp default |
+| config.clusterInventory.noCRDCacheTTL | string | `""` | Override the experimental/alpha Cluster Inventory no-CRD cache TTL. Empty uses the Headlamp default |
 | config.extraArgs   | array  | `[]`                  | Additional arguments for Headlamp server                                  |
 | config.tlsCertPath | string | `""`                  | Certificate for serving TLS                                               |
 | config.tlsKeyPath  | string | `""`                  | Key for serving TLS                                                       |
+
+When `config.unsafeUseServiceAccountToken` is enabled, the token file must be
+mounted and readable in the Headlamp container. The default path is provided by
+`automountServiceAccountToken`; custom paths require a matching projected
+volume or volume mount.
 
 ### OIDC Configuration
 
@@ -86,11 +162,12 @@ $ helm install my-headlamp headlamp/headlamp \
 | config.oidc.issuerURL | string | `""` | OIDC issuer URL |
 | config.oidc.scopes | string | `""` | OIDC scopes to be used |
 | config.oidc.usePKCE | bool | `false` | Use PKCE (Proof Key for Code Exchange) for enhanced security in OIDC flow |
+| config.oidc.useCookie | bool | `false` | Enable using OIDC cookie for authentication outside of cluster |
 | config.oidc.secret.create | bool | `true` | Create OIDC secret using provided values |
 | config.oidc.secret.name | string | `"oidc"` | Name of the OIDC secret |
 | config.oidc.externalSecret.enabled | bool | `false` | Enable using external secret for OIDC |
 | config.oidc.externalSecret.name | string | `""` | Name of external OIDC secret |
-| config.oidc.meUserInfoURL | string | `""` | URL to fetch additional user info for the /me endpoint. For oauth2proxy /oauth2/userinfo can be used. |
+| config.oidc.meUserInfoURL | string | `""` | URL to fetch additional user info for the /me endpoint. Useful for providers like oauth2-proxy. |
 
 There are three ways to configure OIDC:
 
@@ -102,6 +179,7 @@ config:
     clientSecret: "your-client-secret"
     issuerURL: "https://your-issuer"
     scopes: "openid profile email"
+    meUserInfoURL: "https://headlamp.example.com/oauth2/userinfo"
 ```
 
 2. Using automatic secret creation:
@@ -123,6 +201,50 @@ config:
       enabled: true
       name: your-oidc-secret
 ```
+
+### Cluster Inventory Configuration
+
+> **Warning**
+> Cluster Inventory support in Headlamp is alpha/experimental and disabled by
+> default. The upstream Cluster Inventory API is currently `v1alpha1` and this
+> integration uses the `v0.1.x` API, so fields and behavior may change.
+
+When `config.clusterInventory.enabled` is true, the chart creates a provider
+ConfigMap, makes it available read-only at `/etc/cluster-inventory/config.json`,
+and adds the Headlamp Cluster Inventory flags automatically.
+
+```yaml
+config:
+  clusterInventory:
+    enabled: true
+    accessProvidersConfig:
+      providers:
+        - name: secretreader
+          execConfig:
+            apiVersion: client.authentication.k8s.io/v1
+            command: /access-plugins/secretreader/bin/secretreader-plugin
+            interactiveMode: Never
+            provideClusterInfo: true
+        - name: kubeconfig-secretreader
+          execConfig:
+            apiVersion: client.authentication.k8s.io/v1
+            command: /access-plugins/kubeconfig-secretreader/bin/kubeconfig-secretreader-plugin
+            interactiveMode: Never
+            provideClusterInfo: true
+    plugins:
+      - name: secretreader
+        image: registry.k8s.io/cluster-inventory-api/secretreader:v0.1.3@sha256:ec3090dc166aa2b42fb35d714d161c417d8b27bbc463404c8f615f5f4c610a1d
+        mountPath: /access-plugins/secretreader
+      - name: kubeconfig-secretreader
+        image: registry.k8s.io/cluster-inventory-api/kubeconfig-secretreader:v0.1.3@sha256:b92966cc6e4ac78002a63862921022a71d54956826f6e4febcb7247495eb98c0
+        mountPath: /access-plugins/kubeconfig-secretreader
+```
+
+`plugins[]` is for Cluster Inventory access provider binaries, not Headlamp UI
+plugins. Each entry renders as a Kubernetes `image` volume and is mounted
+read-only into the Headlamp container. If an access provider `execConfig.command`
+is configured, the command must be under one of the absolute
+`plugins[].mountPath` values.
 
 ### Deployment Configuration
 
@@ -150,6 +272,7 @@ config:
 | clusterRoleBinding.create | bool | `true` | Create cluster role binding |
 | clusterRoleBinding.clusterRoleName | string | `"cluster-admin"` | Kubernetes ClusterRole name |
 | clusterRoleBinding.annotations | object | `{}` | Cluster role binding annotations |
+| hostUsers | bool | `true` | Run in host uid namespace |
 | podSecurityContext | object | `{}` | Pod security context (e.g., fsGroup: 2000) |
 | securityContext.runAsNonRoot | bool | `true` | Run container as non-root |
 | securityContext.privileged | bool | `false` | Run container in privileged mode |
@@ -157,6 +280,8 @@ config:
 | securityContext.runAsGroup | int | `101` | Group ID to run container |
 | securityContext.capabilities | object | `{}` | Container capabilities (e.g., drop: [ALL]) |
 | securityContext.readOnlyRootFilesystem | bool | `false` | Mount root filesystem as read-only |
+
+NOTE: for `hostUsers=false` user namespaces must be supported. See: https://kubernetes.io/docs/concepts/workloads/pods/user-namespaces/
 
 ### Storage Configuration
 
@@ -172,12 +297,44 @@ config:
 | volumeMounts | list | `[]` | Container volume mounts |
 | volumes | list | `[]` | Pod volumes |
 
+### Read-only root filesystem
+
+When `securityContext.readOnlyRootFilesystem: true` is set, the application needs a writable `/tmp` directory. The chart handles this automatically:
+
+- An `emptyDir` volume named `headlamp-tmp` is created and mounted at `/tmp` in the main container.
+- If `pluginsManager` is enabled and its effective security context (own or inherited) also sets `readOnlyRootFilesystem: true`, a separate `emptyDir` volume named `headlamp-plugins-tmp` is created and mounted at `/tmp` in the plugin manager container.
+
+**Overriding the automatic `/tmp` volume:**
+
+You can customise this behaviour without losing the automatic mount:
+
+```yaml
+# Provide your own headlamp-tmp volume (e.g. to set a size limit).
+# The chart will skip creating the volume but will still add the /tmp mount.
+volumes:
+  - name: headlamp-tmp
+    emptyDir:
+      sizeLimit: 256Mi
+```
+
+To take full control of `/tmp` (and suppress both the automatic mount and volume entirely), add your own `volumeMount` with `mountPath: /tmp`:
+
+```yaml
+volumeMounts:
+  - name: my-tmp
+    mountPath: /tmp
+volumes:
+  - name: my-tmp
+    emptyDir: {}
+```
+
 ### Network Configuration
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | service.type | string | `"ClusterIP"` | Kubernetes service type |
 | service.port | int | `80` | Kubernetes service port |
+| service.extraServicePorts | list | `[]` | Additional ports to expose on the Service in addition to the default http port |
 | ingress.enabled | bool | `false` | Enable ingress |
 | ingress.ingressClassName | string | `""` | Ingress class name |
 | ingress.annotations | object | `{}` | Ingress annotations (e.g., kubernetes.io/tls-acme: "true") |
@@ -205,6 +362,113 @@ ingress:
         - headlamp.example.com
 ```
 
+Each path under `ingress.hosts[].paths[]` may optionally specify
+`backend.service.{name,port}` to override the default Headlamp Service /
+`service.port`. This is typically combined with `service.extraServicePorts` to
+route different paths to different ports of the same Service:
+
+```yaml
+service:
+  extraServicePorts:
+    - name: extra
+      port: 9090
+      targetPort: extra
+
+ingress:
+  enabled: true
+  hosts:
+    - host: headlamp.example.com
+      paths:
+        - path: /
+          type: Prefix
+        - path: /extra
+          type: Prefix
+          backend:
+            service:
+              # name is optional; defaults to the Headlamp Service.
+              # When set, it is rendered with `tpl` so values like
+              # "{{ .Release.Name }}-other" are supported.
+              port:
+                name: extra        # or: number: 9090
+```
+
+The same approach works for the Gateway API: define additional ports under
+`service.extraServicePorts` and reference them from `httpRoute.rules[].backendRefs[].port`.
+
+
+### HTTPRoute Configuration (Gateway API)
+
+For users who prefer Gateway API over classic Ingress resources, Headlamp supports HTTPRoute configuration.
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| httpRoute.enabled | bool | `false` | Enable HTTPRoute resource for Gateway API |
+| httpRoute.annotations | object | `{}` | Annotations for HTTPRoute resource |
+| httpRoute.labels | object | `{}` | Additional labels for HTTPRoute resource |
+| httpRoute.parentRefs | list | `[]` | Parent gateway references (REQUIRED when enabled) |
+| httpRoute.hostnames | list | `[]` | Hostnames for the HTTPRoute |
+| httpRoute.rules | list | `[]` | Custom routing rules (optional, defaults to path prefix /) |
+
+Example HTTPRoute configuration:
+```yaml
+httpRoute:
+  enabled: true
+  annotations:
+    gateway.example.com/custom-annotation: "value"
+  labels:
+    app.kubernetes.io/component: ingress
+  parentRefs:
+    - name: my-gateway
+      namespace: gateway-namespace
+  hostnames:
+    - headlamp.example.com
+  # Optional custom rules (defaults to path prefix / if not specified)
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /headlamp
+      backendRefs:
+        - name: my-headlamp
+          port: 80
+```
+
+### Probe Configuration
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| probes.scheme | string | `"HTTP"` | Scheme for liveness/readiness probes (HTTP or HTTPS). Set to HTTPS when TLS is enabled at the backend. |
+| probes.livenessProbe.initialDelaySeconds | int | `0` | Initial delay before liveness probe starts |
+| probes.livenessProbe.periodSeconds | int | `10` | Period between liveness checks |
+| probes.livenessProbe.timeoutSeconds | int | `1` | Timeout for liveness probe |
+| probes.livenessProbe.successThreshold | int | `1` | Must be 1 for liveness probes (Kubernetes requirement) |
+| probes.livenessProbe.failureThreshold | int | `3` | Minimum consecutive failures |
+| probes.readinessProbe.initialDelaySeconds | int | `0` | Initial delay before readiness probe starts |
+| probes.readinessProbe.periodSeconds | int | `10` | Period between readiness checks |
+| probes.readinessProbe.timeoutSeconds | int | `1` | Timeout for readiness probe |
+| probes.readinessProbe.successThreshold | int | `1` | Minimum consecutive successes |
+| probes.readinessProbe.failureThreshold | int | `3` | Minimum consecutive failures |
+
+When using TLS termination at the backend server, you must set `probes.scheme` to `HTTPS`:
+
+```yaml
+config:
+  tlsCertPath: "/headlamp-cert/tls.crt"
+  tlsKeyPath: "/headlamp-cert/tls.key"
+
+probes:
+  scheme: HTTPS  # Required when TLS is enabled at backend
+
+volumes:
+  - name: headlamp-cert
+    secret:
+      secretName: headlamp-tls
+
+volumeMounts:
+  - name: headlamp-cert
+    mountPath: /headlamp-cert
+```
+
 ### Resource Management
 
 | Key | Type | Default | Description |
@@ -213,6 +477,8 @@ ingress:
 | nodeSelector | object | `{}` | Node labels for pod assignment |
 | tolerations | list | `[]` | Pod tolerations |
 | affinity | object | `{}` | Pod affinity settings |
+| hostAliases | list | `[]` | Optional list of host/IP mappings injected into the pod's /etc/hosts. Useful when an external host (e.g. an OIDC issuer behind cluster ingress) is not resolvable via cluster DNS. |
+| topologySpreadConstraints | list | `[]` | Topology spread constraints for pod assignment |
 | podAnnotations | object | `{}` | Pod annotations |
 | podLabels | object | `{}` | Pod labels |
 | env | list | `[]` | Additional environment variables |
@@ -235,6 +501,34 @@ env:
     value: "localhost"
   - name: KUBERNETES_SERVICE_PORT
     value: "6443"
+```
+
+Example topology spread constraints:
+```yaml
+# Spread pods across availability zones with best-effort scheduling
+topologySpreadConstraints:
+  - maxSkew: 1
+    topologyKey: topology.kubernetes.io/zone
+    whenUnsatisfiable: ScheduleAnyway  # Prefer spreading but allow scheduling even if it violates the constraint
+    matchLabelKeys:
+      - pod-template-hash
+  - maxSkew: 1
+    topologyKey: kubernetes.io/hostname
+    whenUnsatisfiable: DoNotSchedule  # Hard requirement - don't schedule if it violates the constraint
+    matchLabelKeys:
+      - pod-template-hash
+```
+
+The `labelSelector` is automatically populated with the pod's selector labels if not specified. You can also provide a custom `labelSelector`:
+```yaml
+topologySpreadConstraints:
+  - maxSkew: 1
+    topologyKey: topology.kubernetes.io/zone
+    whenUnsatisfiable: ScheduleAnyway
+    labelSelector:
+      matchLabels:
+        app.kubernetes.io/name: headlamp
+        custom-label: value
 ```
 
 ### Pod Disruption Budget (PDB)
@@ -277,15 +571,17 @@ Ensure your replicaCount and maintenance procedures respect the configured PDB t
 
 ### pluginsManager Configuration
 
-| Key           | Type    | Default           | Description                                                                               |
-| ------------- | ------- | ----------------- | ----------------------------------------------------------------------------------------- |
-| enabled       | boolean | `false`           | Enable plugin manager                                                                     |
-| configFile    | string  | `plugin.yml`      | Plugin configuration file name                                                            |
-| configContent | string  | `""`              | Plugin configuration content in YAML format. This is required if plugins.enabled is true. |
-| baseImage     | string  | `node:lts-alpine` | Base node image to use                                                                    |
-| version       | string  | `latest`          | Headlamp plugin package version to install                                                |
-| env           | list    | `[]`              | Plugin manager env variable configuration                                                 |
-| resources     | object  | `{}`              | Plugin manager resource requests/limits                                                   |
+| Key             | Type    | Default           | Description                                                                               |
+|-----------------|---------|-------------------|-------------------------------------------------------------------------------------------|
+| enabled         | boolean | `false`           | Enable plugin manager                                                                     |
+| configFile      | string  | `plugin.yml`      | Plugin configuration file name                                                            |
+| configContent   | string  | `""`              | Plugin configuration content in YAML format. This is required if plugins.enabled is true. |
+| baseImage       | string  | `node:lts-alpine` | Base node image to use                                                                    |
+| version         | string  | `latest`          | Headlamp plugin package version to install                                                |
+| env             | list    | `[]`              | Plugin manager env variable configuration                                                 |
+| resources       | object  | `{}`              | Plugin manager resource requests/limits                                                   |
+| volumeMounts    | list    | `[]`              | Plugin manager volume mounts                                                              |
+| securityContext | object  | `{}`              | Plugin manager security context. If omitted, inherits the global `securityContext`.       |
 
 Example resource configuration:
 

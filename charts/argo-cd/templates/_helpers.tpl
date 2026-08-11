@@ -57,6 +57,8 @@ Create redis name and version as used by the chart label.
 {{- if $redisHa.enabled -}}
     {{- if $redisHa.haproxy.enabled -}}
         {{- printf "%s-haproxy" (include "redis-ha.fullname" $redisHaContext) | trunc 63 | trimSuffix "-" -}}
+    {{- else -}}
+        {{- include "redis-ha.fullname" $redisHaContext | trunc 63 | trimSuffix "-" -}}
     {{- end -}}
 {{- else -}}
 {{- printf "%s-%s" (include "argo-cd.fullname" .) .Values.redis.name | trunc 63 | trimSuffix "-" -}}
@@ -318,4 +320,22 @@ name: "argocd-redis"
 key: auth
 optional: true
     {{- end -}}
+{{- end -}}
+
+{{/*
+Return the target Kubernetes version
+*/}}
+{{- define "argo-cd.kubeVersion" -}}
+  {{- default .Capabilities.KubeVersion.Version .Values.kubeVersionOverride }}
+{{- end -}}
+
+{{/*
+Return the appropriate apiVersion for monitoring CRDs
+*/}}
+{{- define "argo-cd.apiVersions.monitoring" -}}
+{{- if .Values.apiVersionOverrides.monitoring -}}
+{{- print .Values.apiVersionOverrides.monitoring -}}
+{{- else -}}
+{{- print "monitoring.coreos.com/v1" -}}
+{{- end -}}
 {{- end -}}

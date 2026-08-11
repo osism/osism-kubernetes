@@ -1,6 +1,6 @@
 <!--- app-name: Memcached -->
 
-# Bitnami package for Memcached
+# Bitnami Secure Images Helm chart for Memcached
 
 Memcached is an high-performance, distributed memory object caching system, generic in nature, but intended for use in speeding up dynamic web applications by alleviating database load.
 
@@ -11,46 +11,50 @@ Trademarks: This software listing is packaged by Bitnami. The respective tradema
 ## TL;DR
 
 ```console
-helm install my-release oci://MY-OCI-REGISTRY/memcached
+helm install my-release oci://REGISTRY_NAME/REPOSITORY_NAME/memcached
 ```
 
-Looking to use Memcached in production? Try [VMware Tanzu Application Catalog](https://bitnami.com/enterprise), the commercial edition of the Bitnami catalog.
-
-## ⚠️ Important Notice: Upcoming changes to the Bitnami Catalog
-
-Beginning August 28th, 2025, Bitnami will evolve its public catalog to offer a curated set of hardened, security-focused images under the new [Bitnami Secure Images initiative](https://news.broadcom.com/app-dev/broadcom-introduces-bitnami-secure-images-for-production-ready-containerized-applications). As part of this transition:
-
-- Granting community users access for the first time to security-optimized versions of popular container images.
-- Bitnami will begin deprecating support for non-hardened, Debian-based software images in its free tier and will gradually remove non-latest tags from the public catalog. As a result, community users will have access to a reduced number of hardened images. These images are published only under the “latest” tag and are intended for development purposes
-- Starting August 28th, over two weeks, all existing container images, including older or versioned tags (e.g., 2.50.0, 10.6), will be migrated from the public catalog (docker.io/bitnami) to the “Bitnami Legacy” repository (docker.io/bitnamilegacy), where they will no longer receive updates.
-- For production workloads and long-term support, users are encouraged to adopt Bitnami Secure Images, which include hardened containers, smaller attack surfaces, CVE transparency (via VEX/KEV), SBOMs, and enterprise support.
-
-These changes aim to improve the security posture of all Bitnami users by promoting best practices for software supply chain integrity and up-to-date deployments. For more details, visit the [Bitnami Secure Images announcement](https://github.com/bitnami/containers/issues/83267).
+> **Note** You need to substitute the placeholders `REGISTRY_NAME` and `REPOSITORY_NAME` with a reference to your Helm chart registry and repository.
 
 ## Introduction
 
 This chart bootstraps a [Memcached](https://github.com/bitnami/containers/tree/main/bitnami/memcached) deployment on a [Kubernetes](https://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
-## Prerequisites
+## Before you begin
 
 - Kubernetes 1.23+
 - Helm 3.8.0+
+- PV provisioner support in the underlying infrastructure
 
-## Installing the Chart
+## Installing the chart
 
-To install the chart with the release name `my-release`:
+First, log in to the OCI registry and create a secret with your registry credentials:
 
 ```console
-helm install my-release oci://REGISTRY_NAME/REPOSITORY_NAME/memcached
+helm registry login REGISTRY_NAME
+kubectl create secret docker-registry SECRET_NAME -n NAMESPACE \
+  --docker-server REGISTRY_NAME \
+  --docker-username "USER" \
+  --docker-password "TOKEN"
 ```
 
-> Note: You need to substitute the placeholders `REGISTRY_NAME` and `REPOSITORY_NAME` with a reference to your Helm chart registry and repository. For example, in the case of Bitnami, you need to use `REGISTRY_NAME=registry-1.docker.io` and `REPOSITORY_NAME=bitnamicharts`.
+> **Note** Replace the placeholders in these commands (`REGISTRY_NAME`, `SECRET_NAME`, `NAMESPACE`, `USER`, and `TOKEN`) with your actual values.
+
+Then install the chart with the release name `my-release`:
+
+```console
+helm install my-release oci://REGISTRY_NAME/REPOSITORY_NAME/memcached --set "global.imagePullSecrets[0]=SECRET_NAME" -n NAMESPACE
+```
+
+> **Note** Replace the placeholders in the `helm install` command (`REGISTRY_NAME`, `REPOSITORY_NAME`, `SECRET_NAME`, and `NAMESPACE`) with your actual values.
 
 These commands deploy Memcached on the Kubernetes cluster in the default configuration. The [Parameters](#parameters) section lists the parameters that can be configured during installation.
 
-> **Tip**: List all releases using `helm list`
+> **Note** List all releases using `helm list`.
 
 ## Configuration and installation details
+
+This section describes resource settings, metrics, credentials, sidecars, and other options.
 
 ### Resource requests and limits
 
@@ -60,7 +64,7 @@ To make this process easier, the chart contains the `resourcesPreset` values, wh
 
 ### Prometheus metrics
 
-This chart can be integrated with Prometheus by setting `metrics.enabled` to `true`. This will deploy a sidecar container with [memcached_exporter](https://github.com/prometheus/memcached_exporter) in all pods and a `metrics` service, which can be configured under the `metrics.service` section. This `metrics` service will have the necessary annotations to be automatically scraped by Prometheus.
+This chart can be integrated with Prometheus by setting `metrics.enabled` to `true`. This will deploy a sidecar container with [`memcached_exporter`](https://github.com/prometheus/memcached_exporter) in all pods and a `metrics` service, which can be configured under the `metrics.service` section. This `metrics` service will have the necessary annotations to be automatically scraped by Prometheus.
 
 #### Prometheus requirements
 
@@ -76,7 +80,7 @@ no matches for kind "ServiceMonitor" in version "monitoring.coreos.com/v1"
 
 Install the [Bitnami Kube Prometheus helm chart](https://github.com/bitnami/charts/tree/main/bitnami/kube-prometheus) for having the necessary CRDs and the Prometheus Operator.
 
-### [Rolling vs Immutable tags](https://techdocs.broadcom.com/us/en/vmware-tanzu/application-catalog/tanzu-application-catalog/services/tac-doc/apps-tutorials-understand-rolling-tags-containers-index.html)
+### [Rolling vs Immutable tags](https://techdocs.broadcom.com/us/en/vmware-tanzu/bitnami-secure-images/bitnami-secure-images/services/bsi-doc/apps-tutorials-understand-rolling-tags-containers-index.html)
 
 It is strongly recommended to use immutable tags in a production environment. This ensures your deployment does not change automatically if the same tag is updated with a different image.
 
@@ -89,7 +93,7 @@ The Bitnami Memcached chart, when upgrading, reuses the secret previously render
 - Run `helm upgrade` specifying a new password in `auth.password`
 - Run `helm upgrade` specifying a new secret in `auth.existingPasswordSecret`
 
-### Use Sidecars and Init Containers
+### Use sidecars and init containers
 
 If additional containers are needed in the same pod (such as additional metrics or logging exporters), they can be defined using the `sidecars` config parameter.
 
@@ -113,7 +117,7 @@ service:
     targetPort: 11311
 ```
 
-> NOTE: This Helm chart already includes sidecar containers for the Prometheus exporters (where applicable). These can be activated by adding the `--enable-metrics=true` parameter at deployment time. The `sidecars` parameter should therefore only be used for any extra sidecar containers.
+> **Note** This Helm chart already includes sidecar containers for the Prometheus exporters (where applicable). These can be activated by adding the `--enable-metrics=true` parameter at deployment time. The `sidecars` parameter should therefore only be used for any extra sidecar containers.
 
 If additional init containers are needed in the same pod, they can be defined using the `initContainers` parameter. Here is an example:
 
@@ -129,7 +133,7 @@ initContainers:
 
 Learn more about [sidecar containers](https://kubernetes.io/docs/concepts/workloads/pods/) and [init containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/).
 
-### Set Pod affinity
+### Set pod affinity
 
 This chart allows you to set your custom affinity using the `affinity` parameter(s). Find more information about Pod affinity in the [Kubernetes documentation](https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity).
 
@@ -137,17 +141,19 @@ As an alternative, you can use the preset configurations for pod affinity, pod a
 
 ### Backup and restore
 
-To back up and restore Helm chart deployments on Kubernetes, you need to back up the persistent volumes from the source deployment and attach them to a new deployment using [Velero](https://velero.io/), a Kubernetes backup/restore tool. Find the instructions for using Velero in [this guide](https://techdocs.broadcom.com/us/en/vmware-tanzu/application-catalog/tanzu-application-catalog/services/tac-doc/apps-tutorials-backup-restore-deployments-velero-index.html).
+To back up and restore Helm chart deployments on Kubernetes, you need to back up the persistent volumes from the source deployment and attach them to a new deployment using [Velero](https://velero.io/), a Kubernetes backup/restore tool. Find the instructions for using Velero in [this guide](https://techdocs.broadcom.com/us/en/vmware-tanzu/bitnami-secure-images/bitnami-secure-images/services/bsi-doc/apps-tutorials-backup-restore-deployments-velero-index.html).
 
 ### FIPS parameters
 
-The FIPS parameters only have effect if you are using images from the [Bitnami Secure Images catalog](https://www.arrow.com/globalecs/uk/products/bitnami-secure-images/).
+The FIPS parameters only have effect if you are using images from the [Bitnami Secure Images catalog](https://go-vmware.broadcom.com/contact-us).
+
+For more information on this new support, please refer to the [FIPS Compliance section](https://techdocs.broadcom.com/us/en/vmware-tanzu/bitnami-secure-images/bitnami-secure-images/services/bsi-doc/security-frameworks-FIPS-compliance.html).
 
 ## Persistence
 
 When using `architecture: "high-availability"` the [Bitnami Memcached](https://github.com/bitnami/containers/tree/main/bitnami/memcached) image stores the cache-state at the `/cache-state` path of the container if enabled.
 
-Persistent Volume Claims (PVCs) are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
+Persistent Volume Claims (PVCs) are used to keep the data across deployments. This is known to work in GCE, AWS, and `minikube`.
 
 See the [Parameters](#parameters) section to configure the PVC or to disable persistence.
 
@@ -163,7 +169,7 @@ If you encounter errors when working with persistent volumes, refer to our [trou
 | `global.imagePullSecrets`                             | Global Docker registry secret names as an array                                                                                                                                                                                                                                                                                                                     | `[]`         |
 | `global.defaultStorageClass`                          | Global default StorageClass for Persistent Volume(s)                                                                                                                                                                                                                                                                                                                | `""`         |
 | `global.storageClass`                                 | DEPRECATED: use global.defaultStorageClass instead                                                                                                                                                                                                                                                                                                                  | `""`         |
-| `global.defaultFips`                                  | Default value for the FIPS configuration (allowed values: '', restricted, relaxed, off). Can be overriden by the 'fips' object                                                                                                                                                                                                                                      | `restricted` |
+| `global.defaultFips`                                  | Default value for the FIPS configuration (allowed values: '', restricted, relaxed, off). Can be overridden by the 'fips' object                                                                                                                                                                                                                                     | `restricted` |
 | `global.security.allowInsecureImages`                 | Allows skipping image verification                                                                                                                                                                                                                                                                                                                                  | `false`      |
 | `global.compatibility.openshift.adaptSecurityContext` | Adapt the securityContext sections of the deployment to make them compatible with Openshift restricted-v2 SCC: remove runAsUser, runAsGroup and fsGroup and let the platform use their allowed default IDs. Possible values: auto (apply if the detected running cluster is Openshift), force (perform the adaptation always), disabled (do not perform adaptation) | `auto`       |
 
@@ -198,11 +204,37 @@ If you encounter errors when working with persistent volumes, refer to our [trou
 | `auth.password`               | Memcached admin password                                                                                  | `""`                        |
 | `auth.existingPasswordSecret` | Existing secret with Memcached credentials (must contain a value for `memcached-password` key)            | `""`                        |
 | `auth.usePasswordFiles`       | Mount credentials as files instead of using environment variables                                         | `true`                      |
-| `command`                     | Override default container command (useful when using custom images)                                      | `[]`                        |
-| `args`                        | Override default container args (useful when using custom images)                                         | `[]`                        |
-| `extraEnvVars`                | Array with extra environment variables to add to Memcached nodes                                          | `[]`                        |
-| `extraEnvVarsCM`              | Name of existing ConfigMap containing extra env vars for Memcached nodes                                  | `""`                        |
-| `extraEnvVarsSecret`          | Name of existing Secret containing extra env vars for Memcached nodes                                     | `""`                        |
+
+### TLS parameters
+
+| Name                                               | Description                                                                                                           | Value           |
+| -------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- | --------------- |
+| `tls.enabled`                                      | Enable TLS/SSL encryption for Memcached connections                                                                   | `false`         |
+| `tls.existingSecret`                               | Name of existing TLS Secret (must contain the key `tls.certFilename` and `tls.certKeyFilename`)                       | `""`            |
+| `tls.mountPath`                                    | Directory inside the container where the TLS Secret is mounted                                                        | `/certs/tls`    |
+| `tls.certFilename`                                 | Public certificate filename inside the TLS Secret                                                                     | `tls.crt`       |
+| `tls.certKeyFilename`                              | Private key filename inside the TLS Secret                                                                            | `tls.key`       |
+| `tls.certCAFilename`                               | CA certificate filename inside the TLS Secret (optional; enables client certificate verification)                     | `ca.crt`        |
+| `tls.ca`                                           | PEM-encoded CA certificate. Used only when `tls.autoGenerated.enabled` is `false` and `tls.existingSecret` is empty.  | `""`            |
+| `tls.cert`                                         | PEM-encoded TLS certificate. Used only when `tls.autoGenerated.enabled` is `false` and `tls.existingSecret` is empty. | `""`            |
+| `tls.key`                                          | PEM-encoded TLS private key. Used only when `tls.autoGenerated.enabled` is `false` and `tls.existingSecret` is empty. | `""`            |
+| `tls.verifyMode`                                   | TLS peer certificate verification mode. Valid values: 0 (None), 1 (Request), 2 (Require), 3 (Once).                   | `0`             |
+| `tls.autoGenerated.enabled`                        | Enable chart-managed TLS (Helm self-signed Secret or cert-manager Certificate)                                        | `true`          |
+| `tls.autoGenerated.engine`                         | Mechanism to provision the TLS Secret. Allowed values: `helm` (self-signed) or `cert-manager`                         | `helm`          |
+| `tls.autoGenerated.extraSANs`                      | Extra DNS SANs to include in the generated certificate                                                                | `[]`            |
+| `tls.autoGenerated.loopback`                       | Add loopback (`localhost`) to the generated certificate SANs                                                          | `true`          |
+| `tls.autoGenerated.certManager.existingIssuer`     | Existing Issuer or ClusterIssuer name (only for `engine=cert-manager`)                                                | `""`            |
+| `tls.autoGenerated.certManager.existingIssuerKind` | Kind of the existing issuer. Allowed values: `Issuer` or `ClusterIssuer`                                              | `ClusterIssuer` |
+| `tls.autoGenerated.certManager.keyAlgorithm`       | Private key algorithm (only for `engine=cert-manager`)                                                                | `RSA`           |
+| `tls.autoGenerated.certManager.keySize`            | Private key size in bits (only for `engine=cert-manager`)                                                             | `2048`          |
+| `tls.autoGenerated.certManager.duration`           | Certificate validity duration (only for `engine=cert-manager`)                                                        | `2160h`         |
+| `tls.autoGenerated.certManager.renewBefore`        | Certificate renew time before expiry (only for `engine=cert-manager`)                                                 | `360h`          |
+| `tls.autoGenerated.certManager.commonName`         | Certificate common name (defaults to `<fullname>.<namespace>.svc.<clusterDomain>`)                                    | `""`            |
+| `command`                                          | Override default container command (useful when using custom images)                                                  | `[]`            |
+| `args`                                             | Override default container args (useful when using custom images)                                                     | `[]`            |
+| `extraEnvVars`                                     | Array with extra environment variables to add to Memcached nodes                                                      | `[]`            |
+| `extraEnvVarsCM`                                   | Name of existing ConfigMap containing extra env vars for Memcached nodes                                              | `""`            |
+| `extraEnvVarsSecret`                               | Name of existing Secret containing extra env vars for Memcached nodes                                                 | `""`            |
 
 ### Deployment/Statefulset parameters
 
@@ -267,6 +299,7 @@ If you encounter errors when working with persistent volumes, refer to our [trou
 | `podManagementPolicy`                               | StatefulSet controller supports relax its ordering guarantees while preserving its uniqueness and identity guarantees. There are two valid pod management policies: `OrderedReady` and `Parallel`                 | `Parallel`       |
 | `priorityClassName`                                 | Name of the existing priority class to be used by Memcached pods, priority class needs to be created beforehand                                                                                                   | `""`             |
 | `schedulerName`                                     | Kubernetes pod scheduler registry                                                                                                                                                                                 | `""`             |
+| `runtimeClassName`                                  | Name of the runtime class to be used by pod(s)                                                                                                                                                                    | `""`             |
 | `terminationGracePeriodSeconds`                     | In seconds, time the given to the memcached pod needs to terminate gracefully                                                                                                                                     | `""`             |
 | `updateStrategy.type`                               | Memcached statefulset strategy type                                                                                                                                                                               | `RollingUpdate`  |
 | `updateStrategy.rollingUpdate`                      | Memcached statefulset rolling update configuration parameters                                                                                                                                                     | `{}`             |
@@ -292,8 +325,8 @@ If you encounter errors when working with persistent volumes, refer to our [trou
 | `service.type`                          | Kubernetes Service type                                                                                       | `ClusterIP` |
 | `service.ports.memcached`               | Memcached service port                                                                                        | `11211`     |
 | `service.nodePorts.memcached`           | Node port for Memcached                                                                                       | `""`        |
-| `service.sessionAffinity`               | Control where client requests go, to the same pod or round-robin                                              | `""`        |
-| `service.sessionAffinityConfig`         | Additional settings for the sessionAffinity                                                                   | `{}`        |
+| `service.sessionAffinity`               | Control where client requests go, to the same pod or round-robin. Allowed values: `ClientIP` or `None`        | `""`        |
+| `service.sessionAffinityConfig`         | Additional settings for the sessionAffinity. Ignored if `service.sessionAffinity` is `None`                   | `{}`        |
 | `service.trafficDistribution`           | Traffic distribution preference                                                                               | `""`        |
 | `service.clusterIP`                     | Memcached service Cluster IP                                                                                  | `""`        |
 | `service.loadBalancerIP`                | Memcached service Load Balancer IP                                                                            | `""`        |
@@ -389,10 +422,11 @@ If you encounter errors when working with persistent volumes, refer to our [trou
 | `metrics.customLivenessProbe`                               | Custom livenessProbe that overrides the default one                                                                                                                                                                                                   | `{}`                                 |
 | `metrics.customReadinessProbe`                              | Custom readinessProbe that overrides the default one                                                                                                                                                                                                  | `{}`                                 |
 | `metrics.customStartupProbe`                                | Custom startupProbe that overrides the default one                                                                                                                                                                                                    | `{}`                                 |
+| `metrics.extraVolumeMounts`                                 | Optionally specify extra list of additional volumeMounts for the Memcached Prometheus exporter container(s)                                                                                                                                           | `[]`                                 |
 | `metrics.podAnnotations`                                    | Memcached Prometheus exporter pod Annotation and Labels                                                                                                                                                                                               | `{}`                                 |
 | `metrics.service.ports.metrics`                             | Prometheus metrics service port                                                                                                                                                                                                                       | `9150`                               |
 | `metrics.service.clusterIP`                                 | Static clusterIP or None for headless services                                                                                                                                                                                                        | `""`                                 |
-| `metrics.service.sessionAffinity`                           | Control where client requests go, to the same pod or round-robin                                                                                                                                                                                      | `None`                               |
+| `metrics.service.sessionAffinity`                           | Control where client requests go, to the same pod or round-robin. Allowed values: `ClientIP` or `None`                                                                                                                                                | `None`                               |
 | `metrics.service.annotations`                               | Annotations for the Prometheus metrics service                                                                                                                                                                                                        | `{}`                                 |
 | `metrics.serviceMonitor.enabled`                            | Create ServiceMonitor Resource for scraping metrics using Prometheus Operator                                                                                                                                                                         | `false`                              |
 | `metrics.serviceMonitor.namespace`                          | Namespace for the ServiceMonitor Resource (defaults to the Release Namespace)                                                                                                                                                                         | `""`                                 |
@@ -414,11 +448,11 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 helm install my-release --set auth.username=user,auth.password=password oci://REGISTRY_NAME/REPOSITORY_NAME/memcached
 ```
 
-> Note: You need to substitute the placeholders `REGISTRY_NAME` and `REPOSITORY_NAME` with a reference to your Helm chart registry and repository. For example, in the case of Bitnami, you need to use `REGISTRY_NAME=registry-1.docker.io` and `REPOSITORY_NAME=bitnamicharts`.
+> **Note** You need to substitute the placeholders `REGISTRY_NAME` and `REPOSITORY_NAME` with a reference to your Helm chart registry and repository. For example, in the case of Bitnami, you need to use `REGISTRY_NAME=registry-1.docker.io` and `REPOSITORY_NAME=bitnamicharts`.
 
 The above command sets the Memcached admin account username and password to `user` and `password` respectively.
 
-> NOTE: Once this chart is deployed, it is not possible to change the application's access credentials, such as usernames or passwords, using Helm. To change these application credentials after deployment, delete any persistent volumes (PVs) used by the chart and re-deploy it, or use the application's built-in administrative tools if available.
+> **Note** Once this chart is deployed, it is not possible to change the application's access credentials, such as usernames or passwords, using Helm. To change these application credentials after deployment, delete any persistent volumes (PVs) used by the chart and re-deploy it, or use the application's built-in administrative tools if available.
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
@@ -426,7 +460,7 @@ Alternatively, a YAML file that specifies the values for the parameters can be p
 helm install my-release -f values.yaml oci://REGISTRY_NAME/REPOSITORY_NAME/memcached
 ```
 
-> Note: You need to substitute the placeholders `REGISTRY_NAME` and `REPOSITORY_NAME` with a reference to your Helm chart registry and repository. For example, in the case of Bitnami, you need to use `REGISTRY_NAME=registry-1.docker.io` and `REPOSITORY_NAME=bitnamicharts`.
+> **Note** You need to substitute the placeholders `REGISTRY_NAME` and `REPOSITORY_NAME` with a reference to your Helm chart registry and repository. For example, in the case of Bitnami, you need to use `REGISTRY_NAME=registry-1.docker.io` and `REPOSITORY_NAME=bitnamicharts`.
 > **Tip**: You can use the default [values.yaml](https://github.com/bitnami/charts/tree/main/bitnami/memcached/values.yaml)
 
 ## Troubleshooting
@@ -434,6 +468,8 @@ helm install my-release -f values.yaml oci://REGISTRY_NAME/REPOSITORY_NAME/memca
 Find more information about how to deal with common errors related to Bitnami's Helm charts in [this troubleshooting guide](https://docs.bitnami.com/general/how-to/troubleshoot-helm-chart-issues).
 
 ## Upgrading
+
+The following subsections describe notable changes when upgrading.
 
 ### To 7.6.0
 
@@ -475,14 +511,14 @@ This version introduces `bitnami/common`, a [library chart](https://helm.sh/docs
 ### To 4.0.0
 
 Backwards compatibility is not guaranteed unless you modify the labels used on the chart's deployments.
-Use the workaround below to upgrade from versions previous to 4.0.0. The following example assumes that the release name is memcached:
+Use the workaround below to upgrade from versions previous to 4.0.0. The following example assumes that the release name is `memcached`:
 
 ```console
 kubectl delete deployment  memcached --cascade=false
 helm upgrade memcached oci://REGISTRY_NAME/REPOSITORY_NAME/memcached
 ```
 
-> Note: You need to substitute the placeholders `REGISTRY_NAME` and `REPOSITORY_NAME` with a reference to your Helm chart registry and repository. For example, in the case of Bitnami, you need to use `REGISTRY_NAME=registry-1.docker.io` and `REPOSITORY_NAME=bitnamicharts`.
+> **Note** You need to substitute the placeholders `REGISTRY_NAME` and `REPOSITORY_NAME` with a reference to your Helm chart registry and repository. For example, in the case of Bitnami, you need to use `REGISTRY_NAME=registry-1.docker.io` and `REPOSITORY_NAME=bitnamicharts`.
 
 ### To 3.0.0
 
@@ -491,7 +527,7 @@ This release uses the new bash based `bitnami/memcached` container which uses ba
 ### To 1.0.0
 
 Backwards compatibility is not guaranteed unless you modify the labels used on the chart's deployments.
-Use the workaround below to upgrade from versions previous to 1.0.0. The following example assumes that the release name is memcached:
+Use the workaround below to upgrade from versions previous to 1.0.0. The following example assumes that the release name is `memcached`:
 
 ```console
 kubectl patch deployment memcached --type=json -p='[{"op": "remove", "path": "/spec/selector/matchLabels/chart"}]'
@@ -499,7 +535,7 @@ kubectl patch deployment memcached --type=json -p='[{"op": "remove", "path": "/s
 
 ## License
 
-Copyright &copy; 2025 Broadcom. The term "Broadcom" refers to Broadcom Inc. and/or its subsidiaries.
+Copyright &copy; 2026 Broadcom. The term "Broadcom" refers to Broadcom Inc. and/or its subsidiaries.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

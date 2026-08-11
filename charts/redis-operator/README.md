@@ -43,11 +43,13 @@ Replace `<YourCertSecretName>` and `<YourPrivateKey>` with your specific values.
 helm install <redis-operator> ot-helm/redis-operator --version=0.15.5 --appVersion=0.15.1 --set certificate.secretName=<YourCertSecretName> --set certmanager.enabled=true --set redisOperator.webhook=true --namespace <redis-operator> --create-namespace
 ```
 
-> Note: If `certificate.secretName` is not provided, the operator will generate a self-signed certificate and use it for webhook server.
+> Note: When webhooks are enabled (`webhook=true`), certificate handling is automatic:
+> - If `certmanager.enabled=true`: cert-manager creates and manages the webhook certificate
+> - If `certmanager.enabled=false`: Helm automatically generates a self-signed certificate
 ---
-> Note : If you want to disable the webhook you have to pass the `--set webhook=false` and `--set certmanager.enabled=false`  while installing the redis-operator.
+> Note: If you want to disable the webhook you have to pass the `--set webhook=false` while installing the redis-operator.
 ---
-> Note: If you want to use an existing `ClusterIssuer` to sign the webhook certificate, you can pass `--set issuer.create=false`, `--set issuer.kind=ClusterIssuer` and `--set issuer.name=cluster-issuer-name-here` while installing the operator.
+> Note: If you want to use an existing `ClusterIssuer` to sign the webhook certificate, you can pass `--set certmanager.enabled=true`, `--set issuer.create=false`, `--set issuer.kind=ClusterIssuer` and `--set issuer.name=cluster-issuer-name-here` while installing the operator.
 
 ### 4. Patch the CA Bundle (if using cert-manager)
 
@@ -74,14 +76,16 @@ kubectl get crd redisreplications.redis.redis.opstreelabs.in -o=jsonpath='{.meta
 kubectl get crd redissentinels.redis.redis.opstreelabs.in -o=jsonpath='{.metadata.annotations}'
 ```
 
-### How to generate private key( Optional )
+### How to generate private key (Optional)
+
+> Note: This section is only needed if you want to use your own pre-existing certificate instead of the auto-generated one.
 
 ```bash
 openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout tls.key -out tls.crt
 kubectl create secret tls <webhook-server-cert> --key tls.key --cert tls.crt -n <redis-operator>
 ```
 
-> Note: This secret will be used for webhook server certificate so generate it before installing the redis-operator.
+> Note: If you create the secret before installing the operator, the Helm chart will use the existing secret instead of generating a new one.
 
 ## Values
 
@@ -102,12 +106,15 @@ kubectl create secret tls <webhook-server-cert> --key tls.key --cert tls.crt -n 
 | issuer.solver.enabled | bool | `true` |  |
 | issuer.solver.ingressClass | string | `"nginx"` |  |
 | issuer.type | string | `"selfSigned"` |  |
+| manager.config.execCommandTimeout | string | `""` |  |
 | manager.config.kubeClientQPS | float | `0` | If value > 0, it will override the default value in the operator |
 | manager.config.kubeClientTimeout | string | `"60s"` |  |
+| manager.config.maxConcurrentReconciles | int | `3` |  |
 | nodeSelector | object | `{}` |  |
 | podSecurityContext | object | `{}` |  |
 | priorityClassName | string | `""` |  |
-| rbac.enabled | bool | `true` |  |
+| rbac.enabled | bool | `true` | Enable RBAC resources creation |
+| rbac.scope | string | `"cluster"` | RBAC scope: "cluster" for ClusterRole/ClusterRoleBinding or "namespace" for Role/RoleBinding. "cluster" lets the operator manage Redis resources across all namespaces (default behavior). "namespace" restricts the operator to its own release namespace; set redisOperator.watchNamespace accordingly and ensure the CRDs are installed separately (CRDs are cluster-scoped). |
 | redisOperator.automountServiceAccountToken | bool | `true` |  |
 | redisOperator.env | list | `[]` |  |
 | redisOperator.extraArgs | list | `[]` |  |
@@ -115,6 +122,7 @@ kubectl create secret tls <webhook-server-cert> --key tls.key --cert tls.crt -n 
 | redisOperator.imagePullPolicy | string | `"Always"` |  |
 | redisOperator.imagePullSecrets | list | `[]` |  |
 | redisOperator.imageTag | string | `""` |  |
+| redisOperator.initContainerImageTag | string | `"v0.25.0"` | initContainerImageTag is the init-config init container image tag. If not specified, defaults to imageTag, then falls back to chart appVersion. Typically only needs to be set when using a different version for the init container. |
 | redisOperator.metrics.bindAddress | string | `":8080"` |  |
 | redisOperator.metrics.enabled | bool | `true` |  |
 | redisOperator.name | string | `"redis-operator"` |  |
@@ -122,6 +130,8 @@ kubectl create secret tls <webhook-server-cert> --key tls.key --cert tls.crt -n 
 | redisOperator.podLabels | object | `{}` |  |
 | redisOperator.pprof.bindAddress | string | `":6060"` |  |
 | redisOperator.pprof.enabled | bool | `false` |  |
+| redisOperator.serviceDNSDomain | string | `"cluster.local"` | The DNS domain suffix used for Kubernetes service discovery. Default is "cluster.local". Change this if your cluster uses a custom DNS domain. |
+| redisOperator.strategy | object | `{}` |  |
 | redisOperator.watchNamespace | string | `""` |  |
 | redisOperator.webhook | bool | `false` |  |
 | replicas | int | `1` |  |

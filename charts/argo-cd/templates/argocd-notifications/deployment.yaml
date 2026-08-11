@@ -84,7 +84,7 @@ spec:
             {{- end }}
           env:
             {{- with (concat .Values.global.env .Values.notifications.extraEnv) }}
-              {{- toYaml . | nindent 12 }}
+              {{- tpl (toYaml .) $ | nindent 12 }}
             {{- end }}
             - name: ARGOCD_NOTIFICATIONS_CONTROLLER_LOGLEVEL
               valueFrom:
@@ -150,6 +150,16 @@ spec:
             successThreshold: {{ .Values.notifications.readinessProbe.successThreshold }}
             failureThreshold: {{ .Values.notifications.readinessProbe.failureThreshold }}
           {{- end }}
+          {{- if .Values.notifications.startupProbe.enabled }}
+          startupProbe:
+            tcpSocket:
+              port: metrics
+            initialDelaySeconds: {{ .Values.notifications.startupProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.notifications.startupProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.notifications.startupProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.notifications.startupProbe.successThreshold }}
+            failureThreshold: {{ .Values.notifications.startupProbe.failureThreshold }}
+          {{- end }}
           resources:
             {{- toYaml .Values.notifications.resources | nindent 12 }}
           {{- with .Values.notifications.containerSecurityContext }}
@@ -162,7 +172,7 @@ spec:
               mountPath: /app/config/tls
             - name: argocd-repo-server-tls
               mountPath: /app/config/reposerver/tls
-            {{- with .Values.notifications.extraVolumeMounts }}
+            {{- with (concat .Values.global.extraVolumeMounts .Values.notifications.extraVolumeMounts) }}
               {{- toYaml . | nindent 12 }}
             {{- end }}
         {{- with .Values.notifications.extraContainers }}
@@ -196,7 +206,7 @@ spec:
         {{- end }}
       {{- end }}
       volumes:
-        {{- with .Values.notifications.extraVolumes }}
+        {{- with (concat .Values.global.extraVolumes .Values.notifications.extraVolumes) }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
         - name: tls-certs

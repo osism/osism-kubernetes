@@ -26,7 +26,16 @@ Get FIPS environment variable value for the given tech
         {{- printf "The common.fips.config method can only provide configuration for: %s" $availableTechs | fail -}}
     {{- end -}}
     {{- $tech := get (.fips) .tech -}}
-    {{- $value := $tech | default (.global).defaultFips -}}
+    {{/* This is for controlling the boolean input off without quotes */}}
+    {{- if and (eq (kindOf $tech) "bool") (not $tech) -}}
+        {{- $tech = "off" -}}
+    {{- end -}}
+    {{ $defaultFips := (.global).defaultFips -}}
+    {{/* This is for controlling the boolean input off without quotes */}}
+    {{- if and (eq (kindOf $defaultFips) "bool") (not $defaultFips) -}}
+        {{- $defaultFips = "off" -}}
+    {{- end -}}
+    {{- $value := $tech | default $defaultFips -}}
     {{- if empty $value -}}
         {{- printf "Please configure a value for 'fips.%s' or 'global.defaultFips'" .tech | fail -}}
     {{- else -}}
@@ -64,10 +73,34 @@ Map Golang values for FIPS configuration
 */}}
 {{- define "common.fips.golang" -}}
     {{- if eq .value "restricted" -}}
-      {{- print "fips140=only" -}}
+      {{- print "fips140=only,tlsmlkem=0" -}}
     {{- else if eq .value "relaxed" -}}
       {{- print "fips140=on" -}}
     {{- else -}}
       {{- print "fips140=off" -}}
+    {{- end -}}
+{{- end -}}
+
+{{/*
+OpenSSL FIPS provider path. Uses fips.openssl with global.defaultFips fallback.
+- restricted: /etc/ssl/provider_fips.cnf  (loads the FIPS provider)
+- relaxed/off: /etc/ssl/provider_default.cnf  (loads the default provider, required by photon-5 distro.cnf)
+{{ include "common.fips.openssl.provider.path" (dict "fips" .Values.fips "global" .Values.global) }}
+*/}}
+{{- define "common.fips.openssl.provider.path" -}}
+    {{- $openssl := get (.fips) "openssl" -}}
+    {{/* Boolean false means off (unquoted in values) */}}
+    {{- if and (eq (kindOf $openssl) "bool") (not $openssl) -}}
+        {{- $openssl = "off" -}}
+    {{- end -}}
+    {{- $defaultFips := (.global).defaultFips -}}
+    {{- if and (eq (kindOf $defaultFips) "bool") (not $defaultFips) -}}
+        {{- $defaultFips = "off" -}}
+    {{- end -}}
+    {{- $value := $openssl | default $defaultFips -}}
+    {{- if empty $value -}}
+        {{- printf "Please configure a value for 'fips.openssl' or 'global.defaultFips'" | fail -}}
+    {{- else -}}
+        {{- ternary "/etc/ssl/provider_fips.cnf" "/etc/ssl/provider_default.cnf" (eq $value "restricted") | print -}}
     {{- end -}}
 {{- end -}}
