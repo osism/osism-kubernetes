@@ -7,6 +7,48 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 This file was started on April 08, 2025. Changes prior to this date are not included in the CHANGELOG.
 
+## [v0.20260811.0] - 2026-08-11
+
+### Changed
+- Route the add-to-project workflow through `pull_request_target` and scope the shared secret to only `ADD_TO_PROJECT_PAT`, fixing project-board automation for fork PRs (osism/osism-kubernetes#308)
+- Add a Renovate custom manager to track Kubernetes component version pins (k9s, mariadb-operator, rabbitmq-operator, monitoring charts) and batch them into a single monthly grouped PR (osism/osism-kubernetes#316)
+
+### Fixed
+- Pin syft's CycloneDX output to spec version 1.6 so SBOM uploads are no longer rejected by DependencyTrack (osism/osism-kubernetes#309)
+- Apply keycloak-operator CRDs before the operator deployment so a fresh cluster without prior Keycloak install can reconcile Keycloak resources (osism/osism-kubernetes#322)
+
+### Removed
+- Remove rook as a Ceph deployment option, including the rook and rook_operator roles, vendored rook-ceph/rook-ceph-cluster Helm charts, and kubernetes-rook* playbooks (osism/osism-kubernetes#310)
+
+### Dependencies
+- ansible.utils 6.0.2 → 6.0.3 (osism/osism-kubernetes#306)
+- ghcr.io/astral-sh/uv 0.11.21 → 0.11.22 (osism/osism-kubernetes#307)
+- ansible.posix 2.2.0 → 2.2.2 (osism/osism-kubernetes#311, osism/osism-kubernetes#317)
+- kubernetes.core 6.4.0 → 6.5.0 (osism/osism-kubernetes#314)
+- osism.commons 0.20260601.0 → 0.20260724.0 (osism/osism-kubernetes#315, osism/osism-kubernetes#318, osism/osism-kubernetes#320)
+- yq 3.4.3 → 4.1.2 (osism/osism-kubernetes#312)
+- community.general 11.4.9 → 13.2.0 (osism/osism-kubernetes#295)
+- k9s v0.40.10 → v0.51.0 (osism/osism-kubernetes#321)
+- kubernetes-monitoring-stack 3.5.0 → 3.6.2 (osism/osism-kubernetes#321)
+- rabbitmq-cluster-operator 2.9.0 → 2.19.2 (osism/osism-kubernetes#321)
+- argo-cd 9.0.5 → 10.3.2 (osism/osism-kubernetes#323)
+- cert-manager 1.19.1 → 1.21.1 (osism/osism-kubernetes#323)
+- cert-manager-crds 1.19.1 → 1.20.0 (osism/osism-kubernetes#323)
+- cloudnative-pg 0.26.1 → 0.29.0 (osism/osism-kubernetes#323)
+- headlamp 0.37.0 → 0.44.0 (osism/osism-kubernetes#323)
+- kube-prometheus-stack 79.1.0 → 88.2.0 (osism/osism-kubernetes#323)
+- mariadb-operator 25.10.2 → 26.6.0 (osism/osism-kubernetes#323)
+- mariadb-operator-crds 25.10.2 → 26.6.0 (osism/osism-kubernetes#323)
+- memcached 8.1.1 → 8.7.5 (osism/osism-kubernetes#323)
+- node-feature-discovery 0.18.2 → 0.19.0 (osism/osism-kubernetes#323)
+- opensearch 3.3.2 → 3.8.0 (osism/osism-kubernetes#323)
+- prometheus-operator-crds 24.0.1 → 31.0.1 (osism/osism-kubernetes#323)
+- prometheus-pushgateway 3.4.2 → 3.8.0 (osism/osism-kubernetes#323)
+- pxc-operator 1.18.0 → 1.20.0 (osism/osism-kubernetes#323)
+- redis-operator 0.22.2 → 0.25.0 (osism/osism-kubernetes#323)
+- teleport-cluster 18.3.0 → 18.10.4 (osism/osism-kubernetes#323)
+- teleport-kube-agent 18.3.0 → 18.10.4 (osism/osism-kubernetes#323)
+
 ## [v0.20260615.0] - 2026-06-15
 
 ### Added
