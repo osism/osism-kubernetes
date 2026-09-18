@@ -138,6 +138,24 @@
       when: >-
         not item.check_hubble | default(false) or (item.check_hubble | default(false) and cilium_hubble)
 
+    # Ready pods are not the same as a working datapath. Where the nodes cannot
+    # reach each other's pod CIDRs every Cilium pod still reports Ready, while
+    # cilium-health reports a fraction and the first visible symptom appears much
+    # later and somewhere else. The expression uses a backreference so it matches
+    # only when the reachable count equals the total, and requires a non zero count
+    # because cilium-health reports "0/0 reachable" until its first probe cycle has
+    # run, which takes about two minutes.
+    - name: Wait for Cilium to report full node reachability
+      ansible.builtin.command: >-
+        {{ k3s_kubectl_binary | default('k3s kubectl') }} -n kube-system
+        exec daemonset/cilium -- cilium-health status
+      register: cilium_health_result
+      changed_when: false
+      until: cilium_health_result.stdout is search('Cluster health:\\s+([1-9][0-9]*)/\\1 reachable')
+      retries: 30
+      delay: 10
+      when: cilium_health_check | default(true)
+
     - name: Configure Cilium BGP
       when: cilium_bgp
       block:
