@@ -83,6 +83,11 @@ argument_specs:
         type: bool
         default: true
 
+      cilium_health_check:
+        description: Wait for cilium-health to report that every node reaches every other node
+        type: bool
+        default: true
+
       cilium_hubble:
         description: Enable Cilium Hubble
         type: bool
