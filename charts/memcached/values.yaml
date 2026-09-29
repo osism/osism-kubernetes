@@ -636,9 +636,11 @@ networkPolicy:
   ingressPodMatchLabels: {}
   ## @param networkPolicy.ingressNSMatchLabels [object] Labels to match to allow traffic from other namespaces. Ignored if `networkPolicy.allowExternal` is true.
   ## @param networkPolicy.ingressNSPodMatchLabels [object] Pod labels to match to allow traffic from other namespaces. Ignored if `networkPolicy.allowExternal` is true.
+  ## @param networkPolicy.ingressReleaseMatchLabels [object] Labels to match pods in the same release to allow traffic from. Ignored if `networkPolicy.allowExternal` is true.
   ##
   ingressNSMatchLabels: {}
   ingressNSPodMatchLabels: {}
+  ingressReleaseMatchLabels: {}
 ## @section Other Parameters
 
 ## Service account for Memcached to use.
