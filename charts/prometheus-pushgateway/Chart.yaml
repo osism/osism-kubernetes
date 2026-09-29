@@ -27,4 +27,4 @@ name: prometheus-pushgateway
 sources:
 - https://github.com/prometheus/pushgateway
 type: application
-version: 3.8.0
+version: 3.9.0
