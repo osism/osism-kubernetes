@@ -7,6 +7,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 This file was started on April 08, 2025. Changes prior to this date are not included in the CHANGELOG.
 
+## [v0.20261001.0] - 2026-10-01
+
+### Added
+- Add tunnel mode to cilium_mode and fix routed mode to use native routing without direct node routes (osism/osism-kubernetes#329)
+- Wait for Cilium to report full node reachability after installation (osism/osism-kubernetes#330)
+
+### Dependencies
+- ansible.utils 6.0.3 → 6.1.1 (osism/osism-kubernetes#326, osism/osism-kubernetes#332)
+- argo-cd 10.3.2 → 10.9.2 (osism/osism-kubernetes#335)
+- cert-manager 1.21.1 → 1.21.2 (osism/osism-kubernetes#335)
+- cert-manager-crds 1.20.0 → 1.21.1 (osism/osism-kubernetes#335)
+- cloudnative-pg 0.29.0 → 0.29.1 (osism/osism-kubernetes#335)
+- community.general 13.2.0 → 13.4.0 (osism/osism-kubernetes#325, osism/osism-kubernetes#328)
+- headlamp 0.44.0 → 0.45.0 (osism/osism-kubernetes#335)
+- kube-prometheus-stack 88.2.0 → 91.8.1 (osism/osism-kubernetes#335)
+- kubernetes.core 6.5.0 → 6.6.0 (osism/osism-kubernetes#331)
+- mariadb-operator 26.6.0 → 26.10.1 (osism/osism-kubernetes#335)
+- mariadb-operator-crds 26.6.0 → 26.10.1 (osism/osism-kubernetes#335)
+- memcached 8.7.5 → 8.8.2 (osism/osism-kubernetes#335)
+- osism.commons 0.20260724.0 → 0.20260924.0 (osism/osism-kubernetes#327, osism/osism-kubernetes#334)
+- prometheus-operator-crds 31.0.1 → 32.0.1 (osism/osism-kubernetes#335)
+- prometheus-pushgateway 3.8.0 → 3.9.0 (osism/osism-kubernetes#335)
+- pxc-operator 1.20.0 → 1.20.1 (osism/osism-kubernetes#335)
+- redis-operator 0.25.0 → 0.26.1 (osism/osism-kubernetes#335)
+- teleport-cluster 18.10.4 → 18.11.2 (osism/osism-kubernetes#335)
+- teleport-kube-agent 18.10.4 → 18.11.2 (osism/osism-kubernetes#335)
+- yq 4.1.2 → 4.4.0 (osism/osism-kubernetes#333, osism/osism-kubernetes#337)
+
 ## [v0.20260811.0] - 2026-08-11
 
 ### Changed
