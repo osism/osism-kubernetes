@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 This file was started on April 08, 2025. Changes prior to this date are not included in the CHANGELOG.
 
+## [v0.20261008.0] - 2026-10-08
+
+### Changed
+- Rebuild without changes since v0.20261001.0: the tag only exists so that the container image is rebuilt with the component versions currently pinned in osism/release (above all the osism package) and is released under the same version as the other OSISM container images
+
 ## [v0.20261001.0] - 2026-10-01
 
 ### Added
