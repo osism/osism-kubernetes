@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 This file was started on April 08, 2025. Changes prior to this date are not included in the CHANGELOG.
 
+## [v0.20261011.0] - 2026-10-11
+
+### Fixed
+- Install python3-packaging to fix the pip module failing on the debian-trixie nodeset (osism/osism-kubernetes#340)
+
 ## [v0.20261008.0] - 2026-10-08
 
 ### Changed
