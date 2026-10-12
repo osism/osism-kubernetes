@@ -1,8 +1,11 @@
-ARG IMAGE=registry.osism.tech/dockerhub/python
+ARG BASE_IMAGE=registry.osism.tech/dockerhub/python
+ARG BASE_TAG=3.13-slim-bookworm
 
-FROM ${IMAGE}:3.13-slim-bookworm AS builder
+FROM ${BASE_IMAGE}:${BASE_TAG} AS builder
 
 ARG VERSION=latest
+ARG SHA_GENERICS
+ARG SHA_RELEASE
 ARG USER_ID=45000
 ARG GROUP_ID=45000
 ARG GROUP_ID_DOCKER=999
@@ -85,6 +88,10 @@ if [ "$VERSION" != "latest" ]; then
   ( cd /release || exit; git fetch --all --force; git checkout "osism-kubernetes-$VERSION" )
   ( cd /generics || exit; git fetch --all --force; git checkout "$(yq -M -r .generics_version "/release/latest/base.yml")" )
 fi
+
+# pin the sources to the commits recorded in the labels
+if [ -n "$SHA_RELEASE" ]; then ( cd /release || exit; git checkout "$SHA_RELEASE" ); fi
+if [ -n "$SHA_GENERICS" ]; then ( cd /generics || exit; git checkout "$SHA_GENERICS" ); fi
 
 # add inventory files
 mkdir -p /ansible/inventory.generics /ansible/inventory
@@ -244,9 +251,7 @@ EOF
 
 USER dragon
 
-ARG IMAGE=registry.osism.tech/dockerhub/python
-
-FROM ${IMAGE}:3.13-slim-bookworm
+FROM ${BASE_IMAGE}:${BASE_TAG}
 
 COPY --link --from=builder / /
 
