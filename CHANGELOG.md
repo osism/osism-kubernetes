@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 This file was started on April 08, 2025. Changes prior to this date are not included in the CHANGELOG.
 
+## [v0.20261019.0] - 2026-10-19
+
+### Added
+- Label built images with the commit hashes of the release and generics repositories, and pin the base image by digest (osism/osism-kubernetes#342)
+
+### Changed
+- Simplify base image argument handling, dropping the unused PYTHON_VERSION build argument (osism/osism-kubernetes#342)
+
+### Dependencies
+- yq 4.4.0 → 4.4.5 (osism/osism-kubernetes#343)
+
 ## [v0.20261011.0] - 2026-10-11
 
 ### Fixed
